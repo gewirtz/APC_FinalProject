@@ -1,16 +1,16 @@
 {
 "data_input":{
-      "image_class":"numbers",
-      "traning_folder":"/tigress/nvrocha/projects/APC524_Project/data/numbers/training",
-      "testing_folder":"/tigress/nvrocha/projects/APC524_Project/data/numbers/testing"},
+      "home_folder":"/tigress/nvrocha/projects/APC524",
+      "traning_folder":"data/mnist/training",
+      "testing_folder":"data/mnist/testing"},
 
 "data_output":{
-      "workspace":"/tigress/nvrocha/projects/APC524_Project/output",
-      "model_object":"/tigress/nvrocha/projects/APC524_Project/output",
-      "graphical":"/tigress/nvrocha/projects/APC524_Project/output"},
+      "workspace":"/output",
+      "model_object":"/output",
+      "graphical":"/output"},
 
 "pre_processing":{
-                 "ncores":3,
+                 "ncores":1,
                  "methods_to_simulate":[
                                       "Method_A",
                                       "Method_B",
@@ -27,12 +27,11 @@
                               "Method_C":{
                                     "param_1":0.3,
                                     "param_2":34,
-                                    "param_3":"0.3"},
-                               },
+                                    "param_3":"0.3"}
+                               }
                 },
       
 "model_fitting":{
-                 "ncores":3,
                  "methods_to_simulate":[
                                       "Method_A",
                                       "Method_B",
@@ -49,8 +48,8 @@
                               "Method_C":{
                                     "param_1":0.3,
                                     "param_2":34,
-                                    "param_3":"0.3"},
-                               },
+                                    "param_3":"0.3"}
+                               }
                 },
 
 "pos_processing":{
@@ -70,7 +69,7 @@
                               "Report":{
                                     "param_1":0.3,
                                     "param_2":34,
-                                    "param_3":"0.3"},
-                               },
-                },
+                                    "param_3":"0.3"}
+                               }
+                }
 }

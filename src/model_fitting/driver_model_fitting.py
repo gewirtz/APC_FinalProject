@@ -24,7 +24,7 @@ else:
 #Read in the metadata
 metadata = json.load(open(metadata_file))
 
-#Retrive a list of all the traning and testing files
+#Retrive a list of all swig objects
 traning_files=glob.glob('%s/*' % metadata['data_input']['traning_folder'])
 testing_files=glob.glob('%s/*' % metadata['data_input']['testing_folder'])
 
@@ -33,7 +33,7 @@ n_traning = len(traning_files)
 n_testing = len(testing_files)
 
 #List of pre processing methods to be used
-methods_prep = metadata['model_fitting']['methods_to_simulate']
+methods_prep = metadata['pre_processing']['methods_to_simulate']
 
 #Work on each image
 
@@ -44,7 +44,7 @@ for i_image in np.arange(n_traning)[rank::size]:
 	#Print info
 	print "Rank:%d, Image:%d - Initializing" % (rank,i_image)
 
-	#for met in methods_prep:
+	for met in methods_prep:
 		#Pass images, methods, and parameters to Pre Processing module
 		#os.system('python ./Pre_Processing.py %s %s %s' % (i_image,met,metadata_file))
 		# Or receveid and save in different files
