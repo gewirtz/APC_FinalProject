@@ -21,7 +21,9 @@ class mnist_loader(loader_base):
         
     def save_data(self,output,data):
         return output.write(data)
-        
+
+        ""
+mnist_loader.load_config        
 input = StringIO(""" line one
 line two
 line three
