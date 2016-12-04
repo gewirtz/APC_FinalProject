@@ -4,5 +4,11 @@ Created on Thu Dec 01 15:42:10 2016
 
 @author: Bill Eggert
 """
+from abc import ABCMeta, abstractmethod
 
-print('Hello World to APC524 Final Project')
+class BaseLoader(metaclass = ABCMeta):
+    
+    @abc.abstractmethod
+    def get_data(self):
+        print("Hello World")
+    

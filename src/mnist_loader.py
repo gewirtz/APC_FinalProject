@@ -7,4 +7,8 @@ Created on Thu Dec 01 15:16:30 2016
 Hello World to APC524
 """
 
-print('Hello APC 524 Final Project')
+class mnist(BaseLoader):
+    def get_data(self, someOption = False):
+        a = A() if someOption else None
+        return self.what + a
+        
