@@ -24,13 +24,16 @@ else:
 #Read in the metadata
 metadata = json.load(open(metadata_file))
 
+
 #Retrive a list of all the traning and testing files
-traning_files=glob.glob('%s/*' % metadata['data_input']['traning_folder'])
-testing_files=glob.glob('%s/*' % metadata['data_input']['testing_folder'])
+traning_files=glob.glob('%s%s/*' % (metadata['data_input']['home_folder'],metadata['data_input']['traning_folder']))
+testing_files=glob.glob('%s%s/*' % (metadata['data_input']['home_folder'],metadata['data_input']['testing_folder']))
+
 
 #Determine the number of training images
 n_traning = len(traning_files)
 n_testing = len(testing_files)
+
 
 #List of pre processing methods to be used
 methods_prep = metadata['model_fitting']['methods_to_simulate']
@@ -39,9 +42,9 @@ methods_prep = metadata['model_fitting']['methods_to_simulate']
 
 for i_image in np.arange(n_traning)[rank::size]:
 
-	print rank, ncatch, np.arange(ncatch)[rank::size]
-	exit()
-	#Print info
+	#print rank, n_traning, np.arange(n_traning)[rank::size]
+	#exit()
+	
 	print "Rank:%d, Image:%d - Initializing" % (rank,i_image)
 
 	#for met in methods_prep:

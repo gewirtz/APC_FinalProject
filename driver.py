@@ -3,25 +3,28 @@ import sys
 import json
 
 #file = sys.argv[1]
-file = '/tigress/nvrocha/projects/APC524/config/metadata_configurations.json'
+file = 'metadata_configurations.json'
 
 #Read the metadata
-metadata = json.load(open(file))
+metadata = json.load(open('./config/%s' % file))
+home=metadata['data_input']['home_folder']
 
 
-# Pre-Processing
-ncores_prep = metadata['pre_processing']['ncores']
-if ncores_prep == 1: 
+# Image Processing
+ncores = metadata['pre_processing']['ncores']
+if ncores == 1: 
 	# Serial Implementation of pre-processing
-	os.system('python ./src/processing/driver_pre_processing.py %s 1' % file)
+	os.system('python %s/src/processing/driver_pre_processing.py ./config/%s 1' % (home,file))
 else:
 	# Parallel Implementation of model fitting
-	os.system('mpirun -np %i python ./src/processing/driver_pre_processing.py %s %i' % (ncores_prep,file,ncores))
+	os.system('mpirun -np %i python %s/src/processing/driver_pre_processing.py ./config/%s %i' % (ncores,home,file,ncores))
 
 
 # Model Fitting
-# Serial Implementation of model fitting
-#os.system('python ./src/model_fitting/driver_model_fitting.py %s 1' % file)
+methods_fitting = metadata['model_fitting']['methods_to_simulate']
+for met in methods_fitting:
+	print met
+	#os.system('%s/src/model_fitting/ARI_AND_CHASE_CODE ./config/%s ' % (home,file))
 
 
 # Graphical Pos-Processing
