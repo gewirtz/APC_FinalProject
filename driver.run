@@ -1,0 +1,21 @@
+#!/bin/bash
+# Parallel job using 8 processors:
+#SBATCH -N 1                    # number of nodes
+#SBATCH --ntasks-per-node=12    # number of processors per node
+#SBATCH -t 16:00:00             # run for 15 minutes max
+#SBATCH --mail-type=begin      # send email when process begins...
+#SBATCH --mail-type=end        # ...and when it ends...
+#SBATCH --mail-type=fail       # ...or when it fails.
+#SBATCH --mail-user=noemi@princeton.edu
+
+
+# Load module openmpi environment
+# module load openmpi
+
+# Make sure you are in the correct directory
+cd /tigress/nvrocha/software/HydroBlocks_Preprocessing/
+
+# Make sure no graphics are turned on
+unset DISPLAY
+
+python driver.py > driver.run.out
