@@ -20,12 +20,11 @@ from matplotlib import pyplot
 # goal: load mnist data into 3D numpy arrays
 def load_mnist(dataset, digit, path):
     
+    """
+    Returns a 3D array
+    each image[i] is a 2D array of the handwriting image
     
     """
-    Returns a set of two-element tuples
-    first element: label
-    second element: numpy 2D array of pixel data
-    """    
     
     if dataset == "training":
         image_path = path + '/train-images.idx3-ubyte'
@@ -60,11 +59,13 @@ def load_mnist(dataset, digit, path):
 
 test_path = "C:/Users/billi/Desktop/GitHub Repo/APC_FinalProject/data/mnist/testing"
 train_path = "C:/Users/billi/Desktop/GitHub Repo/APC_FinalProject/data/mnist/training"
-testdigit = [5]
+testdigit = [2, 5, 8]
 images, labels = load_mnist(dataset = "training", digit = testdigit, path = train_path)
 
+
+testnum = 2
 # let's see if it works
-# image number = whatever you want = 8 
 fig = pyplot.figure()
 ax = fig.add_subplot(1,1,1)
-image_plot = ax.imshow(images[10],cmap = mpl.cm.gray)
+image_plot = ax.imshow(images[testnum],cmap = mpl.cm.gray)
+print(labels[testnum])
