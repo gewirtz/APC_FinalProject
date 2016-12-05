@@ -1,6 +1,5 @@
 {
 "data_input":{
-      "home_folder":"/tigress/nvrocha/projects/APC524",
       "traning_folder":"/data/mnist/training",
       "testing_folder":"/data/mnist/testing"},
 

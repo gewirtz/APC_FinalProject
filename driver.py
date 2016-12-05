@@ -2,22 +2,21 @@ import os
 import sys
 import json
 
-#file = sys.argv[1]
-file = 'metadata_configurations.json'
+
+home_path=os.getcwd()
+config_file = '%s/config/metadata_configurations.json' % home_path
 
 #Read the metadata
-metadata = json.load(open('./config/%s' % file))
-home=metadata['data_input']['home_folder']
-
+metadata = json.load(open(config_file))
 
 # Image Processing
 ncores = metadata['pre_processing']['ncores']
 if ncores == 1: 
 	# Serial Implementation of pre-processing
-	os.system('python %s/src/processing/driver_pre_processing.py ./config/%s 1' % (home,file))
+	os.system('python %s/src/processing/driver_pre_processing.py %s %s 1' % (home_path,home_path,config_file))
 else:
 	# Parallel Implementation of model fitting
-	os.system('mpirun -np %i python %s/src/processing/driver_pre_processing.py ./config/%s %i' % (ncores,home,file,ncores))
+	os.system('mpirun -np %i python %s/src/processing/driver_pre_processing.py %s %s %i' % (ncores,home_path,config_file,ncores))
 
 
 # Model Fitting
