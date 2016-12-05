@@ -1,12 +1,13 @@
 
 # coding: utf-8
 
+# Nina 
 # In[25]:
 
 get_ipython().magic(u'load_ext Cython')
 %%cython --annotate
-from data_import_first_try.py import images
-from data_import_first_try.py import labels
+from data_import_first_try_Noemi.py import images
+from data_import_first_try_Noemi.py import labels
 from libc.stdlib cimport malloc
 import numpy as np
 cimport numpy as np
