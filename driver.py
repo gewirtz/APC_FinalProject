@@ -13,10 +13,10 @@ metadata = json.load(open(config_file))
 ncores = metadata['pre_processing']['ncores']
 if ncores == 1: 
 	# Serial Implementation of pre-processing
-	os.system('python %s/src/processing/driver_pre_processing.py %s %s 1' % (home_path,home_path,config_file))
+	os.system('python %s/src/processing/dev/driver_pre_processing.py %s %s 1' % (home_path,home_path,config_file))
 else:
 	# Parallel Implementation of model fitting
-	os.system('mpirun -np %i python %s/src/processing/driver_pre_processing.py %s %s %i' % (ncores,home_path,config_file,ncores))
+	os.system('mpirun -np %i python %s/src/processing/dev/driver_pre_processing.py %s %s %i' % (ncores,home_path,config_file,ncores))
 
 
 # Model Fitting

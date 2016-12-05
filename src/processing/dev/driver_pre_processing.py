@@ -23,19 +23,14 @@ else:
 	rank = comm.Get_rank()
 
 #Read in the metadata
-#metadata = json.load(open(metadata_file))
+metadata = json.load(open(metadata_file))
 
+methods = metadata['pre_processing']['methods_to_simulate']
 
-#Retrive a list of all the traning and testing files
-#traning_files=glob.glob('%s%s/*' % metadata['data_input']['traning_folder']))
-#testing_files=glob.glob('%s%s/*' % (metadata['data_input']['home_folder'],metadata['data_input']['testing_folder']))
+for mets in methods:
+	pass
 
-
-#Determine the number of training images
-#n_traning = len(traning_files)
-#n_testing = len(testing_files)
-
-os.system('python %s/src/processing/data_import_first_try.py %s %s' % (home_path,home_path,config_file))
+#os.system('python %s/src/processing/dev/data_import_first_try_Noemi.py %s %s' % (home_path,home_path,config_file))
 
 
 # #List of pre processing methods to be used
