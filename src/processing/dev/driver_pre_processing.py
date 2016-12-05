@@ -23,14 +23,14 @@ else:
 	rank = comm.Get_rank()
 
 #Read in the metadata
-metadata = json.load(open(metadata_file))
+metadata = json.load(open(config_file))
 
 methods = metadata['pre_processing']['methods_to_simulate']
 
 for mets in methods:
 	pass
 
-#os.system('python %s/src/processing/dev/data_import_first_try_Noemi.py %s %s' % (home_path,home_path,config_file))
+os.system('python %s/src/processing/dev/data_import_first_try_Noemi.py %s %s' % (home_path,home_path,config_file))
 
 
 # #List of pre processing methods to be used
