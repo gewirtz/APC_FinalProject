@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <iostream>
 #include <fstream>
@@ -10,9 +8,13 @@
 #include "reverse.cc"
 #include "mnist_load_images.cc"
 #include "mnist_load_labels.cc"
+#include "mnist_count_images.cc"
+
 
 // at the request of the modeling team...
-//#include <armadillo>
+#include <armadillo>
+
+using namespace arma;
 
 int main(){
 
@@ -28,20 +30,20 @@ int main(){
 
   // we are going to put things into an ARMADILLO MATRIX
   // which is really just a vector
-  // vector<arma::mat> all_images;
-
-  // DOUBLE VECTOR Implementation
 
   // load the images
-  vector<vector<double> > all_images;
+  //vector<vector<double> > all_images;
+  vector<arma::mat> all_images;
   mnist_load_images(train_directory, train_img, all_images);
 
   // return the number of images
   int num_img;
-  num_img = mnist_count_images(train_directory_train_img, all_images);
+  num_img = mnist_count_images(train_directory,train_img, all_images);
 
   // load the labels
-  vector<double> labels(num_img);
+  //vector<double> labels(num_img);
+
+  arma::colvec labels = arma::zeros<arma::colvec>(num_img);
   mnist_load_labels(train_directory, train_img, labels);
 
 
@@ -51,16 +53,9 @@ int main(){
   cout << all_images[0].size() << endl; // how big each image is
   
   // take a look at an image
-  for(int i = 0; i < all_images[0].size(); i++){
-    cout << all_images[0][i] << " ";
+  cout << all_images[0] << endl;
 
-    if (i % 28 == 0){
-      cout << "\n";
-    }
-  }
-
-  cout << "\n";
-  
   cout << labels.size() << endl; // how many labels you have
   cout << labels[0] << endl; // look at a label
+  
 }

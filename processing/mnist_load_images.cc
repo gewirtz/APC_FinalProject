@@ -1,10 +1,12 @@
 #include <iostream>
 #include <fstream>
+#include <armadillo>
 
 using namespace std;
+using namespace arma;
 
 void mnist_load_images(string directory, string filename,
-		       vector<vector<double> > &all_images){
+		       vector<arma::mat > &all_images){
 
   string fname = directory + filename;
 
@@ -51,7 +53,7 @@ void mnist_load_images(string directory, string filename,
   for(int i = 0; i < num_img; i++){
 
     // create vector of doubles
-    vector <double> cur_img;
+    arma::mat cur_img(rows,cols);
 
     // all the images are the same size!
     // the images are stored in LITTLE-ENDIAN, no need
@@ -62,8 +64,8 @@ void mnist_load_images(string directory, string filename,
         unsigned char pixel = 0; // 1 byte
         mnist_image.read( (char*) &pixel, sizeof(pixel) );
 
-        // adds pixel to the end of the list
-        cur_img.push_back( (double) pixel);
+        // adds pixel array
+        cur_img(row,col) = (double) pixel;
 
       } // end col
     } // end row
@@ -72,8 +74,6 @@ void mnist_load_images(string directory, string filename,
     all_images.push_back(cur_img);
 
   } // end num_img
-
-  return num_img;
 
 } // end function load_mnist
 

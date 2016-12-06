@@ -1,8 +1,12 @@
 #include <iostream>
 #include <fstream>
+#include <armadillo>
+
+using namespace std;
+using namespace arma;
 
 void mnist_load_labels(string directory, string filename,
-                      vector<double> labels){
+		       arma::colvec labels){
 
   string fname = directory + filename;
 
@@ -23,6 +27,6 @@ void mnist_load_labels(string directory, string filename,
   for(int i = 0; i < num_img; i++){
     unsigned char cur_label = 0;
     mnist_label.read( (char*) &cur_label, sizeof(cur_label) );
-    labels[i] = (double) cur_label;
+    labels(i) = (double) cur_label;
   }
 }
