@@ -63,21 +63,36 @@ void load_mnist(string directory, string filename){
     // We need to FLIP the magic number since it is in BIG-ENDIAN
     // as opposed to LITTLE-ENDIAN
     mnist_file.read( (char*) &magic, sizeof(magic) );
-    Reverse(magic);
+    magic = Reverse(magic);
 
     // Next is the number of images
-    mnist_file.read( (char*) &num_img, sizeof(num_image) );
-    Reverse(num_img);
+    mnist_file.read( (char*) &num_img, sizeof(num_img) );
+    num_img = Reverse(num_img);
 
     // rows, cols
     mnist_file.read( (char*) &rows, sizeof(rows) );
     mnist_file.read( (char*) &cols, sizeof(cols) );
-    Reverse(rows);
-    Reverse(cols);
+    rows = Reverse(rows);
+    cols = Reverse(cols);
 
     // The rest of the data is the image data
     // the individual images are stored in chunks of 32 bits/
     // We need to RESHAPE them from 1D array -> 2D array
+
+    // opportunity here for parallelization
+
+    for(int i = 0; i < num_img; i++){
+
+      // create vector of doubles
+      vector <double> cur_img;
+
+      // all the images are the same size!
+      // the images are stored in LITTLE-ENDIAN, no need
+      // to reverse --> confusing!
+      for(int row = 0; row < rows; row++){
+	for(int col = 0; col < cols; col++){
+ 
+
   }
 }
 
