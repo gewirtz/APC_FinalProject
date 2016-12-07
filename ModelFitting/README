@@ -1,0 +1,8 @@
+so far, we have written bare bones versions of a linear regression model and a gradient descent optimizer.  
+We have two main abstract classes- Model and Optimizer.
+we need to understand desired inputs/outputs for our program and once we do so we will 
+adapt out program accordingly.
+we want to extend features (logistic regression, various penalties).  
+By the alpha deadline, we want to have a main that properly incorporates other portions of the code, and have
+tested our classes and methods to make sure they work. By the beta deadline, we want to have 2-3 other methods/optimizers 
+coded and tested. 
