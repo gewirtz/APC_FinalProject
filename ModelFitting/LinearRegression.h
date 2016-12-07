@@ -20,13 +20,12 @@ class LinearRegression : public Model  {
   arma::vec gradient();
   arma::vec get_Params();
 
-  arma::vec params;//fitted coefficients
  private:
  	//trains the model (ie updated \beta) for given data x,y 
-  	void fit();
+  	void fit(); 	
+ 	Optimizer* optim;
 
- 	Optimizer *optim; //allow user input in constructor in future
-  	arma::mat x; //regressors
+   	arma::mat x; //regressors
   	arma::vec y; //labels
 
  };

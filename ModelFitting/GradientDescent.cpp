@@ -1,26 +1,25 @@
-#include <GradientDescent.h>
+#include "GradientDescent.h"
+#include <math.h>
+#include "model.h"
+#include <armadillo>
 
 using namespace std;
 using namespace arma;
 
 GradientDescent::GradientDescent(int iterations, double alpha, double tol){
-	this.iterations = iterations;
-	this.alpha = alpha;
-	this.tol = tol;
+	this->iterations = iterations;
+	this->alpha = alpha;
+	this->tol = tol;
 }
 
 void GradientDescent::fitParams(Model *m){
-	double update;
 	for(int i =0; i < iterations; i++){
-		update = m->gradient();
-		if(update < tol){
+		arma::vec grad = m->gradient();
+		if(abs(grad.max()) < tol && abs(grad.min()) < tol ){
 			return;
 		}
-		m->params -= alpha*update;
+		m->params -= alpha*grad;
 	}
 	cerr << "Did not converge in given number of iterations" << endl;
 }
 
-
-
-#endif  // OPTIMIZER_H_

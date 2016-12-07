@@ -1,12 +1,14 @@
 #ifndef OPTIMIZER_H_
 #define OPTIMIZER_H_
 
-#include <armadillo>
+#include "model.h"
+
+class Model;
 
 class Optimizer {
  public:
   virtual ~Optimizer() {}
-  virtual void fitParams(Model* m);
+  virtual void fitParams(Model* m) = 0;
 
 };
 
