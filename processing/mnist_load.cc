@@ -5,6 +5,7 @@
 #include <vector>
 #include <assert.h>
 
+#include "loaded_data.h"
 #include "reverse.cc"
 #include "mnist_load_images.cc"
 #include "mnist_load_labels.cc"
@@ -17,6 +18,8 @@
 using namespace arma;
 
 int main(){
+
+  struct loaded_data loaded_mnist;
 
   // these will likely be taken from config file
   string train_directory = "../data/mnist/training/";

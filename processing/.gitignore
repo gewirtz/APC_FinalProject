@@ -1,0 +1,5 @@
+*.cc~
+*.o
+*.o~
+*.h~
+mnist_load
