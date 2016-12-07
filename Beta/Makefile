@@ -1,20 +1,22 @@
 optimizer = GradientDescent.o
 method =   LinearRegression.o 
-#objects1 =   $(integrators) $(equations1) ode_solve.o
-#objects2 =   $(integrators) $(equations2) test_convergence.o
-
-ARMA_INCLUDE_FLAG = -I ../include
-LIB_FLAGS = -lblas -llapack 
+objects1 =   $(optimizer) $(method) main.o
+ 
+LIB_FLAGS =  -larmadillo
 OPT = -O2
 CXX = g++
-CXXFLAGS = -Wall $(ARMA_INCLUDE_FLAG) $(DEBUG) $(FINAL) $(OPT) $(EXTRA_OPT)
+CXXFLAGS = -Wall  $(DEBUG) $(FINAL) $(OPT) 
+#-c
 
-all: LinearRegression GradientDescent
+all: main
 
-GradientDescent : $(optimizer)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIB_FLAGS)
+# GradientDescent : $(optimizer)
+# 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIB_FLAGS)
 
-LinearRegression : $(method)
+# LinearRegression : $(method)
+# 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIB_FLAGS)
+
+main : $(objects1)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIB_FLAGS)
 
 clean:

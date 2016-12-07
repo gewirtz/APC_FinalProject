@@ -7,15 +7,11 @@ class Optimizer;
 
 class Model {
  public:
-  virtual arma::mat predict();
-  virtual arma::vec gradient();
+  virtual arma::mat predict(double *input, int rows, int cols) = 0;
+  virtual arma::vec gradient() = 0;
 
   arma::vec params; 
 
- private:
-
- 	virtual void fit(); 	
- 	Optimizer* optim;
 };
 
 #endif  // MODEL_H_

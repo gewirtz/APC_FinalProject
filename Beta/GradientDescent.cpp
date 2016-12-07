@@ -1,6 +1,7 @@
 #include "GradientDescent.h"
 #include <math.h>
 #include "model.h"
+#include <armadillo>
 
 using namespace std;
 using namespace arma;
@@ -13,7 +14,7 @@ GradientDescent::GradientDescent(int iterations, double alpha, double tol){
 
 void GradientDescent::fitParams(Model *m){
 	for(int i =0; i < iterations; i++){
-		vec grad = m->gradient();
+		arma::vec grad = m->gradient();
 		if(abs(grad.max()) < tol && abs(grad.min()) < tol ){
 			return;
 		}

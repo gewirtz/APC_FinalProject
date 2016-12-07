@@ -1,5 +1,5 @@
 #include "LinearRegression.h"
-
+#include "Optimizer.h"
 
 // initializes a model to choose \beta so as to fit Y = X\beta + \epsilon so as to minimize
 // ||Y - X\beta ||_2^2
@@ -17,7 +17,7 @@ using namespace arma;
   
   mat LinearRegression::predict(double *input, int rows, int cols){
   	if(cols != y.size()){
-  		std::cerr << "Not gonna be able to do it" << endl;
+  		std::cerr << "Input of incompatible dimension" << endl;
   		exit(-1);
   	}
   	mat data = mat(input,rows,cols);
