@@ -1,5 +1,5 @@
-#include "GradientDescent.h"
 #include "LinearRegression.h"
+#include "Performance.h"
 
 int main(int argc, char const *argv[]){
 	
@@ -14,6 +14,23 @@ int main(int argc, char const *argv[]){
 	double test_labels = atof(argv[2]);
 	double *test2 = &test;
 	double *test_labels2 = &test_labels;
+
+	// READ PARAMETERS OBJECT
+
+	// PREDICT TRAIN
+
+	// Calculate STATS on the TRAIN
+
+
+
+	// PREDICT TESTING
+
+	// Calculate STATS TESTING
+
+
+	// Print text file with stats
+
+
 
 
 	GradientDescent *gd = new GradientDescent(100000, .001, .0001) ;
