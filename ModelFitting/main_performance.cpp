@@ -1,5 +1,14 @@
+#include <iostream>
+#include <fstream>
+#include <stdio.h>
+#include <string>
+#include <stdlib.h>
+#include <armadillo>
 #include "LinearRegression.h"
 #include "Performance.h"
+ 
+using namespace std;
+using namespace arma;
 
 int main(int argc, char const *argv[]){
 	
@@ -30,12 +39,15 @@ int main(int argc, char const *argv[]){
 
 	// Print text file with stats
 
-	double *label1=[0,1,0,0,1,0,1,1,1,0];
-	double *label2=[0,1,1,1,1,1,1,1,1,1];
+	double label1 = [0,0,1,1]; 
+	double label2 = [0,0,1,1]; 
+	//double *train2 = &label1;
+	//double *train_labels2 = &train_labels;
+	int size=4;
 
-	double *stat1=Performance::mse(label1,label2)
+	vec stat1 = Performance::mse(&label1,&label2,&size);
 
-	printf ("mse: %c \n",stat1);
+	//printf ("mse: %f \n",stat1);
 
 
 /*	GradientDescent *gd = new GradientDescent(100000, .001, .0001) ;
