@@ -45,7 +45,8 @@ int main(int argc, char const *argv[]){
 	//double *train_labels2 = &train_labels;
 	int size=4;
 
-	vec stat1 = Performance::mse(&label1,&label2,&size);
+	vec stat1;
+	stats1 = Performance::mse(&label1,&label2,&size);
 
 	//printf ("mse: %f \n",stat1);
 

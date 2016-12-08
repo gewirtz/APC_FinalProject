@@ -6,7 +6,7 @@
 class Performance  {
  public:
 
-  arma::vec mse(double *label, double *predict_label); //gives exact solution 
+  arma::vec mse(double *label, double *predict_label, int num_datapts); //gives exact solution 
 
 
 
