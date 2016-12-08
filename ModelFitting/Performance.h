@@ -1,12 +1,14 @@
 #ifndef PERFORMANCE_H_
 #define PERFORMANCE_H_
 
+using namespace std;
+using namespace arma;
 
 
 class Performance  {
  public:
 
-  arma::vec mse(double *label, double *predict_label, int num_datapts); //gives exact solution 
+  vec mse(vec label, vec predict_label, int num_datapts); 
 
 
 

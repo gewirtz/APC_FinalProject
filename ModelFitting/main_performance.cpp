@@ -39,14 +39,21 @@ int main(int argc, char const *argv[]){
 
 	// Print text file with stats
 
-	double label1 = [0,0,1,1]; 
-	double label2 = [0,0,1,1]; 
+	//double label1 = [0,0,1,1]; 
+	//double label2 = [0,0,1,1]; 
 	//double *train2 = &label1;
 	//double *train_labels2 = &train_labels;
-	int size=4;
+	vec a(10); a.fill(1);
+	vec b(10); b.fill(0);
 
+	for (int i=0;i<10;i++){
+		cout << a(i)-b(i) <<endl;
+	}
+
+	//int size=4;
+	Performance Pf;
 	vec stat1;
-	stats1 = Performance::mse(&label1,&label2,&size);
+	stat1 = Pf.mse(a,b,10);
 
 	//printf ("mse: %f \n",stat1);
 
