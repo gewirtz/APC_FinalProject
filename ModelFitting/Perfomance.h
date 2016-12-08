@@ -3,7 +3,7 @@
 
 
 
-class Performance : public Model  {
+class Performance  {
  public:
 
   arma::vec mse(double *label, double *predict_label); //gives exact solution 
