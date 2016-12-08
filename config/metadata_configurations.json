@@ -51,24 +51,24 @@
                                }
                 },
 
-"pos_processing":{
-                 "graphical_analysis":[
-                                      "GRAPH_A",
-                                      "GRAPH_B",
-                                      "Report"],
-                  "parameters":{
-                              "GRAPH_A":{
-                                    "param_1":0.3,
-                                    "param_2":34,
-                                    "param_3":"0.3"},
-                              "GRAPH_B":{
-                                    "param_1":0.3,
-                                    "param_2":34,
-                                    "param_3":"0.3"},
-                              "Report":{
-                                    "param_1":0.3,
-                                    "param_2":34,
-                                    "param_3":"0.3"}
-                               }
-                }
+"graphical":{
+          "graphical_analysis":[
+                              "GRAPH_A",
+                              "GRAPH_B",
+                              "Report"],
+          "parameters":{
+                      "GRAPH_A":{
+                            "param_1":0.3,
+                            "param_2":34,
+                            "param_3":"0.3"},
+                      "GRAPH_B":{
+                            "param_1":0.3,
+                            "param_2":34,
+                            "param_3":"0.3"},
+                      "Report":{
+                            "param_1":0.3,
+                            "param_2":34,
+                            "param_3":"0.3"}
+                       }
+        }
 }
