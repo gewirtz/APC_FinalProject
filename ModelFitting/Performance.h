@@ -14,4 +14,6 @@ class Performance  {
 
  };
 
+ bool fileExists(const string& filename);
+
 #endif  // PERFORMANCE_H_

@@ -10,7 +10,8 @@
 using namespace std;
 using namespace arma;
 
-//g++ main_performance.cpp Performance.cpp -O2 -larmadillo -llapack -lblas -lgfortran -o test
+//COMPILE WITH THESE OPTIONS
+//g++ -std=c++11 main_performance.cpp Performance.cpp -O2 -larmadillo -llapack -lblas -lgfortran -o test
 
 int main(int argc, char const *argv[]){
 	// READ PARAMETERS OBJECT
@@ -39,11 +40,17 @@ int main(int argc, char const *argv[]){
 	// Calculate STATS on the TRAIN
 
 	Performance Pf;
+	string filename, fileout;
+	string mod;
+	string proc;
 	vec stat1, stat3;
 	mat stat2;
 	stat1 = Pf.mse(a,b,10);
 	stat2 = Pf.correl(a,b);
 	stat3 = Pf.accuracy(a,b);
+	mod = "Linear Regression";
+	proc = "Gaussian";
+
 
 	cout << stat1 <<endl;
 	cout << stat2 <<endl;
@@ -56,6 +63,24 @@ int main(int argc, char const *argv[]){
 	// Calculate STATS TESTING
 
 	// Print text file with stats
+
+
+	ofstream ofile;
+	filename = "output";
+	int i=0;
+	fileout = filename + "_" + to_string(i) + ".txt";
+	while(i<50 && fileExists(fileout)){
+		fileout = filename + "_" + to_string(i) + ".txt";
+		i++;
+	}
+    ofile.open (fileout);
+    ofile << "Model Fitting: " << "\"" << mod << "\" \n";
+    ofile << "Processing Method: " << "\"" << proc << "\" \n";
+    ofile << "MSE: " << stat1;
+    ofile << "Correlation: " << stat2;
+    ofile << "Accuracy: " << stat3;
+
+    ofile.close();
 
 	//printf ("mse: %f \n",stat1);
 

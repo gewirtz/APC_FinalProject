@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <armadillo>
 #include "Performance.h"
+#include <sys/stat.h>
 
 using namespace std;
 using namespace arma;
@@ -21,14 +22,11 @@ double Performance::mse(vec label, vec predict_label, int num_datapts){
 	return(MSE);  
 }
 
-
-
 mat Performance::correl(vec label, vec predict_label){
 	mat R = cor(label,predict_label);
 	return(R);
 }
  
-
 double Performance::accuracy(vec label, vec predict_label){
 	int n=label.n_elem;
 	int correct=0;
@@ -42,6 +40,14 @@ double Performance::accuracy(vec label, vec predict_label){
 	double perc=correct/n;
   
   return(perc);
+}
+
+bool fileExists(const string& filename){
+	struct stat buf;
+	if (stat(filename.c_str(), &buf) != -1){
+		return true;
+	}
+	return false;
 }
 
 
