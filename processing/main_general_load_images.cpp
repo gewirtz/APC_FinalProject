@@ -22,17 +22,39 @@
 using namespace std;
 using namespace arma;
 
+
+vec  list_of_files(string path_images){
+	glob_t globbuf;
+    int err = glob(path_images+"*", 0, NULL, &globbuf);
+    if(err == 0)
+    {
+        /*for (size_t i = 0; i < globbuf.gl_pathc; i++)
+        {
+            printf("%s\n", globbuf.gl_pathv[i]);
+        }
+
+        globfree(&globbuf);*/
+        return(globbuf)
+
+    }
+
+}
+
 //int main(){
 int main(int argc, char **argv) {
 
 
   // these will likely be taken from config file
   string images_directory = "../data/faces/training_faces/";
-  string labels_directory = "";
+  string labels_directory = "../data/faces/training_faces_label/";
   string correct_or_wrong = "true"; // true for labeling images with 1 as correct images, and false to label as zero wrong images
+
+  cout << list_of_files(images_directory) <<endl
 
   // check if exist a folder with the labes for that image or not
   if (labels_directory.length()<3){
+
+  	// there is no label for this images, make label
 
 
   	cout << "stat3" <<endl;
@@ -40,18 +62,8 @@ int main(int argc, char **argv) {
   }
 
 
-  
-  glob_t globbuf;
-    int err = glob("*", 0, NULL, &globbuf);
-    if(err == 0)
-    {
-        for (size_t i = 0; i < globbuf.gl_pathc; i++)
-        {
-            printf("%s\n", globbuf.gl_pathv[i]);
-        }
 
-        globfree(&globbuf);
-    }
+  
 
     return 0;
 
