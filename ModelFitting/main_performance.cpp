@@ -27,8 +27,8 @@ int main(int argc, char const *argv[]){
 	double *test2 = &test;
 	double *test_labels2 = &test_labels;*/
 
-	vec a(10); a.fill(1);
-	vec b(10); b.fill(0);
+	vec a = randu<vec>(10);
+	vec b = randu<vec>(10);
 
 	for (int i=0;i<10;i++){
 		cout << a(i)-b(i) <<endl;
@@ -39,14 +39,17 @@ int main(int argc, char const *argv[]){
 	// Calculate STATS on the TRAIN
 
 	Performance Pf;
-	vec stat1, stat2, stat3;
+	vec stat1, stat3;
+	mat stat2;
 	stat1 = Pf.mse(a,b,10);
 	stat2 = Pf.correl(a,b);
 	stat3 = Pf.accuracy(a,b);
 
 	cout << stat1 <<endl;
-	cout << stat2(0) <<endl;
+	cout << stat2 <<endl;
 	cout << stat3 <<endl;
+
+
 
 	// PREDICT TESTING
 
