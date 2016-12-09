@@ -10,7 +10,7 @@
 using namespace std;
 using namespace arma;
 
-//g++ main_performance.cpp Performance.cpp -O2 -larmadillo -llapack -lblas -lgfortran
+//g++ main_performance.cpp Performance.cpp -O2 -larmadillo -llapack -lblas -lgfortran -o test
 
 int main(int argc, char const *argv[]){
 	// READ PARAMETERS OBJECT
@@ -39,10 +39,14 @@ int main(int argc, char const *argv[]){
 	// Calculate STATS on the TRAIN
 
 	Performance Pf;
-	vec stat1;
+	vec stat1, stat2, stat3;
 	stat1 = Pf.mse(a,b,10);
+	stat2 = Pf.correl(a,b);
+	stat3 = Pf.accuracy(a,b);
 
 	cout << stat1 <<endl;
+	cout << stat2(0) <<endl;
+	cout << stat3 <<endl;
 
 	// PREDICT TESTING
 
