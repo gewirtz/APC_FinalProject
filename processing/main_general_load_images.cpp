@@ -5,16 +5,19 @@
 #include <vector>
 #include <assert.h>
 
+// at the request of the modeling team...
+#include <glob.h>
+
+// at the request of the modeling team...
+#include <armadillo>
+
+//#include "general_load_images.h"
+
 /*#include "loaded_data.h"
 #include "reverse.cc"
 #include "mnist_load_images.cc"
 #include "mnist_load_labels.cc"
 #include "mnist_count_images.cc"*/
-
-#include "<glob> "
-
-// at the request of the modeling team...
-#include <armadillo>
 
 using namespace std;
 using namespace arma;
@@ -22,24 +25,35 @@ using namespace arma;
 //int main(){
 int main(int argc, char **argv) {
 
-  //struct loaded_data loaded_mnist;
 
   // these will likely be taken from config file
-  string train_directory = "../data/faces/training_faces/";
-  string test_directory = "../data/faces/training_faces/";
+  string images_directory = "../data/faces/training_faces/";
+  string labels_directory = "";
+  string correct_or_wrong = "true"; // true for labeling the correct images, and false to label as zero wrong images
 
-  string train_lbl = "train-labels.idx1-ubyte";
-  string train_img = "train-images.idx3-ubyte";
-  string test_lbl = "t10k-labels.idx1-ubyte";
-  string test_img = "t10k-images.idx3-ubyte";
+  // check if exist labers for that image or not
+  if (labels_directory.length()<3){
+
+  	cout << "stat3" <<endl;
+
+  }
+
 
   
-/*  glob::Glob glob(train_directory);
-  while (glob) {
-    std::cout << glob.GetFileName() << std::endl;
-    glob.Next();
-  }
-*/
+  glob_t globbuf;
+    int err = glob("*", 0, NULL, &globbuf);
+    if(err == 0)
+    {
+        for (size_t i = 0; i < globbuf.gl_pathc; i++)
+        {
+            printf("%s\n", globbuf.gl_pathv[i]);
+        }
+
+        globfree(&globbuf);
+    }
+
+    return 0;
+
 
 
 /*  // we are going to put things into an ARMADILLO MATRIX
