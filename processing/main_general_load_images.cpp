@@ -28,7 +28,7 @@ using namespace arma;
 field<string> list_of_files(string path_images, string file_type){
 	glob_t globbuf;
 	path_images=path_images+file_type;
-	cout << path_images <<endl;
+	//cout << path_images <<endl;
 
     int err = glob(path_images.c_str(), 0, NULL, &globbuf);
     if(err == 0){
@@ -53,12 +53,13 @@ int main(int argc, char **argv) {
   string labels_directory = "../data/faces/training_faces_label/";
   string correct_or_wrong = "true"; // true for labeling images with 1 as correct images, and false to label as zero wrong images
 
-  cout << list_of_files(images_directory, "*") <<endl;
+  field<string> list_images = list_of_files(images_directory, "*");
+  field<string> list_labels = list_of_files(labels_directory, "*");
 
   // check if exist a folder with the labes for that image or not
-  if (labels_directory.length()<3){
-
+  if (list_labels.n_elem == 0){
   	// there is no label for this images, make label
+
 
 
   	cout << "stat3" <<endl;
