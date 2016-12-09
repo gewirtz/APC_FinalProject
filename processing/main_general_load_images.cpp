@@ -22,19 +22,23 @@
 using namespace std;
 using namespace arma;
 
-
-vec  list_of_files(string path_images){
+// Function to list files fom a given folder given the and extentsion or
+// "*" which will check for all the files in that folder
+// Written by Noemi
+field<string> list_of_files(string path_images, string file_type){
 	glob_t globbuf;
-    int err = glob(path_images+"*", 0, NULL, &globbuf);
-    if(err == 0)
-    {
-        /*for (size_t i = 0; i < globbuf.gl_pathc; i++)
-        {
-            printf("%s\n", globbuf.gl_pathv[i]);
-        }
+	path_images=path_images+file_type;
+	cout << path_images <<endl;
 
-        globfree(&globbuf);*/
-        return(globbuf)
+    int err = glob(path_images.c_str(), 0, NULL, &globbuf);
+    if(err == 0){
+    	int size = globbuf.gl_pathc;
+    	field<string> list = field<string>(size);
+        for (size_t i = 0; i < size; i++)  {
+        	list(i)=globbuf.gl_pathv[i];
+        }
+        globfree(&globbuf);
+        return(list);
 
     }
 
@@ -49,7 +53,7 @@ int main(int argc, char **argv) {
   string labels_directory = "../data/faces/training_faces_label/";
   string correct_or_wrong = "true"; // true for labeling images with 1 as correct images, and false to label as zero wrong images
 
-  cout << list_of_files(images_directory) <<endl
+  cout << list_of_files(images_directory, "*") <<endl;
 
   // check if exist a folder with the labes for that image or not
   if (labels_directory.length()<3){
