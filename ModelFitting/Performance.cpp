@@ -9,13 +9,20 @@
 using namespace std;
 using namespace arma;
 
-vec Performance::mse(vec label, vec predict_label, int num_datapts){
-  //this->lr = vec(label, num_datapts);  
-  //this->lp = vec(predict_label,num_datapts); 
-  vec mse;
+double Performance::mse(vec label, vec predict_label, int num_datapts){
+
+int n = label.n_elem;
+int m = predict_label.n_elem;
+
+vec dif=(label-predict_label);
+
+double MSE = dot(dif,dif)/n;
   
-  return(mse);
+  return(MSE);  
 }
+
+
+
   
 
 

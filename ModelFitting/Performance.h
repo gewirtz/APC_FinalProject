@@ -8,9 +8,7 @@ using namespace arma;
 class Performance  {
  public:
 
-  vec mse(vec label, vec predict_label, int num_datapts); 
-
-
+  double mse(vec label, vec predict_label, int num_datapts); 
 
  };
 
