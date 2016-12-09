@@ -29,10 +29,11 @@ int main(int argc, char **argv) {
   // these will likely be taken from config file
   string images_directory = "../data/faces/training_faces/";
   string labels_directory = "";
-  string correct_or_wrong = "true"; // true for labeling the correct images, and false to label as zero wrong images
+  string correct_or_wrong = "true"; // true for labeling images with 1 as correct images, and false to label as zero wrong images
 
-  // check if exist labers for that image or not
+  // check if exist a folder with the labes for that image or not
   if (labels_directory.length()<3){
+
 
   	cout << "stat3" <<endl;
 
