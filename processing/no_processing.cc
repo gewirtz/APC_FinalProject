@@ -33,6 +33,6 @@ class no_processing : private data_processor{
 
   private:
     arma::colvec labels;
-    arma::mat data;
+    arma::mat data; //This will be the processed data for each class 
 
 };
