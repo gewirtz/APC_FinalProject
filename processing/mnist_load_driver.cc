@@ -1,43 +1,39 @@
 #include <string.h>
+#include <iostream>
+#include <fstream>
+#include <math.h>
 #include <vector>
-#include <armadillo>
+#include <assert.h>
 
+#include "loaded_data.h"
+#include "reverse.cc"
 #include "mnist_load_images.cc"
 #include "mnist_load_labels.cc"
+#include "mnist_count_images.cc"
 
-#invlude "data_load_mnist.h"
+
+// at the request of the modeling team...
+#include <armadillo>
 
 using namespace arma;
 
-mnist_load_driver :: data_load_mnist(string directory, string lbl_fname, string img_fname)
-	: directory_(directory),
-	  lbl_fname_(lbl_fname),
-	  img_fname_(img_fname),
-{}
+int main(){
 
-mnist_load_driver :: ~data_load_mnist()
-{}
+  struct loaded_data loaded_mnist;
 
-arma::mat data_load_mnist::process(string directory, string img_fname){
-  vector<arma::mat> all_images;
-  all_images = mnist_load_images(directory_, img_fname_, all_images);
-  
-  cout << all_images.size() << endl; // how many images you have
-  cout << all_images[0].size() << endl; // how big each image is
-  
-  return all_images;
-}
+  // these will likely be taken from config file
+  string train_directory = "../data/mnist/training/";
+  string test_directory = "../data/mnist/testing/";
 
-arma::colvec data_load_mnist::data_labels(string directory, string lbl_fname){
+  string train_lbl = "train-labels.idx1-ubyte";
+  string train_img = "train-images.idx3-ubyte";
+  string test_lbl = "t10k-labels.idx1-ubyte";
+  string test_img = "t10k-images.idx3-ubyte";
 
-  arma::colvec labels;
-  labels = mnist_load_labels(directory_, lbl_fname_);
 
-  return labels;
+  // we are going to put things into an ARMADILLO MATRIX
+  // which is really just a vector
 
-}
-
-/*
   // load the images
   //vector<vector<double> > all_images;
   vector<arma::mat> all_images;
@@ -51,12 +47,13 @@ arma::colvec data_load_mnist::data_labels(string directory, string lbl_fname){
   //vector<double> labels(num_img);
 
   arma::colvec labels = arma::zeros<arma::colvec>(num_img);
-  mnist_load_labels(train_directory, train_lbl, labels);
+  mnist_load_labels(train_directory, train_img, labels);
 
 
   // check to make sure you did it right
   
-
+  cout << all_images.size() << endl; // how many images you have
+  cout << all_images[0].size() << endl; // how big each image is
   
   // take a look at an image
   cout << all_images[0] << endl;
@@ -65,4 +62,3 @@ arma::colvec data_load_mnist::data_labels(string directory, string lbl_fname){
   cout << labels[0] << endl; // look at a label
   
 }
-*/
