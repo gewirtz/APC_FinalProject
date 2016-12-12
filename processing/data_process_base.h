@@ -9,16 +9,24 @@ class Data_processor {
   virtual data_processor()=0;
   virtual ~data_processor()=0;
   
-  virtual arma::mat process()=0;
+  virtual void process()=0;
  
-  virtual void set_Data()=0;
-  virtual void set_Labels()=0;
+  virtual void set_data_train()=0;
+  virtual void set_data_test()=0;
+  virtual void set_labels_train()=0;
+  virtual void set_labels_test()=0;
+ 
+  virtual arma::colvec* get_labels_train();
+  virtual arma::colvec* get_labels_test();
+  virtual arma::mat* get_data_train();
+  virtual arma::mat* get_data_test()
 
-  //virtual int num_img() = 0;
  private:
- // Bill's note: I don't know what to do with these private members
-  arma::colvec labels;
-  arma::mat data;
+  int has_been_processed; //switch for whether data has been processed
+  arma::colvec labels_train;
+  arma::colvec labels_test;
+  arma::mat data_train; //This will be the processed data for each class
+  arma::mat data_test; //This will be the processed data for each class
 };
 
 #endif  // DATA_PROCESSOR_H
