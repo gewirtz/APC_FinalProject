@@ -5,7 +5,6 @@
 #include <vector>
 #include <assert.h>
 
-#include "loaded_data.h"
 #include "reverse.cc"
 #include "mnist_load_images.cc"
 #include "mnist_load_labels.cc"
