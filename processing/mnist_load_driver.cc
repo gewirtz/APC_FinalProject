@@ -38,6 +38,9 @@ arma::mat data_load_mnist::process(string directory, string img_fname){
   vector<arma::mat> all_images;
   all_images = mnist_load_images(directory_, img_fname_, all_images);
   
+  cout << all_images.size() << endl; // how many images you have
+  cout << all_images[0].size() << endl; // how big each image is
+  
   return all_images;
 }
 
@@ -86,8 +89,7 @@ int main(){
 
   // check to make sure you did it right
   
-  cout << all_images.size() << endl; // how many images you have
-  cout << all_images[0].size() << endl; // how big each image is
+
   
   // take a look at an image
   cout << all_images[0] << endl;
