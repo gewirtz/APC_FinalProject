@@ -19,8 +19,6 @@ using namespace arma;
 
 int main(){
 
-  struct loaded_data loaded_mnist;
-
   // these will likely be taken from config file
   string train_directory = "../data/mnist/training/";
   string test_directory = "../data/mnist/testing/";
@@ -47,7 +45,7 @@ int main(){
   //vector<double> labels(num_img);
 
   arma::colvec labels = arma::zeros<arma::colvec>(num_img);
-  mnist_load_labels(train_directory, train_img, labels);
+  mnist_load_labels(train_directory, train_lbl, labels);
 
 
   // check to make sure you did it right
