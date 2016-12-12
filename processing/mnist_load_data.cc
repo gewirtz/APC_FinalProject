@@ -17,9 +17,7 @@
 
 using namespace arma;
 
-void main(){
-
-  struct loaded_data loaded_mnist;
+void mnist_load_data(){
 
   // these will likely be taken from config file
   string train_directory = "../data/mnist/training/";
