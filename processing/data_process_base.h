@@ -17,7 +17,7 @@ class data_processor {
   //virtual int num_img() = 0;
  private:
  // Bill's note: I don't know what to do with these private members
-  arma::vec labels;
+  arma::colvec labels;
   arma::mat data;
 };
 
