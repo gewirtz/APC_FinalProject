@@ -49,7 +49,7 @@ void mnist_load_data(){
 
 
   // check to make sure you did it right
-  
+  /*
   cout << all_images.size() << endl; // how many images you have
   cout << all_images[0].size() << endl; // how big each image is
   
@@ -58,5 +58,5 @@ void mnist_load_data(){
 
   cout << labels.size() << endl; // how many labels you have
   cout << labels[0] << endl; // look at a label
-  
+  */
 }
