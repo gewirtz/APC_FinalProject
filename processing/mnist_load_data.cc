@@ -30,8 +30,8 @@ void mnist_load_data(string directory, string img_name, lbl_name){
 
   // load the images
   //vector<vector<double> > all_images;
-  vector<arma::mat> all_images;
-  mnist_load_images(train_directory, img_name, all_images);
+  //vector<arma::mat> all_images;
+  mnist_load_images(train_directory, img_name);
 
   // return the number of images
   int num_img;
