@@ -17,7 +17,7 @@
 
 using namespace arma;
 
-int main(){
+void main(){
 
   struct loaded_data loaded_mnist;
 
