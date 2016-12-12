@@ -1,28 +1,30 @@
 #include <iostream>
 #include <fstream>
 #include <armadillo>
+#include <assert.h>
+#include "reverse.cc"
 
 using namespace std;
 using namespace arma;
 
- arma::mat mnist_load_images(string directory, string filename){
+vector<arma::mat > mnist_load_images(string directory, string filename){
  
- vector<arma::mat > all_images;
+  vector<arma::mat > all_images;
   string fname = directory + filename;
 
-  // the example I found imports data in binary:
-  ifstream mnist_image (fname.c_str(), ios::binary);
+ // the example I found imports data in binary:
+ ifstream mnist_image (fname.c_str(), ios::binary);
 
-  assert( mnist_image.is_open() == 1 );
+ assert( mnist_image.is_open() == 1 );
 
-  cout << "processing " << filename << "\n";
+ cout << "processing " << filename << "\n";
 
-  int magic = 0;
-  int num_img = 0;
-  int rows = 0;
-  int cols = 0;
+ int magic = 0;
+ int num_img = 0;
+ int rows = 0;
+ int cols = 0;
 
-  // The first number in the file is the "Magic Number"
+ // The first number in the file is the "Magic Number"
 
   //The magic number is an integer where the first 2 bytes are zero
   //and the 3rd byte represents the type of code, and the 4th byte

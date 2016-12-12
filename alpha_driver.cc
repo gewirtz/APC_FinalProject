@@ -1,11 +1,15 @@
 #include <stdio.h>
-#include "mnist_load_images.cc"
-#include "mnist_load_labels.cc"
+#include "processing/mnist_load_images.cc"
+#include "processing/mnist_load_labels.cc"
+#include <armadillo>
 
+using namespace arma;
 
-void main(int argc, char* argv[]){
+int main(){
+
+  printf("Hello World!\n");
    //if(argc !=6){
-   //printf("Missing inputs, Usage: train directory, test directory, train label file name, train image file name, test label file name, test label file name")
+   //printf("Missing inputs, Usage: train directory, test directory, train label file name, train image file name, t   est label file name, test label file name")
    //exit(1);
    }
    
@@ -27,6 +31,8 @@ void main(int argc, char* argv[]){
   string test_img = "t10k-images.idx3-ubyte";
   //string test_img = argv[6];
   
+  vector<arma::mat > loaded_temp;
+
   arma::mat train_data, test_data;
   arma::colvec train_lbls, test_lbls;
    
@@ -36,4 +42,6 @@ void main(int argc, char* argv[]){
   test_lbls = mnist_load_labels(test_directory, test_lbl);
   
   //Begin model portion
+
+  return 0;
 };
