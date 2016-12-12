@@ -16,9 +16,9 @@
 
 using namespace arma;
 
-void mnist_load_data(){
+void mnist_load_data(string directory, string fname){
 
-  // these will likely be taken from config file
+  /*
   string train_directory = "../data/mnist/training/";
   string test_directory = "../data/mnist/testing/";
 
@@ -26,10 +26,7 @@ void mnist_load_data(){
   string train_img = "train-images.idx3-ubyte";
   string test_lbl = "t10k-labels.idx1-ubyte";
   string test_img = "t10k-images.idx3-ubyte";
-
-
-  // we are going to put things into an ARMADILLO MATRIX
-  // which is really just a vector
+  */
 
   // load the images
   //vector<vector<double> > all_images;
@@ -45,7 +42,6 @@ void mnist_load_data(){
 
   arma::colvec labels = arma::zeros<arma::colvec>(num_img);
   mnist_load_labels(train_directory, train_img, labels);
-
 
   // check to make sure you did it right
   /*
