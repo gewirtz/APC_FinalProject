@@ -1,4 +1,4 @@
-
+#include <stdio.h>
 #include "no_processing.h"
 
 No_processing* main(arma::mat* imported_data, arma::colvec* imported_labels){
