@@ -1,15 +1,9 @@
 #include <string.h>
-#include <iostream>
-#include <fstream>
-#include <math.h>
 #include <vector>
-#include <assert.h>
 #include <armadillo>
 
-#include "reverse.cc"
 #include "mnist_load_images.cc"
 #include "mnist_load_labels.cc"
-#include "mnist_count_images.cc"
 
 #invlude "data_load_mnist.h"
 
@@ -24,16 +18,6 @@ mnist_load_driver :: data_load_mnist(string directory, string lbl_fname, string 
 mnist_load_driver :: ~data_load_mnist()
 {}
 
-// don't need to count images any more I think
-/*
-int data_load_mnist :: num_img(string directory, string img_fname){
-
-int num_imgs;
-num_imgs = mnist_count_images(directory_, img_fname_);
-return num_imgs;
-} 
-*/
-
 arma::mat data_load_mnist::process(string directory, string img_fname){
   vector<arma::mat> all_images;
   all_images = mnist_load_images(directory_, img_fname_, all_images);
@@ -46,31 +30,14 @@ arma::mat data_load_mnist::process(string directory, string img_fname){
 
 arma::colvec data_load_mnist::data_labels(string directory, string lbl_fname){
 
-arma::colvec labels; //= arma::zeros<arma::colvec>(num_img);
+  arma::colvec labels;
+  labels = mnist_load_labels(directory_, lbl_fname_);
 
-labels = mnist_load_labels(directory_, lbl_fname_);
-
-return labels;
+  return labels;
 
 }
 
-
 /*
-int main(){
-
-  // these will likely be taken from config file
-  string train_directory = "../data/mnist/training/";
-  string test_directory = "../data/mnist/testing/";
-
-  string train_lbl = "train-labels.idx1-ubyte";
-  string train_img = "train-images.idx3-ubyte";
-  string test_lbl = "t10k-labels.idx1-ubyte";
-  string test_img = "t10k-images.idx3-ubyte";
-
-
-  // we are going to put things into an ARMADILLO MATRIX
-  // which is really just a vector
-
   // load the images
   //vector<vector<double> > all_images;
   vector<arma::mat> all_images;
