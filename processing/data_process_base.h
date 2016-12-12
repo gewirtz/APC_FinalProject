@@ -10,7 +10,6 @@ class data_processor {
   virtual ~data_processor()=0;
   
   virtual arma::mat process()=0;
-  virtual arma::colvec data_labels()=0;
  
  virtual void set_Data()=0;
  virtual void set_Labels()=0;
