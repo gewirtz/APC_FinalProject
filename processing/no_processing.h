@@ -4,11 +4,11 @@
 #include <armadillo>
 #include "data_process_base.h"
 
-class no_processing : public data_processor{
+class No_processing : public Data_processor{
 
   public:
-    no_processing();
-    ~no_processing();
+    No_processing();
+    ~No_processing();
     
     arma::mat process();
     void set_Data(arma::mat* imported_data);
