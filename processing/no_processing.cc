@@ -19,10 +19,15 @@ class no_processing : private data_processor{
       delete labels_test;
     }
 
-    void process(){
+    int process(){
       //Other versions of this class will have Gaussian stuff implemented here, etc.
       //This is the meat of the processing implementation work
+      if(has_been_processed==1){
+        //Don't let user process already processed data but also no need to throw up lots of errors
+        return(1);
+      };
       has_been_processed=1;
+      return(1);
     };
 
     // Pass the data and the labels
