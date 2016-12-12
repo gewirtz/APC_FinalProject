@@ -5,7 +5,7 @@
 using namespace std;
 using namespace arma;
 
-void mnist_load_images(string directory, string filename,
+ mnist_load_images(string directory, string filename,
 		       vector<arma::mat > &all_images){
 
   string fname = directory + filename;
