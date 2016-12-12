@@ -4,7 +4,7 @@
 #include <armadillo>
 #include <string.h>
 
-class data_processor {
+class Data_processor {
  public:
   virtual data_processor()=0;
   virtual ~data_processor()=0;
