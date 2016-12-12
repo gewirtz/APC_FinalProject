@@ -11,8 +11,8 @@ class data_processor {
   
   virtual arma::mat process()=0;
  
- virtual void set_Data()=0;
- virtual void set_Labels()=0;
+  virtual void set_Data()=0;
+  virtual void set_Labels()=0;
 
   //virtual int num_img() = 0;
  private:
