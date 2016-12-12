@@ -5,9 +5,9 @@
 using namespace std;
 using namespace arma;
 
- mnist_load_images(string directory, string filename,
-		       vector<arma::mat > &all_images){
-
+ arma::mat mnist_load_images(string directory, string filename){
+ 
+ vector<arma::mat > all_images;
   string fname = directory + filename;
 
   // the example I found imports data in binary:
@@ -74,6 +74,8 @@ using namespace arma;
     all_images.push_back(cur_img);
 
   } // end num_img
+	 
+return all_images;
 
 } // end function load_mnist
 
