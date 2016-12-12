@@ -10,13 +10,25 @@ class No_processing : public Data_processor{
     No_processing();
     ~No_processing();
     
-    arma::mat process();
-    void set_Data(arma::mat* imported_data);
-    void set_Labels(arma::colvec* imported_labels);
+    void process();
+    void set_data_train(arma::mat* imported_data);
+    void set_data_test(arma::mat* imported_data);
+    void set_labels_train(arma::colvec* imported_labels);
+    void set_labels_test(arma::colvec* imported_labels);
+  
+    arma::colvec* get_labels_train();
+    arma::colvec* get_labels_test();
+    arma::mat* get_data_train();
+    arma::mat* get_data_test()
+  
     
   private:
-    arma::mat data;
-    arma::colvec labels;
+    int has_been_processed; //switch for whether data has been processed
+    arma::colvec labels_train;
+    arma::colvec labels_test;
+    arma::mat data_train; //This will be the processed data for each class
+    arma::mat data_test; //This will be the processed data for each class
+
     
 };
 
