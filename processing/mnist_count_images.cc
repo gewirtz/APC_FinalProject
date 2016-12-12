@@ -3,12 +3,14 @@
 
 using namespace std;
 
-int mnist_count_images(string directory, string filename){
+int mnist_count_images(string directory, string filename,
+                       vector<arma::mat>  &all_images){
 
   string fname = directory + filename;
   int magic;
   int num_img;
 
+  // the example I found imports data in binary:
   ifstream mnist_image (fname.c_str(), ios::binary);
 
   assert( mnist_image.is_open() == 1 );
