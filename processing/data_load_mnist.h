@@ -12,9 +12,16 @@ class data_load_mnist :  public data_process_base {
   data_load_mnist(string directory, string lbl_fname, string img_fname);
   ~data_load_mnist();
 
-  int num_img(string directory, string img_fname);
-  vector<arma::mat> all_images(string directory, string img_fname);
-  arma::colvec labels = labels(string directory, string lbl_fname);
+  //int num_img(string directory, string img_fname);
+  arma::mat process(string directory, string img_fname);
+  arma::colvec labels(string directory, string lbl_fname, num_img);
+  
+  private:
+  
+  string directory_;
+  string lbl_fname_;
+  string img_fname_;
+  //int num_img_;
 
 };
 

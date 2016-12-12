@@ -4,19 +4,55 @@
 #include <math.h>
 #include <vector>
 #include <assert.h>
+#include <armadillo>
 
-#include "loaded_data.h"
 #include "reverse.cc"
 #include "mnist_load_images.cc"
 #include "mnist_load_labels.cc"
 #include "mnist_count_images.cc"
 
-
-// at the request of the modeling team...
-#include <armadillo>
+#invlude "data_load_mnist.h"
 
 using namespace arma;
 
+mnist_load_driver :: data_load_mnist(string directory, string lbl_fname, string img_fname)
+	: directory_(directory),
+	  lbl_fname_(lbl_fname),
+	  img_fname_(img_fname),
+{}
+
+mnist_load_driver :: ~data_load_mnist()
+{}
+
+// don't need to count images any more I think
+/*
+int data_load_mnist :: num_img(string directory, string img_fname){
+
+int num_imgs;
+num_imgs = mnist_count_images(directory_, img_fname_);
+return num_imgs;
+} 
+*/
+
+arma::mat data_load_mnist::process(string directory, string img_fname){
+  vector<arma::mat> all_images;
+  all_images = mnist_load_images(directory_, img_fname_, all_images);
+  
+  return all_images;
+}
+
+arma::colvec data_load_mnist::data_labels(string directory, string lbl_fname){
+
+arma::colvec labels; //= arma::zeros<arma::colvec>(num_img);
+
+labels = mnist_load_labels(directory_, lbl_fname_);
+
+return labels;
+
+}
+
+
+/*
 int main(){
 
   // these will likely be taken from config file
@@ -60,3 +96,4 @@ int main(){
   cout << labels[0] << endl; // look at a label
   
 }
+*/

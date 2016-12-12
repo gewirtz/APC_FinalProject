@@ -5,8 +5,7 @@
 using namespace std;
 using namespace arma;
 
-void mnist_load_labels(string directory, string filename,
-		       arma::colvec labels){
+arma::colvec mnist_load_labels(string directory, string filename){
 
   string fname = directory + filename;
 
@@ -22,6 +21,8 @@ void mnist_load_labels(string directory, string filename,
   // read number of images
   mnist_label.read( (char*) &num_img, sizeof(num_img) );
   num_img = Reverse(num_img);
+  
+  arma::colvec labels = arma::zeros<arma::colvec>(num_img)
 
   // read the labels
   for(int i = 0; i < num_img; i++){
@@ -29,4 +30,6 @@ void mnist_load_labels(string directory, string filename,
     mnist_label.read( (char*) &cur_label, sizeof(cur_label) );
     labels(i) = (double) cur_label;
   }
+  
+  return labels;
 }
