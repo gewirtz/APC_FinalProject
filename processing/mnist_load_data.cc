@@ -16,7 +16,7 @@
 
 using namespace arma;
 
-void mnist_load_data(string directory, string fname){
+void mnist_load_data(string directory, string img_name, lbl_name){
 
   /*
   string train_directory = "../data/mnist/training/";
@@ -31,17 +31,17 @@ void mnist_load_data(string directory, string fname){
   // load the images
   //vector<vector<double> > all_images;
   vector<arma::mat> all_images;
-  mnist_load_images(train_directory, train_img, all_images);
+  mnist_load_images(train_directory, img_name, all_images);
 
   // return the number of images
   int num_img;
-  num_img = mnist_count_images(train_directory,train_img, all_images);
+  num_img = mnist_count_images(train_directory,img_name, all_images);
 
   // load the labels
   //vector<double> labels(num_img);
 
   arma::colvec labels = arma::zeros<arma::colvec>(num_img);
-  mnist_load_labels(train_directory, train_img, labels);
+  mnist_load_labels(train_directory, lbl_name, labels);
 
   // check to make sure you did it right
   /*
