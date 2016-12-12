@@ -26,7 +26,7 @@ class no_processing : private data_processor{
 
     };
 
-    void set_Labels(arma::mat* imported_labels){
+    void set_Labels(arma::colvec* imported_labels){
       //Same across all derived processing classes
       labels=imported_labels;
     };
