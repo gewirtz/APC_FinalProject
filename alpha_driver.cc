@@ -49,8 +49,8 @@ int main(){
 
   // step 2: Process the data
 
-  No_processing p_np;
-  p_np=process_driver(&tr_data,&tt_data,&train_lbls,&test_lbls);
+  //No_processing p_np;
+  //p_np=process_driver(&tr_data,&tt_data,&train_lbls,&test_lbls);
   
 
   // step 3: Model the data
