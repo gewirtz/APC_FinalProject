@@ -14,13 +14,13 @@ class Optimizer;
 
 class LinearRegression : public Model  {
  public:
-  LinearRegression(vector<arma::mat> train, arma::colvec labels, Optimizer *optim); //double* train, double* labels
-
-  arma::mat predict(vector<arma::mat> input); //double *input
-  // arma::vec get_exactParams(); //gives exact solution 
+  LinearRegression(vector<arma::mat> train, arma::colvec labels, Optimizer *optim); 
+  arma::mat concatenate(vector<arma::mat> input)
+  arma::vec predict(vector<arma::mat> input); 
+  arma::vec get_exactParams(); //gives exact solution 
   arma::vec gradient();
   arma::vec get_Params();
-
+  
  private:
  	//trains the model (ie updated \beta) for given data x,y 
   	void fit(); 	
