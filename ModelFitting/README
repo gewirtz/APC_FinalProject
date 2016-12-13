@@ -6,3 +6,6 @@ we want to extend features (logistic regression, various penalties).
 By the alpha deadline, we want to have a main that properly incorporates other portions of the code, and have
 tested our classes and methods to make sure they work. By the beta deadline, we want to have 2-3 other methods/optimizers 
 coded and tested. 
+
+
+Update 12/12: We're doing our classes and methods testing to check if they work
