@@ -4,8 +4,9 @@
 #include "processing/mnist_count_images.cc"
 #include "processing/no_processing.h"
 #include "processing/no_processing_test.cc"
-#include "modelfitting/GradientDescent.h"
-#include "modelfitting/LinearRegresssion.h"
+#include "ModelFitting/GradientDescent.h"
+#include "ModelFitting/LinearRegresssion.h"
+#include "ModelFitting/Performance.h"
 
 //#include "processing/reverse.cc"
 #include <armadillo>
@@ -57,9 +58,17 @@ int main(){
 
   // step 3: Model the data
   GradientDescent *gd = new GradientDescent(100000, .001, .0001);
-  LinearRegression *fit = new LinearRegression(tr_data, train_lbls, 0,0, gd)
+  LinearRegression *fit = new LinearRegression(tr_data, train_lbls, gd);
+  arma::mat pred_lbls = fit->predict(tt_data);
 
-  // step 4: output the results
+
+  // step 4: output the results - Noemi coded this I think?
+  Performance Pf;
+  vec stat1, stat3;
+  mat stat2;
+  stat1 = Pf.mse(pred_lbls,test_lbls,pred_lbls.size());
+  stat2 = Pf.correl(pred_lbls,test_lbls);
+  stat3 = Pf.accuracy(pred_lbls,test_lbls);
 
   return 0;
 }
