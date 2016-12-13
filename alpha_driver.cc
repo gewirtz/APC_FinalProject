@@ -2,6 +2,8 @@
 #include "processing/mnist_load_images.cc"
 #include "processing/mnist_load_labels.cc"
 #include "processing/mnist_count_images.cc"
+#include "processing/no_processing.h"
+#include "processing/no_processing_test.cc"
 
 //#include "processing/reverse.cc"
 #include <armadillo>
@@ -37,16 +39,19 @@ int main(){
   //string test_img = argv[6];
   
   
-  vector<arma::mat > train_data, test_data;
+  vector<arma::mat > tr_data, tt_data;
   arma::colvec train_lbls, test_lbls;
   
-  train_data = mnist_load_images(train_directory, train_img);
+  tr_data = mnist_load_images(train_directory, train_img);
   train_lbls = mnist_load_labels(train_directory, train_lbl);
-  test_data = mnist_load_images(test_directory, test_img);
+  tt_data = mnist_load_images(test_directory, test_img);
   test_lbls = mnist_load_labels(test_directory, test_lbl);
 
   // step 2: Process the data
 
+  No_processing p_np;
+  p_np=process_driver(&tr_data,&tt_data,&train_lbls,&test_lbls);
+  
 
   // step 3: Model the data
 

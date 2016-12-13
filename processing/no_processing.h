@@ -20,14 +20,14 @@ class No_processing : public Data_processor{
     arma::colvec* get_labels_train();
     arma::colvec* get_labels_test();
     std::vector<arma::mat >* get_data_train();
-    std::vector<arma::mat >* get_data_test()
+    std::vector<arma::mat >* get_data_test();
       
   private:
     int has_been_processed; //switch for whether data has been processed
     arma::colvec labels_train;
     arma::colvec labels_test;
-    std::vector<arma::mat >* data_train; //This will be the processed data for each class
-    std::vector<arma::mat >* data_test; //This will be the processed data for each class
+    std::vector<arma::mat > data_train; //This will be the processed data for each class
+    std::vector<arma::mat > data_test; //This will be the processed data for each class
 
     
 };
