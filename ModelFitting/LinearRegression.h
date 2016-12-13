@@ -27,8 +27,8 @@ class LinearRegression : public Model  {
  	Optimizer* optim;
 
    	arma::mat x; //regressors
-  	arma::colvec y; //labels
-  	int num_rows, num_examples, num_cols; //data information
+  	arma::vec y; //labels
+  	std::set<int> label_set; //possible values y_i can take on
 
  };
 

@@ -5,6 +5,7 @@
 // ||Y - X\beta ||_2^2
 // TODO in future versions - make compatible with eigen library 
 
+using namespace std;
 using namespace arma;
 
   LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels, Optimizer *optim){
@@ -14,6 +15,9 @@ using namespace arma;
   	this->optim = optim;
   	this->params = zeros<vec>(num_rows*num_cols);
   	fit();
+    for(int lab : this->params){
+       this->label_set.insert(lab);
+    }
   } 
   
   mat LinearRegression::concatenate(vector<arma::mat> input){
