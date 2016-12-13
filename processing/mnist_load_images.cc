@@ -2,15 +2,18 @@
 #include <fstream>
 #include <armadillo>
 #include <assert.h>
+#include <string>
+//#include <typeinfo>
 #include "reverse.cc"
 
 using namespace std;
 using namespace arma;
 
 vector<arma::mat > mnist_load_images(string directory, string filename){
- 
-  vector<arma::mat > all_images;
-  string fname = directory + filename;
+//void mnist_load_images(string directory, string filename){
+
+ vector<arma::mat > all_images;
+ string fname = directory + filename;
 
  // the example I found imports data in binary:
  ifstream mnist_image (fname.c_str(), ios::binary);
@@ -26,14 +29,14 @@ vector<arma::mat > mnist_load_images(string directory, string filename){
 
  // The first number in the file is the "Magic Number"
 
-  //The magic number is an integer where the first 2 bytes are zero
-  //and the 3rd byte represents the type of code, and the 4th byte
-  //determines the dimensions of the matrix/vector;
+ //The magic number is an integer where the first 2 bytes are zero
+ //and the 3rd byte represents the type of code, and the 4th byte
+ //determines the dimensions of the matrix/vector;
 
-  // We need to FLIP the magic number since it is in BIG-ENDIAN
-  // as opposed to LITTLE-ENDIAN
-  mnist_image.read( (char*) &magic, sizeof(magic) );
-  magic = Reverse(magic);
+ // We need to FLIP the magic number since it is in BIG-ENDIAN
+ // as opposed to LITTLE-ENDIAN
+ mnist_image.read( (char*) &magic, sizeof(magic) );
+ magic = Reverse(magic);
 
   // Next is the number of images
   mnist_image.read( (char*) &num_img, sizeof(num_img) );
@@ -42,8 +45,8 @@ vector<arma::mat > mnist_load_images(string directory, string filename){
   // rows, cols
   mnist_image.read( (char*) &rows, sizeof(rows) );
   mnist_image.read( (char*) &cols, sizeof(cols) );
-  rows = Reverse(rows);
 
+  rows = Reverse(rows);
   cols = Reverse(cols);
 
   // The rest of the data is the image data
@@ -60,6 +63,7 @@ vector<arma::mat > mnist_load_images(string directory, string filename){
     // all the images are the same size!
     // the images are stored in LITTLE-ENDIAN, no need
     // to reverse --> confusing!
+
     for(int row = 0; row < rows; row++){
       for(int col = 0; col < cols; col++){
 
@@ -76,8 +80,9 @@ vector<arma::mat > mnist_load_images(string directory, string filename){
     all_images.push_back(cur_img);
 
   } // end num_img
-	 
-return all_images;
+
+  cout << all_images.size() << endl;
+  return all_images ;
 
 } // end function load_mnist
 

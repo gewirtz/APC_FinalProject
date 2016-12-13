@@ -3,8 +3,7 @@
 
 using namespace std;
 
-int mnist_count_images(string directory, string filename,
-                       vector<arma::mat>  &all_images){
+int mnist_count_images(string directory, string filename){
 
   string fname = directory + filename;
   int magic;

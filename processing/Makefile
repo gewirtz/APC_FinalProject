@@ -1,4 +1,4 @@
-mnist = mnist_load.o
+mnist = mnist_load_data.o
 
 #ARMA_INCLUDE_FLAG = -I ../include
 LIB_FLAGS = -larmadillo
