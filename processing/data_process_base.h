@@ -7,8 +7,7 @@
 
 class Data_processor {
  public:
-  Data_processor();
-  ~Data_processor();
+  virtual ~Data_processor();
   
   virtual void process()=0;
  
