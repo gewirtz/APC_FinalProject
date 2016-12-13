@@ -8,8 +8,8 @@
 class No_processing : public Data_processor{
 
   public:
-  No_processing();
-  ~No_processing();
+    No_processing();
+   ~No_processing();
     
     void process();
     void set_data_train(std::vector<arma::mat >* imported_data);
