@@ -2,6 +2,8 @@
 #include <fstream>
 #include <armadillo>
 #include <cassert>
+#include "mnist_load_labels.h"
+#include "reverse.h"
 
 using namespace std;
 using namespace arma;

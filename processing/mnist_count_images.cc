@@ -1,6 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include <cassert>
+#include <string>
+#include "mnist_count_images.h"
+#include "reverse.h"
 
 using namespace std;
 

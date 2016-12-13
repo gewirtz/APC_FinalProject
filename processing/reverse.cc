@@ -1,3 +1,5 @@
+#include "reverse.h"
+
 int Reverse(int i){
 
   // since data is imported in binary, we have to do

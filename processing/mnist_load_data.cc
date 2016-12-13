@@ -5,10 +5,10 @@
 #include <vector>
 #include <assert.h>
 
-#include "reverse.cc"
-#include "mnist_load_images.cc"
-#include "mnist_load_labels.cc"
-#include "mnist_count_images.cc"
+#include "reverse.h"
+#include "mnist_load_images.h"
+#include "mnist_load_labels.h"
+#include "mnist_count_images.h"
 
 
 // at the request of the modeling team...

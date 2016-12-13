@@ -1,9 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include <armadillo>
-#include <assert.h>
+#include <vector>
+#include <cassert>
 #include <string>
-//#include <typeinfo>
 #include "reverse.cc"
 
 using namespace std;
@@ -81,8 +81,7 @@ vector<arma::mat > mnist_load_images(string directory, string filename){
 
   } // end num_img
 
-  cout << all_images.size() << endl;
-  return all_images ;
+  return all_images;
 
 } // end function load_mnist
 
