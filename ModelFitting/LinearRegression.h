@@ -3,6 +3,7 @@
 
 
 #include "model.h"
+#include <vector>
 
 //initializes a model to choose \beta so as to fit Y = X\beta + \epsilon so as to minimize
 // ||Y - X\beta ||_2^2
@@ -13,10 +14,10 @@ class Optimizer;
 
 class LinearRegression : public Model  {
  public:
-  LinearRegression(double* train, double* labels, int num_features, int num_datapts, Optimizer *optim); 
+  LinearRegression(vector<arma::mat> train, arma::colvec labels, Optimizer *optim); //double* train, double* labels
 
-  arma::mat predict(double *input, int rows, int cols);
-  arma::vec get_exactParams(); //gives exact solution 
+  arma::mat predict(vector<arma::mat> input); //double *input
+  // arma::vec get_exactParams(); //gives exact solution 
   arma::vec gradient();
   arma::vec get_Params();
 
@@ -26,7 +27,8 @@ class LinearRegression : public Model  {
  	Optimizer* optim;
 
    	arma::mat x; //regressors
-  	arma::vec y; //labels
+  	arma::colvec y; //labels
+  	int num_rows, num_examples, num_cols; //data information
 
  };
 
