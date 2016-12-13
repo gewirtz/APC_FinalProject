@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <armadillo>
+#include <cassert>
 
 using namespace std;
 using namespace arma;
@@ -15,7 +16,7 @@ arma::colvec mnist_load_labels(string directory, string filename){
   int magic = 0;
   int num_img = 0;
 
-  // read magic number, don't need it, just need to get pas it
+  // read magic number, don't need it, just need to get past it
   mnist_label.read( (char*) &magic, sizeof(magic) );
 
   // read number of images
