@@ -86,9 +86,9 @@ using namespace arma;
   }
  	
   vec LinearRegression::gradient(){
-  	zeros<vec> grad = vec(y.size());
+  	vec grad = zeros<vec>(x.n_cols());
     double fitted_val;
-  	for(int i = 0; i < y.size(); i++){
+  	for(int i = 0; i < x.n_cols(); i++){
   		for(int j = 0; j < x.n_rows();j++){
         fitted_val = conv_to<double>::from(x.row(j)*params);
 	  		grad(i) += -(y(j) - fitted_val)*x(j,i);
