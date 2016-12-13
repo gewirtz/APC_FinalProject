@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include<vector>
 
-class No_processing_derived : public No_processing{
+class No_processing : public No_processing{
   public:
-    No_processing_derived(){
+    No_processing(){
       //Same across all derived processing classes
       data_train=new std::vector<arma::mat >; //Check w Jeffrey - or should we just call Mat() constructor here?
       data_test=new std::vector<arma::mat >;
@@ -12,7 +12,7 @@ class No_processing_derived : public No_processing{
       labels_test=new arma::colvec;
       has_been_processed=0;
     };
-    ~No_processing_derived(){
+    ~No_processing(){
       //Same across all derived processing classes
       delete data_train;
       delete data_test;
