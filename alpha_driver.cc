@@ -2,17 +2,16 @@
 #include "processing/mnist_load_images.h"
 #include "processing/mnist_load_labels.h"
 #include "processing/mnist_count_images.h"
-//#include "processing/no_processing.h"
-//#include "processing/no_processing_test.cc"
-#include "ModelFitting/GradientDescent.h"
-#include "ModelFitting/LinearRegresssion.h"
-#include "ModelFitting/Performance.h"
-
-//#include "processing/reverse.cc"
+#include "processing/no_processing.h"
+#include "processing/data_process_base.h"
+//#include "ModelFitting/GradientDescent.h"
+//#include "ModelFitting/LinearRegresssion.h"
+//#include "ModelFitting/Performance.h"
 #include <armadillo>
 #include <vector>
 
 using namespace arma;
+using namespace std;
 
 int main(){
   
@@ -52,10 +51,10 @@ int main(){
 
   // step 2: Process the data
 
-  //No_processing p_np;
+  No_processing p_np;
   //p_np=process_driver(&tr_data,&tt_data,&train_lbls,&test_lbls);
   
-
+  /*
   // step 3: Model the data
   GradientDescent *gd = new GradientDescent(100000, .001, .0001);
   LinearRegression *fit = new LinearRegression(tr_data, train_lbls, gd);
@@ -69,6 +68,6 @@ int main(){
   stat1 = Pf.mse(pred_lbls,test_lbls,pred_lbls.size());
   stat2 = Pf.correl(pred_lbls,test_lbls);
   stat3 = Pf.accuracy(pred_lbls,test_lbls);
-
+  */
   return 0;
 }
