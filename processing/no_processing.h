@@ -12,10 +12,10 @@ class No_processing : public Data_processor{
    ~No_processing();
     
     void process();
-    void set_data_train(std::vector<arma::mat >* imported_data);
-    void set_data_test(std::vector<arma::mat >* imported_data);
-    void set_labels_train(arma::colvec* imported_labels);
-    void set_labels_test(arma::colvec* imported_labels);
+    void set_data_train(std::vector<arma::mat > &d_train);
+    void set_data_test(std::vector<arma::mat > &d_test);
+    void set_labels_train(arma::colvec &l_train);
+    void set_labels_test(arma::colvec  &l_test);
   
     arma::colvec* get_labels_train();
     arma::colvec* get_labels_test();

@@ -9,7 +9,7 @@
 using namespace std;
 using namespace arma;
 
-vector<arma::mat > mnist_load_images(string directory, string filename){
+vector<arma::mat> mnist_load_images(string directory, string filename){
 //void mnist_load_images(string directory, string filename){
 
  vector<arma::mat > all_images;

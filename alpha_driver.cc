@@ -3,6 +3,7 @@
 #include "processing/mnist_load_labels.h"
 #include "processing/mnist_count_images.h"
 #include "processing/no_processing.h"
+#include "processing/no_processing_test.h"
 #include "processing/data_process_base.h"
 //#include "ModelFitting/GradientDescent.h"
 //#include "ModelFitting/LinearRegresssion.h"
@@ -52,7 +53,7 @@ int main(){
   // step 2: Process the data
 
   No_processing p_np;
-  //p_np=process_driver(&tr_data,&tt_data,&train_lbls,&test_lbls);
+  p_np=process_driver(&tr_data,&tt_data,&train_lbls,&test_lbls);
   
   /*
   // step 3: Model the data
