@@ -5,7 +5,6 @@
 
 // initializes a model to choose \beta so as to fit Y = X\beta + \epsilon so as to minimize
 // ||Y - X\beta ||_2^2
-// TODO in future versions - make compatible with eigen library 
 
 using namespace std;
 using namespace arma;
@@ -13,12 +12,12 @@ using namespace arma;
   LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels, Optimizer *optim){
   
     this->x = concatenate(train);  //rows contain the ith example, columns contain all instances of a feature
-  	this->y = labels; //extend to matrix case? vec(labels,num_datapts);
+  	this->y = labels; //y_i = label of ith training example
   	this->optim = optim;
-  	this->params = zeros<vec>(num_rows*num_cols);
-  	fit();
-    for(int lab : this->params){
-       this->label_set.insert(lab);
+  	this->params = zeros<vec>(num_rows*num_cols); //initialize beta in above formulation
+  	fit();  //fit beta
+    for(int i = 0; i < y.size(); i++){
+       this->label_set.insert(y(i));
     }
   } 
   
@@ -62,7 +61,7 @@ using namespace arma;
     for(int i=0;i<input.size();i++){ //round it
       distance = DBL_MAX;
       for(int lab : label_set){
-       temp = std::abs(labels[i] - lab);
+       temp = std::abs(labels[i] - lab); //find closest label
        if(temp <= distance){
         distance = temp;
         closest = lab;
