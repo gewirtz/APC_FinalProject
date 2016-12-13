@@ -4,6 +4,8 @@
 #include "processing/mnist_count_images.cc"
 #include "processing/no_processing.h"
 #include "processing/no_processing_test.cc"
+#include "modelfitting/GradientDescent.h"
+#include "modelfitting/LinearRegresssion.h"
 
 //#include "processing/reverse.cc"
 #include <armadillo>
@@ -54,6 +56,8 @@ int main(){
   
 
   // step 3: Model the data
+  GradientDescent *gd = new GradientDescent(100000, .001, .0001);
+  LinearRegression *fit = new LinearRegression(tr_data, train_lbls, 0,0, gd)
 
   // step 4: output the results
 
