@@ -17,4 +17,4 @@ class GradientDescent : public Optimizer {
  	double tol;
 };
 
-#endif  // OPTIMIZER_H_
+#endif  // GRADIENTDESCENT_H_
