@@ -1,6 +1,7 @@
 #include "LinearRegression.h"
 #include "Optimizer.h"
 #include <cfloat>
+#include <cmath> 
 
 // initializes a model to choose \beta so as to fit Y = X\beta + \epsilon so as to minimize
 // ||Y - X\beta ||_2^2
@@ -61,7 +62,7 @@ using namespace arma;
     for(int i=0;i<input.size();i++){ //round it
       distance = DBL_MAX;
       for(int lab : label_set){
-       temp = math.abs(labels[i] - lab);
+       temp = std::abs(labels[i] - lab);
        if(temp <= distance){
         distance = temp;
         closest = lab;
