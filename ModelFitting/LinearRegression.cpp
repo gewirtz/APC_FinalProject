@@ -32,16 +32,21 @@ using namespace arma;
       exit(-1);
     }
     int num_rows = input[0].n_rows();
-    int num_cols = input[0].n_cols();
+    int num_cols = input[0].n_cols() + 1; //regress on pixels and a constant
     mat data = mat(num_examples,num_rows * num_cols);
     for(int i=0;i<num_examples;i++){
-      if(input[i].n_rows()!=num_rows || input[i].n_cols()!=num_cols){
+      if(input[i].n_rows()!=num_rows || input[i].n_cols()!=num_cols - 1){
         cerr << "Need all input data to have same dimensions\n" << endl;
         exit(-1);
       }
       for(int j=0;j<num_rows;j++){
         for(int k=0;k<num_cols;k++){
-          data(i,j*num_cols+k)=input[i](j,k);
+          if(k == 0){
+            data(i,j*num_cols+k)=1.0; //constant for regression
+          }
+          else{
+            data(i,j*num_cols+k)=input[i](j,k);
+          }
         }
       }
     }
@@ -50,7 +55,7 @@ using namespace arma;
 
   vec LinearRegression::predict(vector<arma::mat> input){
     mat test = concatenate(input);
-    if(input.n_cols() != x.n_cols()){
+    if(input.n_cols() != x.n_cols() - 1){
       err << "Need test to have same number of features as training data\n" << endl;
       exit(-1);
     }
