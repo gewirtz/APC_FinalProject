@@ -2,12 +2,13 @@
 #define MODEL_H_
 
 #include <armadillo>
+#include <vector>
 
 class Optimizer;
 
 class Model {
  public:
-  virtual arma::mat predict(double *input, int rows, int cols) = 0;
+  virtual arma::vec predict(vector<arma::mat> input) = 0;
   virtual arma::vec gradient() = 0;
 
   arma::vec params; 

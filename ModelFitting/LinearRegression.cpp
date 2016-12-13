@@ -1,5 +1,6 @@
 #include "LinearRegression.h"
 #include "Optimizer.h"
+#include <cfloat>
 
 // initializes a model to choose \beta so as to fit Y = X\beta + \epsilon so as to minimize
 // ||Y - X\beta ||_2^2
@@ -54,8 +55,19 @@ using namespace arma;
       exit(-1);
     }
     vec labels = test * params; //non_integer fit
+    int closest = 0;
+    double distance;
+    double temp;
     for(int i=0;i<input.size();i++){ //round it
-      labels = input[i]*params;
+      distance = DBL_MAX;
+      for(int lab : label_set){
+       temp = math.abs(labels[i] - lab);
+       if(temp <= distance){
+        distance = temp;
+        closest = lab;
+       }
+      }
+      labels[i] = closest;
     }
   	return(labels);
   }
