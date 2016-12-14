@@ -14,6 +14,7 @@ GradientDescent::GradientDescent(int iterations, double alpha, double tol){
 
 void GradientDescent::fitParams(Model *m){
 	for(int i =0; i < iterations; i++){
+		cout << i << endl;
 		arma::vec grad = m->gradient();
 		if(abs(grad.max()) < tol && abs(grad.min()) < tol ){
 			return;

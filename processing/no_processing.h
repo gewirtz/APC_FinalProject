@@ -17,10 +17,10 @@ class No_processing : public Data_processor{
     void set_labels_train(arma::colvec &l_train);
     void set_labels_test(arma::colvec  &l_test);
   
-    arma::colvec* get_labels_train();
-    arma::colvec* get_labels_test();
-    std::vector<arma::mat >* get_data_train();
-    std::vector<arma::mat >* get_data_test();
+    arma::colvec get_labels_train();
+    arma::colvec get_labels_test();
+    std::vector<arma::mat > get_data_train();
+    std::vector<arma::mat > get_data_test();
       
   private:
     int has_been_processed; //switch for whether data has been processed

@@ -42,10 +42,10 @@ int main(){
   //string test_img = argv[6];
   
   
-  vector<arma::mat> tr_data, tt_data;
+  vector<arma::mat>  tt_data, train_data;
   arma::colvec train_lbls, test_lbls;
   
-  tr_data = mnist_load_images(train_directory, train_img);
+  train_data = mnist_load_images(train_directory, train_img);
   train_lbls = mnist_load_labels(train_directory, train_lbl);
   tt_data = mnist_load_images(test_directory, test_img);
   test_lbls = mnist_load_labels(test_directory, test_lbl);
@@ -53,23 +53,31 @@ int main(){
   // step 2: Process the data
   cout << "step 2\n" << endl;
   No_processing *p_np;
-  p_np=process_driver(tr_data,tt_data,train_lbls,test_lbls);
+  p_np=process_driver(train_data,tt_data,train_lbls,test_lbls);
 
 
   // Hi Chase/Ari, here is how you would get the labels.
-  arma::colvec *temp;
-  temp = p_np->get_labels_train();
+  arma::colvec tr_lbls, t_lbls;
+  tr_lbls = p_np->get_labels_train();
+  t_lbls = p_np->get_labels_test();
+  vector<arma::mat> tr_data, t_data;
+  tr_data = p_np->get_data_train();
+  t_data = p_np->get_data_test();
+
+
 
   // assert check for out of bounds calls
-  cout << (*temp)(0) << endl;
-  cout << (*temp) << endl;
+  //cout << (*temp)(0) << endl;
+  //cout << (*temp) << endl;
 
   
   // step 3: Model the data
   cout << "step 3\n" << endl;
   GradientDescent *gd = new GradientDescent(100000, .001, .0001);
-  LinearRegression *fit = new LinearRegression(tr_data, train_lbls, gd);
-  arma::mat pred_lbls = fit->predict(tt_data);
+
+  LinearRegression *fit = new LinearRegression(tr_data, tr_lbls, gd);
+    cout <<"passed here\n" << endl;
+  arma::mat pred_lbls = fit->predict(t_data);
 
 /*
   // step 4: output the results - Noemi coded this I think?

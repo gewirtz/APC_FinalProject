@@ -16,10 +16,10 @@ class Data_processor {
   virtual void set_labels_train(arma::colvec &l_train)=0;
   virtual void set_labels_test(arma::colvec &l_test)=0;
  
-  virtual arma::colvec* get_labels_train() = 0;
-  virtual arma::colvec* get_labels_test() = 0;
-  virtual std::vector<arma::mat >* get_data_train() = 0;
-  virtual std::vector<arma::mat>*  get_data_test() = 0;
+  virtual arma::colvec get_labels_train() = 0;
+  virtual arma::colvec get_labels_test() = 0;
+  virtual std::vector<arma::mat > get_data_train() = 0;
+  virtual std::vector<arma::mat>  get_data_test() = 0;
 
  private:
   int has_been_processed; //switch for whether data has been processed
