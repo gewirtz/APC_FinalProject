@@ -7,8 +7,7 @@ driver = $(MNIST_DEPS) $(PROCESS_DEPS) $(MF_DEPS) alpha_driver.cc
 #ARMA_INCLUDE_FLAG = -I ../include
 LIB_FLAGS = -larmadillo 
 OPT = -O2
-CXX = g++
-
+CXX = g++ -std=c++11
 CXXFLAGS = $(OPT)
 
 all: alpha_driver
@@ -16,9 +15,6 @@ all: alpha_driver
 alpha_driver : $(driver)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIB_FLAGS)
 
-
-# I hate make files
-# Same
 clean:
 	$(RM) *.o
 	$(RM) .depend
