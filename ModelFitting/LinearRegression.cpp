@@ -3,6 +3,7 @@
 #include <cfloat>
 #include <cmath> 
 
+
 // initializes a model to choose \beta so as to fit Y = X\beta + \epsilon so as to minimize
 // ||Y - X\beta ||_2^2
 
@@ -14,6 +15,8 @@ using namespace arma;
     this->x = concatenate(train);  //rows contain the ith example, columns contain all instances of a feature
   	this->y = labels; //y_i = label of ith training example
   	this->optim = optim;
+    int num_rows = train[0].n_rows;
+    int num_cols = train[0].n_cols;
   	this->params = zeros<vec>(num_rows*num_cols); //initialize beta in above formulation
   	fit();  //fit beta
     for(int i = 0; i < y.size(); i++){
@@ -22,20 +25,21 @@ using namespace arma;
   } 
   
   mat LinearRegression::concatenate(vector<arma::mat> input){
-    if(input == NULL){
+    /*if(input == NULL){
       cerr << "Null input\n" << endl;
       exit(-1);
     }
+    */
     int num_examples = input.size();
     if(num_examples <= 0){
       cerr << "Need an input\n" << endl;
       exit(-1);
     }
-    int num_rows = input[0].n_rows();
-    int num_cols = input[0].n_cols() + 1; //regress on pixels and a constant
+    int num_rows = input[0].n_rows;
+    int num_cols = input[0].n_cols + 1; //regress on pixels and a constant
     mat data = mat(num_examples,num_rows * num_cols);
     for(int i=0;i<num_examples;i++){
-      if(input[i].n_rows()!=num_rows || input[i].n_cols()!=num_cols - 1){
+      if(input[i].n_rows!=num_rows || input[i].n_cols!=num_cols - 1){
         cerr << "Need all input data to have same dimensions\n" << endl;
         exit(-1);
       }
@@ -55,8 +59,8 @@ using namespace arma;
 
   vec LinearRegression::predict(vector<arma::mat> input){
     mat test = concatenate(input);
-    if(input.n_cols() != x.n_cols() - 1){
-      err << "Need test to have same number of features as training data\n" << endl;
+    if(input[0].n_cols != x.n_cols - 1){
+      cerr << "Need test to have same number of features as training data\n" << endl;
       exit(-1);
     }
     vec labels = test * params; //non_integer fit
@@ -90,10 +94,10 @@ using namespace arma;
   }
  	
   vec LinearRegression::gradient(){
-  	vec grad = zeros<vec>(x.n_cols());
+  	vec grad = zeros<vec>(x.n_cols);
     double fitted_val;
-  	for(int i = 0; i < x.n_cols(); i++){
-  		for(int j = 0; j < x.n_rows();j++){
+  	for(int i = 0; i < x.n_cols; i++){
+  		for(int j = 0; j < x.n_rows;j++){
         fitted_val = conv_to<double>::from(x.row(j)*params);
 	  		grad(i) += -(y(j) - fitted_val)*x(j,i);
 	  	}

@@ -4,6 +4,7 @@
 
 #include "model.h"
 #include <vector>
+#include <set>
 
 //initializes a model to choose \beta so as to fit Y = X\beta + \epsilon so as to minimize
 // ||Y - X\beta ||_2^2
@@ -14,9 +15,9 @@ class Optimizer;
 
 class LinearRegression : public Model  {
  public:
-  LinearRegression(vector<arma::mat> train, arma::colvec labels, Optimizer *optim); 
-  arma::mat concatenate(vector<arma::mat> input)
-  arma::vec predict(vector<arma::mat> input); 
+  LinearRegression(std::vector<arma::mat> train, arma::colvec labels, Optimizer *optim); 
+  arma::mat concatenate(std::vector<arma::mat> input);
+  arma::vec predict(std::vector<arma::mat> input); 
   arma::vec get_exactParams(); //gives exact solution 
   arma::vec gradient();
   arma::vec get_Params();

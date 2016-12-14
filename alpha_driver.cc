@@ -5,9 +5,9 @@
 #include "processing/no_processing.h"
 #include "processing/no_processing_test.h"
 #include "processing/data_process_base.h"
-//#include "ModelFitting/GradientDescent.h"
-//#include "ModelFitting/LinearRegresssion.h"
-//#include "ModelFitting/Performance.h"
+#include "ModelFitting/GradientDescent.h"
+#include "ModelFitting/LinearRegression.h"
+#include "ModelFitting/Performance.h"
 #include <armadillo>
 #include <vector>
 
@@ -51,7 +51,7 @@ int main(){
   test_lbls = mnist_load_labels(test_directory, test_lbl);
 
   // step 2: Process the data
-
+  cout << "step 2\n" << endl;
   No_processing *p_np;
   p_np=process_driver(tr_data,tt_data,train_lbls,test_lbls);
 
@@ -64,13 +64,14 @@ int main(){
   cout << (*temp)(0) << endl;
   cout << (*temp) << endl;
 
-  /*
+  
   // step 3: Model the data
+  cout << "step 3\n" << endl;
   GradientDescent *gd = new GradientDescent(100000, .001, .0001);
   LinearRegression *fit = new LinearRegression(tr_data, train_lbls, gd);
   arma::mat pred_lbls = fit->predict(tt_data);
 
-
+/*
   // step 4: output the results - Noemi coded this I think?
   Performance Pf;
   vec stat1, stat3;

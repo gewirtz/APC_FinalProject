@@ -8,7 +8,7 @@ class Optimizer;
 
 class Model {
  public:
-  virtual arma::vec predict(vector<arma::mat> input) = 0;
+  virtual arma::vec predict(std::vector<arma::mat> input) = 0;
   virtual arma::vec gradient() = 0;
 
   arma::vec params; 
