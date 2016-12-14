@@ -59,11 +59,11 @@ void No_processing :: set_labels_test(arma::colvec &l_test){
   
   
 // Get data and labels
-arma::colvec* No_processing ::get_labels_train(){
+arma::colvec* No_processing :: get_labels_train(){
   return(&labels_train);
 }
   
-arma::colvec* No_processing ::get_labels_test(){
+arma::colvec* No_processing :: get_labels_test(){
   return(&labels_test);
 }
     

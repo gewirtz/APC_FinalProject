@@ -5,9 +5,9 @@
 #include <armadillo>
 #include <vector>
 
-No_processing process_driver(std::vector<arma::mat > *imported_train, 
-                             std::vector<arma::mat> *imported_test, 
-                             arma::colvec *imported_labels_train, 
-			     arma::colvec *imported_labels_test);
+No_processing* process_driver(std::vector<arma::mat> &imported_train, 
+                             std::vector<arma::mat> &imported_test, 
+                             arma::colvec &imported_labels_train, 
+			     arma::colvec &imported_labels_test);
 
 #endif

@@ -42,7 +42,7 @@ int main(){
   //string test_img = argv[6];
   
   
-  vector<arma::mat > tr_data, tt_data;
+  vector<arma::mat> tr_data, tt_data;
   arma::colvec train_lbls, test_lbls;
   
   tr_data = mnist_load_images(train_directory, train_img);
@@ -52,9 +52,18 @@ int main(){
 
   // step 2: Process the data
 
-  No_processing p_np;
-  p_np=process_driver(&tr_data,&tt_data,&train_lbls,&test_lbls);
-  
+  No_processing *p_np;
+  p_np=process_driver(tr_data,tt_data,train_lbls,test_lbls);
+
+
+  // Hi Chase/Ari, here is how you would get the labels.
+  arma::colvec *temp;
+  temp = p_np->get_labels_train();
+
+  // assert check for out of bounds calls
+  cout << (*temp)(0) << endl;
+  cout << (*temp) << endl;
+
   /*
   // step 3: Model the data
   GradientDescent *gd = new GradientDescent(100000, .001, .0001);
