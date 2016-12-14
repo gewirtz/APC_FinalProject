@@ -17,11 +17,9 @@ LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels,
     int num_rows = train[0].n_rows;
     int num_cols = train[0].n_cols;
     this->params = get_exactParams();
-    cout << params << endl;
+    //cTHIS WILL BE THE USED METHOD IN FUTURE
   	//this->params = zeros<vec>(num_rows*(num_cols+1)); //initialize beta in above formulation
-  	//cout << "about to fit" << endl;
-    //fit();  //fit beta
-    //cout <<"passed fit" << endl;
+    //fit();  //fit beta  
     for(int i = 0; i < y.size(); i++){
      this->label_set.insert(y(i));
    }
@@ -29,7 +27,7 @@ LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels,
 
  vec LinearRegression::predict(vector<arma::mat> input){
   mat test = concatenate(input);
-  if(input[0].n_cols != x.n_cols - 1){
+  if(test.n_cols != x.n_cols){
     cerr << "Need test to have same number of features as training data\n" << endl;
     exit(-1);
   }

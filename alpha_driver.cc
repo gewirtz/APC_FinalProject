@@ -51,7 +51,7 @@ int main(){
   test_lbls = mnist_load_labels(test_directory, test_lbl);
 
   // step 2: Process the data
-  cout << "step 2\n" << endl;
+  //cout << "step 2\n" << endl;
   No_processing *p_np;
   p_np=process_driver(train_data,tt_data,train_lbls,test_lbls);
 
@@ -72,14 +72,21 @@ int main(){
 
   
   // step 3: Model the data
-  cout << "step 3\n" << endl;
+  //cout << "step 3\n" << endl;
   GradientDescent *gd = new GradientDescent(100000, .001, .0001);
 
   LinearRegression *fit = new LinearRegression(tr_data, tr_lbls, gd);
-    cout <<"passed here\n" << endl;
-  arma::mat pred_lbls = fit->predict(t_data);
-
-/*
+  cout <<"predicting step\n" << endl;
+  arma::vec pred_lbls = fit->predict(t_data);
+  
+  double correct = 0.0;
+  for(int i = 0; i < pred_lbls.size(); i++){
+    if(pred_lbls(i) == test_lbls[i]){
+      correct += 1.0;
+    }
+  }
+  double stat3 = correct / pred_lbls.size();
+  /* THIS DOES NOT WORK
   // step 4: output the results - Noemi coded this I think?
   Performance Pf;
   vec stat1, stat3;
@@ -87,6 +94,8 @@ int main(){
   stat1 = Pf.mse(pred_lbls,test_lbls,pred_lbls.size());
   stat2 = Pf.correl(pred_lbls,test_lbls);
   stat3 = Pf.accuracy(pred_lbls,test_lbls);
-  */
+    */
+  cout << "The testing accuracy is " <<  stat3 << endl;
+
   return 0;
 }
