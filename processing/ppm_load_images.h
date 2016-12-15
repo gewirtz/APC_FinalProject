@@ -7,4 +7,4 @@
 
 std::vector<arma::mat> ppm_load_images(std::string directory, std::string filename);
 
-#endif
+#endif  
