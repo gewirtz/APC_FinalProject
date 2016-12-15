@@ -121,4 +121,4 @@ int main(){
     image = ppm_load_images("can_bottom.ppm");
     printf("Press any key...");
     getchar();
-}
+} 
