@@ -95,20 +95,6 @@ static PPMImage *readPPM(const char *filename){
     return img;
 }
 
-//Convert RGB pixels to greyscale
-
-//Convert sRGB to linear format
-double sRGB_to_linear(double x) {
-    if (x < 0.04045) return x/12.92;
-    return pow((x+0.055)/1.055, 2.4);
-}
-
-//sRGB gamma correction
-double linear_to_sRGB(double y) {
-    if (y <= 0.0031308) return 12.92 * y;
-    return 1.055 * pow(y, 1/2.4) - 0.055;
-}
-
 bool fileExists(const string& filename){
     struct stat buf;
     if (stat(filename.c_str(), &buf) != -1){
@@ -145,6 +131,23 @@ void writePPM(const char *filename, PPMImage *img)
     fclose(fp);
 }
 
+void grayscalePPM(PPMImage *img){
+    int i;
+    if(img){
+
+         for(i=0;i<img->x*img->y;i++){
+
+            //double gray = 0.2126 * img->data[i].red + 0.7152 * img->data[i].green + 0.0722 * img->data[i].blue;
+            //double gray = (img->data[i].red+img->data[i].green+img->data[i].blue)/3;
+            double gray = 0.2989*img->data[i].red+0.5870*img->data[i].green+0.1140*img->data[i].blue;
+
+            img->data[i].red = gray;
+            img->data[i].green = gray;
+            img->data[i].blue = gray;           
+         }
+    }
+}
+
 
 // vector<mat> ppm_load_images(string directory, string filename){
 //     PPMImage *image;
@@ -165,14 +168,8 @@ int main(){
     PPMImage *image;
     image = readPPM("car_0001.ppm");
 
-    // for()
-    // double R_linear = sRGB_to_linear(R/255.0);
-    // double G_linear = sRGB_to_linear(G/255.0);
-    // double B_linear = sRGB_to_linear(B/255.0);
-    // double gray_linear = 0.2126 * R_linear + 0.7152 * G_linear + 0.0722 * B_linear;
-
-    // double gray_color = round(linear_to_sRGB(gray_linear) * 255);
     //image = ppm_load_images("can_bottom.ppm");
+    grayscalePPM(image);
     writePPM("test.ppm",image);
     printf("Press any key...");
     getchar();
