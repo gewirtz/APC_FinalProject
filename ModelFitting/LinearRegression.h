@@ -31,6 +31,8 @@ class LinearRegression : public Model  {
    	arma::mat x; //regressors
   	arma::vec y; //labels
   	std::set<int> label_set; //possible values y_i can take on
+  	int num_rows;
+  	int num_cols; 
 
  };
 

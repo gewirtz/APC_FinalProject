@@ -73,9 +73,9 @@ int main(){
   
   // step 3: Model the data
   //cout << "step 3\n" << endl;
-  GradientDescent *gd = new GradientDescent(100000, .001, .0001);
-
+  GradientDescent *gd = new GradientDescent(1000, .001, .00001);
   LinearRegression *fit = new LinearRegression(tr_data, tr_lbls, gd);
+ 
   cout <<"predicting step\n" << endl;
   arma::vec pred_lbls = fit->predict(t_data);
   
@@ -86,6 +86,10 @@ int main(){
     }
   }
   double stat3 = correct / pred_lbls.size();
+
+  //cout << "Actual Gradient Values " << endl;
+  //cout << fit->get_exactParams() << endl;
+
   /* THIS DOES NOT WORK
   // step 4: output the results - Noemi coded this I think?
   Performance Pf;

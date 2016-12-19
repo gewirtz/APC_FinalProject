@@ -13,14 +13,19 @@ GradientDescent::GradientDescent(int iterations, double alpha, double tol){
 }
 
 void GradientDescent::fitParams(Model *m){
+	arma::vec grad;
+	arma::vec old_params;
 	for(int i =0; i < iterations; i++){
-		arma::vec grad = m->gradient();
-		cout << abs(grad.max()) << endl;
-		cout << abs(grad.min()) << endl;
-		if(abs(grad.max()) < tol && abs(grad.min()) < tol ){
+		grad = m->gradient();
+		old_params = m->params;
+		m->params -= alpha*grad;
+		cout << "Iteration " << i << endl;
+		cout << "The update norm is " << norm(old_params- m->params,2)  << endl; 
+		cout << "The maximum gradient element is " << grad.max() << endl;
+		cout << "The minimum gradient element is " << grad.min() << endl;
+		if(norm(old_params - m->params,2)  < tol ){
 			return;
 		}
-		m->params -= alpha*grad;
 	}
 	cerr << "Did not converge in given number of iterations" << endl;
 }
