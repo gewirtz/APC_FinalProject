@@ -15,6 +15,7 @@ class GradientDescent : public Optimizer {
  	int iterations;
  	double alpha;
  	double tol;
+ 	double normalizer; 
 };
 
 #endif  // GRADIENTDESCENT_H_

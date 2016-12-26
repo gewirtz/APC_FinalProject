@@ -20,8 +20,8 @@ LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels,
   this->optim = optim;
 //includes constant column
   //cout << "Number of rows concat : " << x.n_rows << endl;
-  //cout << "Number of cols concat : " << x.n_cols << endl;
-//this->params = get_exactParams();
+  //cout << "Number of cols concat : " << x.n_cols << endl; 
+  //this->params = get_exactParams();
 //THIS WILL BE THE USED METHOD IN FUTURE
   this->params = this->params.zeros(x.n_cols); //initialize beta in above formulation
   fit();  //fit beta  
@@ -87,9 +87,6 @@ exit(-1);
   return(data);
 }
 
-/*arma::vec fit_value(arma::vec xi){
-return(xi*params);
-}*/
 
 
 void LinearRegression::fit(){
@@ -97,7 +94,6 @@ void LinearRegression::fit(){
 }
 
 vec LinearRegression::gradient(){
-  //cout << "The current params are "<< endl << params << endl;
   vec grad;
   grad = grad.zeros(x.n_cols);
   vec predictions = x * params; //Y = X\beta
@@ -107,45 +103,5 @@ vec LinearRegression::gradient(){
       grad(j) += resid(i) * x(i,j);
     }
   }
-  grad *= 1.0/norm(grad,2);
-  return(grad);
+  return(1.0/x.n_rows*grad);
 }
-
-/*
-  double max_update = 0.0;
-  for(int i = 0; i < x.n_rows; i++){
-    for(int j = 0; j < x.n_cols; j++){
-      double update = conv_to<double>::from(x.row(i) * params - y(i));
-      if(abs(update) > max_update){
-        max_update = update; 
-      }
-      grad(j) += update*x(i,j);
-    }
-    cout << "Update " << i << " "<< max_update << endl;
-    max_update = 0.0;
-  }
-  return(1.0/norm(grad,2) * grad);
-}
-
-*/
-  /*vec predictions = x * params; //Y = X\beta
-  vec resid = predictions - y;
-  for(int i = 0; i < x.n_rows;   i++){
-    for(int j = 0; j < x.n_cols;j++){
-      grad(j) += resid(i) * x(i,j);
-    }
-  }
-  return(1.0*grad/x.n_rows);
-}
-*/
-/*
-  vec resid = predictions - y;
-  for(int i = 0; i < x.n_cols; i++){
-    for(int j = 0; j < x.n_rows;j++){
-      grad(i) += 1.0/x.n_rows * resid(j)*x(j,i);
-    }
-    //cout << "grad " << i << " " << grad(i) << endl;
-  }
-  return(grad); 
-}
-*/
