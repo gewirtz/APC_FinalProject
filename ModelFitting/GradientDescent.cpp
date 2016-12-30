@@ -23,10 +23,10 @@ void GradientDescent::fitParams(Model *m){
 			normalizer = update;
 		}
 		m->params -= alpha*grad/normalizer;
-		cout << "Iteration " << i << endl;
-		cout << "The update norm is " << update  << endl; 
-		cout << "The maximum gradient element is " << grad.max() << endl;
-		cout << "The minimum gradient element is " << grad.min() << endl;
+		//cout << "Iteration " << i << endl;
+		//cout << "The update norm is " << update  << endl; 
+		//cout << "The maximum gradient element is " << grad.max() << endl;
+		//cout << "The minimum gradient element is " << grad.min() << endl;
 		if(update  < tol ){
 			return;
 		}
