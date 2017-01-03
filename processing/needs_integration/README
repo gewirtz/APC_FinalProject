@@ -1,0 +1,16 @@
+These are algos that work but need to be integated in with the class structure
+
+Waiting on doing this bc we need to make a decision abut how we process. For both of these we need to know the # of images
+so we can cycle through them. This # is different for train and test. We can do 2 things:
+
+(1) Changes all our files to take in the data set to process so now it'll be 
+Gaussian_processing::process(arma::mat &train); //Note: I am not sure this is right from a pointer/reference perspective
+Gaussian_processing::process(arma::mat &test);
+
+Instead of what we have now which just has process() 
+
+If we do this we need to change it in the virtual class, the no processing class, and the .cc for no processing 
+
+(2) Copy and paste the same processing code for both test and train within the process() method - this is janky 
+and definitely a second string solution
+
