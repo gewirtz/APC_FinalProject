@@ -18,7 +18,7 @@ class LogisticRegression : public Model  {
   LogisticRegression(std::vector<arma::mat> train, arma::colvec labels, Optimizer *optim); 
   arma::vec predict(std::vector<arma::mat> input); 
   arma::vec gradient();
-  arma::vec get_Params();
+  arma::mat get_Params();
   
  private:
   arma::mat concatenate(std::vector<arma::mat> input);
@@ -29,6 +29,7 @@ class LogisticRegression : public Model  {
   Optimizer* optim;
   arma::mat x; //regressors
   arma::vec y; //labels
+  arma::mat paramsl //params
   std::set<int> label_set; //possible values y_i can take on
   int num_rows;
   int num_cols; 

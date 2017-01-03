@@ -30,6 +30,7 @@ class LinearRegression : public Model  {
  	Optimizer* optim;
    	arma::mat x; //regressors
   	arma::vec y; //labels
+    arma::mat params; 
   	std::set<int> label_set; //possible values y_i can take on
   	int num_rows;
   	int num_cols; 

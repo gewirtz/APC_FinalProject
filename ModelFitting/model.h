@@ -11,7 +11,7 @@ class Model {
   virtual arma::vec predict(std::vector<arma::mat> input) = 0;
   virtual arma::vec gradient() = 0;
 
-  arma::vec params; 
+  arma::mat params; 
 
 };
 
