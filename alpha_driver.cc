@@ -88,7 +88,7 @@ int main(){
   double stat3 = correct / pred_lbls.size();
 
   cout << "Gradient Differences " << endl;
-  cout << fit->get_exactParams() - fit->get_Params() << endl;
+  cout << fit->get_exactParams() - fit->get_Params()[0] << endl;
 
 
   /* THIS DOES NOT WORK

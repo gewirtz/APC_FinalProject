@@ -17,7 +17,7 @@ LogisticRegression::LogisticRegression(vector<arma::mat> train, arma::colvec lab
   this->x = concatenate(train);  //rows contain the ith example, columns contain all instances of a feature
   this->y = labels; //y_i = label of ith training example
   this->optim = optim;
-  this->params = this->params.zeros(x.n_cols); //initialize beta in above formulation
+  this->params = zeros(x.n_cols); //initialize beta in above formulation
   fit();  //fit weights  
   for(int i = 0; i < y.size(); i++){
     this->label_set.insert(y(i));

@@ -13,6 +13,7 @@ using namespace arma;
 LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels, Optimizer *optim){
   this->num_rows = train[0].n_rows;
   this->num_cols = train[0].n_cols;
+  this->params_size = 1;
   //cout << "Number of rows input: " << num_rows << endl;
   //cout << "Number of cols input: " << num_cols << endl; 
   this->x = concatenate(train);  //rows contain the ith example, columns contain all instances of a feature
@@ -21,18 +22,21 @@ LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels,
 //includes constant column
   //cout << "Number of rows concat : " << x.n_rows << endl;
   //cout << "Number of cols concat : " << x.n_cols << endl; 
-  //this->params = get_exactParams();
-//THIS WILL BE THE USED METHOD IN FUTURE
-  this->params = this->params.zeros(x.n_cols); //initialize beta in above formulation
+  this->params = new vec[1];
+  this->params[0] = this->params[0].zeros(x.n_cols);
   fit();  //fit beta  
   for(int i = 0; i < y.size(); i++){
     this->label_set.insert(y(i));
   }
 } 
 
+LinearRegression::~LinearRegression() { 
+  delete [] params; 
+}
+
 vec LinearRegression::predict(vector<arma::mat> input){
   mat test = concatenate(input);
-  vec labels = test * params; //non_integer fit
+  vec labels = test * params[0]; //non_integer fit
   int closest = 0;
   double distance;
   double temp;
@@ -54,10 +58,13 @@ vec LinearRegression::get_exactParams(){
   return(pinv(x.t() * x) * x.t() * y);
 }
 
-vec LinearRegression::get_Params(){
+vec* LinearRegression::get_Params(){
   return(params);
 }
 
+int get_params_size(){
+  return(params_size);
+}
 
 mat LinearRegression::concatenate(vector<arma::mat> input){
 /*if(input == NULL){
@@ -93,12 +100,15 @@ void LinearRegression::fit(){
   optim->fitParams(this);
 }
 
-vec LinearRegression::gradient(){
+vec LinearRegression::gradient(int k){
+  if(k < 0 || k >= params_size){
+    cerr << "Index " << k << " out of bounds.  Need in range 0 " << params_size << endl;
+  }
   vec grad;
   grad = grad.zeros(x.n_cols);
-  vec predictions = x * params; //Y = X\beta
+  vec predictions = x * params[k]; //Y = X\beta
   vec resid = predictions - y;
-  for(int i = 0; i < x.n_rows;   i++){
+  for(int i = 0; i < x.n_rows;  i++){
     for(int j = 0; j < x.n_cols;j++){
       grad(j) += resid(i) * x(i,j);
     }
