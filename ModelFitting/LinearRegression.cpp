@@ -62,7 +62,7 @@ vec* LinearRegression::get_Params(){
   return(params);
 }
 
-int get_params_size(){
+int LinearRegression::get_params_size(){
   return(params_size);
 }
 
