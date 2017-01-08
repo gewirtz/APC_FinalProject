@@ -73,7 +73,7 @@ int main(){
   
   // step 3: Model the data
   //cout << "step 3\n" << endl;
-  GradientDescent *gd = new GradientDescent(1000, .001, .0001);
+  GradientDescent *gd = new GradientDescent(100000, .001, .0001);
   LinearRegression *fit = new LinearRegression(tr_data, tr_lbls, gd);
  
   cout <<"predicting step\n" << endl;
@@ -88,7 +88,7 @@ int main(){
   double stat3 = correct / pred_lbls.size();
 
   cout << "Gradient Differences " << endl;
-  cout << fit->get_exactParams() - fit->get_Params() << endl;
+  cout << fit->get_exactParams() - fit->get_Params()[0] << endl;
 
 
   /* THIS DOES NOT WORK

@@ -9,6 +9,7 @@ class GradientDescent : public Optimizer {
  public:
  //is there a better way to pass the gradient 
 	GradientDescent(int iterations,double alpha, double tol); 
+	~GradientDescent();
   	void fitParams(Model* m);
  
  private:

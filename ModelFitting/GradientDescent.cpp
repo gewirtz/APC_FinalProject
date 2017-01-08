@@ -13,21 +13,35 @@ GradientDescent::GradientDescent(int iterations, double alpha, double tol){
 	this->normalizer = 1.0;
 }
 
+GradientDescent::~GradientDescent(){}
+
 void GradientDescent::fitParams(Model *m){
-	arma::vec grad;
+	cout << "Descent" << endl;
+	vec grad;
 	double update;
-	for(int i =0; i < iterations; i++){
-		grad = m->gradient();
-		update = norm(grad,2);
-		if(update > normalizer){
-			normalizer = update;
+	bool finished;
+	//cout << m->params.size() << endl;
+	//cout << m->params.at(0) << endl;
+	for(int i =0; i < m->get_Params().size(); i++){
+		cout << i << endl;
+		finished = true;
+		cout << m->get_Params().size() << endl;
+		for(int j = 0; j < iterations; j++){
+			grad = m->gradient(i);
+			update = norm(grad,2);
+			if(update > normalizer){
+				normalizer = update;
+			}
+			m->set_Params(i, m->get_Params()[i] - alpha*grad/normalizer);
+			cout << "Iteration " << i << "  " << j << endl;
+			cout << "The update norm is " << update  << endl; 
+			cout << "The maximum gradient element is " << grad.max() << endl;
+			cout << "The minimum gradient element is " << grad.min() << endl;
+			if(update  > tol ){
+				finished = false;
+			}
 		}
-		m->params -= alpha*grad/normalizer;
-		//cout << "Iteration " << i << endl;
-		//cout << "The update norm is " << update  << endl; 
-		//cout << "The maximum gradient element is " << grad.max() << endl;
-		//cout << "The minimum gradient element is " << grad.min() << endl;
-		if(update  < tol ){
+		if(finished){
 			return;
 		}
 	}

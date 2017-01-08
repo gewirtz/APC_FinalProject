@@ -18,21 +18,30 @@ LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels,
   this->x = concatenate(train);  //rows contain the ith example, columns contain all instances of a feature
   this->y = labels; //y_i = label of ith training example
   this->optim = optim;
-//includes constant column
-  //cout << "Number of rows concat : " << x.n_rows << endl;
-  //cout << "Number of cols concat : " << x.n_cols << endl; 
-  //this->params = get_exactParams();
-//THIS WILL BE THE USED METHOD IN FUTURE
-  this->params = this->params.zeros(x.n_cols); //initialize beta in above formulation
+  vector<vec> temp; 
+  vec v;
+  temp.push_back(v.zeros(x.n_cols));
+  this->params = temp;
+  cout << this->params[0] << endl;
   fit();  //fit beta  
   for(int i = 0; i < y.size(); i++){
     this->label_set.insert(y(i));
   }
 } 
 
+LinearRegression::~LinearRegression() { 
+  //delete [] params; 
+}
+void LinearRegression::set_Params(int k, arma::vec p){
+  if(k < 0 || k >= params.size()){
+    cerr << "Index " << k << " out of bounds.  Need in range 0 " << params.size() << endl;
+  }
+  params.at(k) = p;
+}
+
 vec LinearRegression::predict(vector<arma::mat> input){
   mat test = concatenate(input);
-  vec labels = test * params; //non_integer fit
+  vec labels = test * params[0]; //non_integer fit
   int closest = 0;
   double distance;
   double temp;
@@ -54,24 +63,17 @@ vec LinearRegression::get_exactParams(){
   return(pinv(x.t() * x) * x.t() * y);
 }
 
-vec LinearRegression::get_Params(){
+vector<vec> LinearRegression::get_Params(){
   return(params);
 }
 
-
 mat LinearRegression::concatenate(vector<arma::mat> input){
-/*if(input == NULL){
-cerr << "Null input\n" << endl;
-exit(-1);
-}*/
   int num_examples = input.size();
-  //cout << "Given " << num_examples << " examples " << endl;
-//cout << "Num examples: " << num_examples << endl;
   if(num_examples <= 0){
     cerr << "Need an input\n" << endl;
     exit(-1);
   }
-  mat data = mat(num_examples,num_rows * num_cols + 1);
+  mat data = mat(num_examples,num_rows * num_cols + 1); //includes constant column
   for(int i=0;i<num_examples;i++){
     if(input[i].n_rows!=num_rows || input[i].n_cols!=num_cols ){
       cerr << "Need all input data to have same dimensions\n" << endl;
@@ -93,12 +95,15 @@ void LinearRegression::fit(){
   optim->fitParams(this);
 }
 
-vec LinearRegression::gradient(){
+vec LinearRegression::gradient(int k){
+  if(k < 0 || k >= params.size()){
+    cerr << "Index " << k << " out of bounds.  Need in range 0 " << params.size() << endl;
+  }
   vec grad;
   grad = grad.zeros(x.n_cols);
-  vec predictions = x * params; //Y = X\beta
+  vec predictions = x * params[k]; //Y = X\beta
   vec resid = predictions - y;
-  for(int i = 0; i < x.n_rows;   i++){
+  for(int i = 0; i < x.n_rows;  i++){
     for(int j = 0; j < x.n_cols;j++){
       grad(j) += resid(i) * x(i,j);
     }
