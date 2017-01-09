@@ -25,6 +25,7 @@ LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels,
   vec v;
   temp.push_back(v.zeros(x.n_cols));
   this->params = temp;
+
   fit();  //fit beta  
 
   for(int i = 0; i < y.size(); i++){
@@ -79,25 +80,25 @@ vec LinearRegression::get_exactParams(){
   return(1.0/x.n_rows*grad);
 }*/
 
-vector<vec> LinearRegression::gradient(int k){
+//used for stoch grad descent
+vector<vec> LinearRegression::gradient(int k){ 
   if(k < 0 || k >= x.n_rows){
     cerr << "Index " << k << " out of bounds.  Need in range 0, " << x.n_rows << endl;
   }
-  
   vec grad;
   grad = grad.zeros(x.n_cols);
-
   vec prediction = x.row(k) * params[0]; //Y = X\beta
   double resid = y[k] - prediction[0];  
-
+  
   for(int j = 0; j < x.n_cols;j++){
-      grad(j) = resid * x(i,j);
-  }
+      grad(j) = resid * x(k,j);
+  }  
   vector<vec> v;
   v.push_back(grad);
-  return(grad);
+  return(v);
 }
 
+//used for batch gradient descent
 vector<vec> LinearRegression::gradient(){
   vec grad;
   grad = grad.zeros(x.n_cols);
@@ -110,7 +111,7 @@ vector<vec> LinearRegression::gradient(){
     }
   }
   vector<vec> v;
-  v.push_back(1.0/x.n_rows*grad)
+  v.push_back(1.0/x.n_rows*grad);
   return(v);
 }
 
@@ -142,13 +143,14 @@ int LinearRegression::get_num_examples(){
 mat LinearRegression::concatenate(vector<arma::mat> input){
   int num_rows = input[0].n_rows;
   int num_cols = input[0].n_cols;
-
-  mat data = mat(num_examples,num_rows * num_cols + 1); //includes constant column
-  for(int i=0;i<num_examples;i++){
+  int ex_count = input.size();
+  mat data = mat(ex_count,num_rows * num_cols + 1); //includes constant column
+  for(int i=0; i<ex_count; i++){
     if(input[i].n_rows!=num_rows || input[i].n_cols!=num_cols ){
       cerr << "Need all input data to have same dimensions\n" << endl;
       exit(-1);
     }
+
     data(i,0) = 1.0; //regress on constant
   
     for(int j=0;j<num_rows;j++){
@@ -161,7 +163,7 @@ mat LinearRegression::concatenate(vector<arma::mat> input){
 }
 
 void LinearRegression::fit(){
-  optim->fitParams(this, true); //stochastic gradient descent
+  optim->fitParams(this); //gradient descent
 }
 
 

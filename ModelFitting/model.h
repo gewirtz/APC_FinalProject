@@ -10,7 +10,7 @@ class Model {
  public:
   virtual ~Model() {}
   virtual arma::vec predict(std::vector<arma::mat> input) = 0;
-  virtual arma::vec gradient() = 0;
+  virtual std::vector<arma::vec> gradient() = 0;
   virtual std::vector<arma::vec> gradient(int k) = 0;
   virtual std::vector<arma::vec> get_Params() = 0;
   virtual void set_Params(int k, arma::vec p) = 0;

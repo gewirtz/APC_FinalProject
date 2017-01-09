@@ -8,15 +8,17 @@ class Model;
 class GradientDescent : public Optimizer {
  public:
  //is there a better way to pass the gradient 
-	GradientDescent(int iterations,double alpha, double tol); 
+	GradientDescent(int iterations,double alpha, double tol, bool stochastic); 
 	~GradientDescent();
-  	void fitParams(Model* m, bool fast);
- 		
+  	void fitParams(Model* m);
+ 	void setType(bool stochastic);
+ 	bool isStochastic();
+
  private:
  	int iterations;
  	double alpha;
  	double tol;
- 	double normalizer;
+ 	bool stochastic;
  	void stochasticGradientDescent(Model *m);
  	void batchGradientDescent(Model *m); 
 };

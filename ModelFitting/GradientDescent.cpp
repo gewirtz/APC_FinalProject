@@ -6,17 +6,17 @@
 using namespace std;
 using namespace arma;
 
-GradientDescent::GradientDescent(int iterations, double alpha, double tol){
+GradientDescent::GradientDescent(int iterations, double alpha, double tol, bool stochastic){
 	this->iterations = iterations;
 	this->alpha = alpha;
 	this->tol = tol;
-	this->normalizer = 1.0;
+	this->stochastic = stochastic;
 }
 
 GradientDescent::~GradientDescent(){}
 
-void GradientDescent::fitParams(Model *m, bool fast){
-	if(fast){
+void GradientDescent::fitParams(Model *m){
+	if(stochastic){
 		stochasticGradientDescent(m);
 	}
 	else{
@@ -24,11 +24,19 @@ void GradientDescent::fitParams(Model *m, bool fast){
 	}
 }
 
+void GradientDescent::setType(bool stochastic){
+	this->stochastic = stochastic;
+}
+
+bool GradientDescent::isStochastic(){
+	return(stochastic);
+}
+
 void GradientDescent::stochasticGradientDescent(Model *m){
-	int num_examples = m->get_num_examples;
+	int num_examples = m->get_num_examples();
 	vector<vec> grad;
 	vec normalizer;
-	int num_params = m->get_Params.size();
+	int num_params = m->get_Params().size();
 
 	double update;
 	bool finished;
@@ -39,17 +47,22 @@ void GradientDescent::stochasticGradientDescent(Model *m){
 		for(int j = 0; j < num_examples; j++){
 			grad = m->gradient(j);
 			for(int k = 0; k < num_params; k++){
+				cout << "iteration "<< i << " example " << j << " parameter " << k << endl;
 				update = norm(grad[k],2);
+				cout << "The update norm is " << update  << endl; 
+				cout << "The maximum gradient element is " << grad[k].max() << endl;
+				cout << "The minimum gradient element is " << grad[k].min() << endl;
 				if(update > normalizer[k]){
 					normalizer[k] = update;
 				}
 				m->set_Params(k, m->get_Params()[k] - alpha*grad[k]/normalizer[k]);
-			}
-			if(update > tol){
-				finished = false;
+				if(update > tol){
+					finished = false;
+				}
 			}
 		}
 		if(finished){
+			cout << "Converges on iteration " << i << endl;
 			return;
 		}
 	}
@@ -58,6 +71,7 @@ void GradientDescent::stochasticGradientDescent(Model *m){
 
 
 void GradientDescent::batchGradientDescent(Model *m){
+	cout << "Batch Gradient Descent" << endl;
 	vector<vec> grad;
 	vec normalizer;
 	int num_params = m->get_Params().size();
@@ -69,18 +83,27 @@ void GradientDescent::batchGradientDescent(Model *m){
 
 	for(int i = 0; i < iterations; i++){
 		grad = m->gradient();
-		finished = true
-		for(int j = 0; j < num_params; k++){
-			update = norm(grad,2);
+		finished = true;
+		for(int j = 0; j < num_params; j++){
+			cout << "iteration "<< i << " parameter " << j << endl;
+
+			update = norm(grad[j],2);
+
+			cout << "The update norm is " << update  << endl; 
+			cout << "The maximum gradient element is " << grad[j].max() << endl;
+			cout << "The minimum gradient element is " << grad[j].min() << endl;
+
 			if(update > normalizer[j]){
 				normalizer[j] = update;
 			}
+
 			m->set_Params(j, m->get_Params()[j] - alpha*grad[j]/normalizer[j]);
 			if(update > tol){
 				finished = false;
 			}
 		}
 		if(finished){
+			cout << "Converges on iteration " << i << endl;
 			return;
 		}
 	}

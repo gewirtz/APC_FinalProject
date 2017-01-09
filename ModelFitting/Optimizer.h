@@ -8,7 +8,7 @@ class Model;
 class Optimizer {
  public:
   virtual ~Optimizer() {}
-  virtual void fitParams(Model* m, bool fast) = 0;
+  virtual void fitParams(Model* m) = 0;
 
 };
 
