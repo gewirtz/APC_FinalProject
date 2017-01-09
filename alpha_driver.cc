@@ -88,9 +88,18 @@ int main(){
   tr_lbls = p_hist->get_labels_train();
   t_lbls = p_hist->get_labels_test();
   vector<arma::mat> tr_data, t_data;
-  tr_data = p_hist->get_data_train();
-  t_data = p_hist->get_data_test();
-
+  tr_data_matform = p_hist->get_data_train();
+  t_data_matform = p_hist->get_data_test();
+  std:vec<arma::rowvec> tr_data;
+  std:vec<arma::rowvec> t_data;
+  //For histogram implementation change hist matrix to vector of row vectors 
+  //ATTN: These two thigns need testing
+  for(int i=0;i<tr_data_matform.n_rows;i++){
+    tr_data[i]=tr_data_matform.row(i);
+  }
+  for(int i=0;i<t_data_matform.n_rows;i++){
+    t_data[i]=t_data_matform.row(i);
+  }
 
   // assert check for out of bounds calls
   //cout << (*temp)(0) << endl;
