@@ -1,5 +1,5 @@
-#ifndef LINEARREGRESSION_H_
-#define LINEARREGRESSION_H_
+#ifndef KNN_H_
+#define KNN_H_
 
 
 #include "model.h"
@@ -15,31 +15,28 @@ class Optimizer;
 
 class LinearRegression : public Model  {
  public:
-  LinearRegression(std::vector<arma::mat> train, arma::colvec labels, Optimizer *optim); 
-  ~LinearRegression();
+  KNN(std::vector<arma::mat> train, arma::colvec labels, Optimizer *optim); 
+  ~KNN();
   
   arma::vec predict(std::vector<arma::mat> input); 
-  arma::vec get_exactParams(); //gives exact solution 
-  std::vector<arma::vec> gradient(int k); //gradient for example k, used for stoch gradient descent
-  std::vector<arma::vec> gradient(); //gradient for all examples, used for batch gradient descent
-  void set_Params(int k, arma::vec p); //sets params.at(k) = p
+  void set_Params(int k, arma::vec p); //sets params so params[k] = p
   std::vector<arma::vec> get_Params();
-  arma::mat getRegressors();
   arma::vec getLabels();
   int get_num_examples();
+  std::vector<arma::vec> gradient() = 0;
+  std::vector<arma::vec> gradient(int k) = 0;
 
  private:
  	arma::mat concatenate(std::vector<arma::mat> input);
- 
-  void fit();   //trains the model (ie updates \beta) for given data x,y 
-
+  //arma::vec choose_k(arma::mat input); //performs cross validation to choose the best k
+  void fit();   //trains the model (ie performs cross validation to choose k) for given data x,y 
 
  	Optimizer* optim;
   int num_examples;
   arma::mat x; //regressors
   arma::vec y; //labels
-  std::vector<arma::vec> params; 
+  std::vec<arma::vec> params; //the average pixel value for each location across all images for each label AND k
   std::set<int> label_set; //possible values y_i can take on
  };
 
-#endif  // LINEARREGRESSION_H_
+#endif  // KNN_H_

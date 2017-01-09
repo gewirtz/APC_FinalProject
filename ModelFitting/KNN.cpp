@@ -1,16 +1,13 @@
-#include "LinearRegression.h"
+#include "KNN.h"
 #include "Optimizer.h"
 #include <cfloat>
 #include <cmath> 
 
 
-// initializes a model to choose \beta so as to fit Y = X\beta + \epsilon so as to minimize
-// ||Y - X\beta ||_2^2
-
 using namespace std;
 using namespace arma;
 
-LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels, Optimizer *optim){
+KNN::KNN(vector<arma::mat> train, arma::colvec labels, Optimizer *optim){
   this->num_examples = train.size();
   if(num_examples <= 0){
     cerr << "Need an input\n" << endl;
@@ -24,9 +21,9 @@ LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels,
   vector<vec> temp; 
   vec v;
   temp.push_back(v.zeros(x.n_cols));
-  this->params = temp;
+  this->params = temp; // sets all the parameters to 0
 
-  fit();  //fit beta  
+  fit();  //fit parameters (average value of each feature for each label)  
 
   for(int i = 0; i < y.size(); i++){
     this->label_set.insert(y(i));
@@ -34,12 +31,12 @@ LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels,
 } 
 
 
-LinearRegression::~LinearRegression() { 
+KNN::~KNN() { 
   //delete [] params; 
 }
 
 
-vec LinearRegression::predict(vector<arma::mat> input){
+vec KNN::predict(vector<arma::mat> input){
   mat test = concatenate(input);
   vec labels = test * params[0]; //non_integer fit
   int closest = 0;
@@ -60,11 +57,11 @@ vec LinearRegression::predict(vector<arma::mat> input){
 }
 
 
-vec LinearRegression::get_exactParams(){ 
+vec KNN::get_exactParams(){ 
   return(pinv(x.t() * x) * x.t() * y);
 }
 
-/*vec LinearRegression::gradient(int k){ //gradient of kth param
+/*vec LinearRegression::gradient(int k){
   if(k < 0 || k >= params.size()){
     cerr << "Index " << k << " out of bounds.  Need in range 0 " << params.size() << endl;
   }
@@ -80,36 +77,15 @@ vec LinearRegression::get_exactParams(){
   return(1.0/x.n_rows*grad);
 }*/
 
-//used for batch gradient descent
-vector<vec> LinearRegression::gradient(){
-  vector<vec> v;
-  vec grad;
-  vec predictions;
-  vec resid;
-  for(int k = 0; k < params.size(); k++){
-    grad = grad.zeros(x.n_cols);
-    predictions = x * params[k]; //Y = X\beta
-    resid = predictions - y;
-    for(int i = 0; i < x.n_rows;i++){
-      for(int j = 0; j < x.n_cols;j++){
-        grad(j) += resid(i) * x(i,j);
-      }
-    }
-    v.push_back(1.0/x.n_rows*grad);
-  }
-  return(v);
-}
-
-
 //used for stoch grad descent
-vector<vec> LinearRegression::gradient(int k){ 
+vector<vec> KNN::gradient(int k){ 
   if(k < 0 || k >= x.n_rows){
     cerr << "Index " << k << " out of bounds.  Need in range 0, " << x.n_rows << endl;
   }
   vec grad;
   grad = grad.zeros(x.n_cols);
   vec prediction = x.row(k) * params[0]; //Y = X\beta
-  double resid = prediction[0] - y[k];  
+  double resid = y[k] - prediction[0];  
   
   for(int j = 0; j < x.n_cols;j++){
       grad(j) = resid * x(k,j);
@@ -119,9 +95,8 @@ vector<vec> LinearRegression::gradient(int k){
   return(v);
 }
 
-/*
 //used for batch gradient descent
-vector<vec> LinearRegression::gradient(){
+vector<vec> KNN::gradient(){
   vec grad;
   grad = grad.zeros(x.n_cols);
   vec predictions = x * params[0]; //Y = X\beta
@@ -136,7 +111,7 @@ vector<vec> LinearRegression::gradient(){
   v.push_back(1.0/x.n_rows*grad);
   return(v);
 }
-*/
+
 
 void LinearRegression::set_Params(int k, arma::vec p){
   if(k < 0 || k >= params.size()){
@@ -185,7 +160,6 @@ mat LinearRegression::concatenate(vector<arma::mat> input){
 }
 
 void LinearRegression::fit(){
-  optim->fitParams(this); //gradient descent
+  optim->fitParams(this); //cross-validation 
+  //add code that computes the mean
 }
-
-

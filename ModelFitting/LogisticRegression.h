@@ -6,34 +6,41 @@
 #include <vector>
 #include <set>
 
+
 //initializes a model to choose \beta so as to fit Y = X\beta + \epsilon so as to minimize
 // ||Y - X\beta ||_2^2
 
 //TODO in future versions - add regularization, add logistic regression, handle y as matrix 
+
 
 class Optimizer;
 
 class LogisticRegression : public Model  {
  public:
   LogisticRegression(std::vector<arma::mat> train, arma::colvec labels, Optimizer *optim); 
-  arma::vec predict(std::vector<arma::mat> input); 
-  arma::vec gradient();
-  std:vector<arma::vec> get_Params();
+  ~LogisticRegression();
   
+  arma::vec predict(std::vector<arma::mat> input); 
+  std::vector<arma::vec> gradient(int k); //gradient for example k, used for stoch gradient descent
+  std::vector<arma::vec> gradient(); //gradient for all examples, used for batch gradient descent
+  void set_Params(int k, arma::vec p); //sets params.at(k) = p
+  std::vector<arma::vec> get_Params();
+  arma::mat getRegressors();
+  arma::vec getLabels();
+  int get_num_examples();
+
  private:
   arma::mat concatenate(std::vector<arma::mat> input);
-  //trains the model (ie updated \beta) for given data x,y 
-  void fit(); 
-  //arma::vec fit_value(arma::vec xi);
+ 
+  void fit();   //trains the model (ie updates \beta) for given data x,y 
+
 
   Optimizer* optim;
+  int num_examples;
   arma::mat x; //regressors
   arma::vec y; //labels
-  std:vector<arma::vec> params; //params
+  std::vector<arma::vec> params; 
   std::set<int> label_set; //possible values y_i can take on
-  int num_rows;
-  int num_cols; 
-
  };
 
-#endif  // LINEARREGRESSION_H_
+#endif  // LOGISTICREGRESSION_H_
