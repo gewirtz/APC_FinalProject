@@ -75,7 +75,7 @@ int main(){
   
   // step 3: Model the data
   //cout << "step 3\n" << endl;
-  GradientDescent *gd = new GradientDescent(1000, .001, .0001, false);
+  GradientDescent *gd = new GradientDescent(100, .001, .0001, true);
   LinearRegression *fit = new LinearRegression(tr_data, tr_lbls, gd);
   //LogisticRegression *fit = new LogisticRegression(tr_data, tr_lbls, gd);
 
@@ -83,10 +83,11 @@ int main(){
   arma::vec pred_lbls = fit->predict(t_data);
   
   cout << "Gradient" << endl;
+  /*
   for(int i = 0; i < fit->get_Params().size();i++){
     cout << "Gradient for class " << i << endl;
     cout << fit->get_Params()[i] << endl;
-  }
+  }*/
 
 
   cout << "Gradient Differences " << endl;

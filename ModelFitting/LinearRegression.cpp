@@ -64,7 +64,7 @@ vec LinearRegression::get_exactParams(){
   return(pinv(x.t() * x) * x.t() * y);
 }
 
-/*vec LinearRegression::gradient(int k){
+/*vec LinearRegression::gradient(int k){ //gradient of kth param
   if(k < 0 || k >= params.size()){
     cerr << "Index " << k << " out of bounds.  Need in range 0 " << params.size() << endl;
   }
@@ -80,6 +80,27 @@ vec LinearRegression::get_exactParams(){
   return(1.0/x.n_rows*grad);
 }*/
 
+//used for batch gradient descent
+vector<vec> LinearRegression::gradient(){
+  vector<vec> v;
+  vec grad;
+  vec predictions;
+  vec resid;
+  for(int k = 0; k < params.size(); k++){
+    grad = grad.zeros(x.n_cols);
+    predictions = x * params[k]; //Y = X\beta
+    resid = predictions - y;
+    for(int i = 0; i < x.n_rows;i++){
+      for(int j = 0; j < x.n_cols;j++){
+        grad(j) += resid(i) * x(i,j);
+      }
+    }
+    v.push_back(1.0/x.n_rows*grad);
+  }
+  return(v);
+}
+
+
 //used for stoch grad descent
 vector<vec> LinearRegression::gradient(int k){ 
   if(k < 0 || k >= x.n_rows){
@@ -88,7 +109,7 @@ vector<vec> LinearRegression::gradient(int k){
   vec grad;
   grad = grad.zeros(x.n_cols);
   vec prediction = x.row(k) * params[0]; //Y = X\beta
-  double resid = y[k] - prediction[0];  
+  double resid = prediction[0] - y[k];  
   
   for(int j = 0; j < x.n_cols;j++){
       grad(j) = resid * x(k,j);
@@ -98,6 +119,7 @@ vector<vec> LinearRegression::gradient(int k){
   return(v);
 }
 
+/*
 //used for batch gradient descent
 vector<vec> LinearRegression::gradient(){
   vec grad;
@@ -114,7 +136,7 @@ vector<vec> LinearRegression::gradient(){
   v.push_back(1.0/x.n_rows*grad);
   return(v);
 }
-
+*/
 
 void LinearRegression::set_Params(int k, arma::vec p){
   if(k < 0 || k >= params.size()){
