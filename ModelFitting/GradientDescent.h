@@ -10,13 +10,15 @@ class GradientDescent : public Optimizer {
  //is there a better way to pass the gradient 
 	GradientDescent(int iterations,double alpha, double tol); 
 	~GradientDescent();
-  	void fitParams(Model* m);
- 
+  	void fitParams(Model* m, bool fast);
+ 		
  private:
  	int iterations;
  	double alpha;
  	double tol;
- 	double normalizer; 
+ 	double normalizer;
+ 	void stochasticGradientDescent(Model *m);
+ 	void batchGradientDescent(Model *m); 
 };
 
 #endif  // GRADIENTDESCENT_H_

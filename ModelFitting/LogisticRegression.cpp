@@ -37,30 +37,31 @@ void LogisticRegression::set_Params(int k, arma::vec p){
   params.at(k) = p;
 }
 
+
 //zeros<vec>(10)
 //MAP (maximum aposteriori) fit
 vec LogisticRegression::predict(vector<arma::mat> input){
   mat test = concatenate(input);
-  vec labels(input.n_rows);
+  vec labels(test.n_rows);
   int fitted_val;
   double max_prob;
   double temp;
   double sum;
   vec fits; //coefficient fits for each class k, give by theta_{k}*x_i
 
-  for(int i = 0; i < input.n_rows;i++){
-    fits = fits.zeros(label_set.size())
+  for(int i = 0; i < test.n_rows;i++){
+    fits = fits.zeros(label_set.size());
     max_prob = 0.0;
     sum = 0.0;
-    for(int k = 0; k < label_set.size() - 1, k++){
-      fits.at(k) = params.at(k)*test.row(i);  //compute denominator of logistic function
+    for(int k = 0; k < label_set.size(); k++){
+      //fits.at(k) = (test.row(i) *  params.at(k));  //compute denominator of logistic function
+      vec v = test.row(i) *  params.at(k);
+      fits.at(k) = v[0];
       sum += fits.at(k);
     }
-    sum = 1 + exp(sum); //logistic function
-    temp = 1.0 / sum; //probability of the Kth class where label set is given by {0,1,...,K}
-    fitted_val = label_set.size() - 1;
-    for(int k = 0; k < label_set.size() - 1, k++){
-      temp = exp(fits.at(k))/sum;
+    sum = 1.0 + exp(-sum); //logistic function
+    for(int k = 0; k < label_set.size() - 1; k++){
+      temp = exp(-fits.at(k))/sum;
       if(temp > max_prob){
         max_prob = temp; //choose the greatest
         fitted_val = k; 
@@ -70,6 +71,45 @@ vec LogisticRegression::predict(vector<arma::mat> input){
   }
   return(labels);
 }
+
+/*
+//zeros<vec>(10)
+//MAP (maximum aposteriori) fit
+vec LogisticRegression::predict(vector<arma::mat> input){
+  mat test = concatenate(input);
+  vec labels(test.n_rows);
+  int fitted_val;
+  double max_prob;
+  double temp;
+  double sum;
+  vec fits; //coefficient fits for each class k, give by theta_{k}*x_i
+
+  for(int i = 0; i < test.n_rows;i++){
+    fits = fits.zeros(label_set.size());
+    max_prob = 0.0;
+    sum = 0.0;
+    for(int k = 0; k < label_set.size() - 1; k++){
+      //fits.at(k) = (test.row(i) *  params.at(k));  //compute denominator of logistic function
+      vec v = test.row(i) *  params.at(k);
+      fits.at(k) = v[0];
+      sum += fits.at(k);
+    }
+    sum = 1.0 + exp(-sum); //logistic function
+    temp = 1.0 / sum; //probability of the Kth class where label set is given by {0,1,...,K}
+    fitted_val = label_set.size() - 1;
+    for(int k = 0; k < label_set.size() - 1; k++){
+      temp = exp(-fits.at(k))/sum;
+      if(temp > max_prob){
+        max_prob = temp; //choose the greatest
+        fitted_val = k; 
+      }
+    }
+    labels[i] = fitted_val; 
+  }
+  return(labels);
+}
+
+*/
 
 vector<vec> LogisticRegression::get_Params(){
   return(params);
@@ -109,24 +149,23 @@ vec LogisticRegression::gradient(int k){ //one v rest fit
   if(k < 0 || k >= params.size()){
     cerr << "Index " << k << " out of bounds.  Need in range 0 " << params.size() << endl;
   }
-  vec n_labels(x.n_rows);
-  vec n_params = zeros<vec>(x.n_cols);
+  vec ovr_lab(x.n_rows); //one v rest labels
 
   for(int i = 0; i < x.n_rows;  i++){
-    if(labels[i] == k){
-      n_labels[i] = 1;
+    if(y[i] == k){
+      ovr_lab[i] = 1;
     }
     else{
-      n_labels[i] = 0;
+      ovr_lab[i] = 0;
     }
   }
 
   vec grad;
   grad = grad.zeros(x.n_cols);
-  vec probs = exp(x * params);
+  vec probs = 1.0/(1.0+exp(-x*params.at(k)));
   for(int i = 0; i < x.n_cols; i++){ //i=1...nparams
     for(int j = 0; j < x.n_rows; j++){ // j=1...examples
-      grad(i) += x(j,i)*(n_labels[j] - probs(j) );
+      grad(i) += x(j,i)*(ovr_lab[j] - probs(j) );
     }
   }
   return(-1.0/x.n_rows*grad); //maximize likelihood

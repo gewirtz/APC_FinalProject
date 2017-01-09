@@ -8,6 +8,7 @@
 #include "ModelFitting/GradientDescent.h"
 #include "ModelFitting/LinearRegression.h"
 #include "ModelFitting/Performance.h"
+#include "ModelFitting/LogisticRegression.h"
 #include <armadillo>
 #include <vector>
 
@@ -73,12 +74,23 @@ int main(){
   
   // step 3: Model the data
   //cout << "step 3\n" << endl;
-  GradientDescent *gd = new GradientDescent(100000, .001, .0001);
-  LinearRegression *fit = new LinearRegression(tr_data, tr_lbls, gd);
- 
+  GradientDescent *gd = new GradientDescent(100, .001, .0001);
+  //LinearRegression *fit = new LinearRegression(tr_data, tr_lbls, gd);
+  LogisticRegression *fit = new LogisticRegression(tr_data, tr_lbls, gd);
+
   cout <<"predicting step\n" << endl;
   arma::vec pred_lbls = fit->predict(t_data);
   
+  //cout << "Gradient Differences " << endl;
+  //cout << fit->get_exactParams() - fit->get_Params()[0] << endl;
+
+  cout << "Gradient" << endl;
+  for(int i = 0; i < fit->get_Params().size();i++){
+    cout << "Gradient for class " << i << endl;
+    cout << fit->get_Params()[i] << endl;
+  }
+
+
   double correct = 0.0;
   for(int i = 0; i < pred_lbls.size(); i++){
     if(pred_lbls(i) == test_lbls[i]){
@@ -86,9 +98,6 @@ int main(){
     }
   }
   double stat3 = correct / pred_lbls.size();
-
-  cout << "Gradient Differences " << endl;
-  cout << fit->get_exactParams() - fit->get_Params()[0] << endl;
 
 
   /* THIS DOES NOT WORK
@@ -100,7 +109,9 @@ int main(){
   stat2 = Pf.correl(pred_lbls,test_lbls);
   stat3 = Pf.accuracy(pred_lbls,test_lbls);
     */
+  cout << "Number correct is " << correct << endl;
+  cout << "Total predicted is " << pred_lbls.size() << endl;
   cout << "The testing accuracy is " <<  stat3 << endl;
-
+  cout << labels << endl;
   return 0;
 }
