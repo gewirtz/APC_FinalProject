@@ -4,9 +4,6 @@
 #include <cmath> 
 
 
-// initializes a model to choose \beta so as to fit Y = X\beta + \epsilon so as to minimize
-// ||Y - X\beta ||_2^2
-
 using namespace std;
 using namespace arma;
 
@@ -24,9 +21,9 @@ KNN::KNN(vector<arma::mat> train, arma::colvec labels, Optimizer *optim){
   vector<vec> temp; 
   vec v;
   temp.push_back(v.zeros(x.n_cols));
-  this->params = temp;
+  this->params = temp; // sets all the parameters to 0
 
-  fit();  //fit beta  
+  fit();  //fit parameters (average value of each feature for each label)  
 
   for(int i = 0; i < y.size(); i++){
     this->label_set.insert(y(i));
