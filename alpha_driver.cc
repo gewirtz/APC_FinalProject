@@ -4,6 +4,10 @@
 #include "processing/mnist_count_images.h"
 #include "processing/no_processing.h"
 #include "processing/no_processing_test.h"
+#include "processing/gaussian_smoothing.h"
+#include "processing/gs_processing_test.h"
+#include "processing/histogram.h"
+#include "processing/histogram_test.h"
 #include "processing/data_process_base.h"
 #include "ModelFitting/GradientDescent.h"
 #include "ModelFitting/LinearRegression.h"
@@ -51,12 +55,18 @@ int main(){
   test_lbls = mnist_load_labels(test_directory, test_lbl);
 
   // step 2: Process the data
-  //cout << "step 2\n" << endl;
+
   No_processing *p_np;
+  Gaussian_smoothing *p_gs;
+  Histogram *p_hist;
+
   p_np=process_driver(train_data,tt_data,train_lbls,test_lbls);
+  p_gs=process_driver_gs(train_data,tt_data,train_lbls,test_lbls);
+  p_hist =  process_driver_hist(train_data, tt_data, train_lbls, test_lbls);
 
 
-  // Hi Chase/Ari, here is how you would get the labels.
+  // Ari, chase, this is how you would use the no processing, smoothing, and histogram pre-processing:
+  //no processing implementation
   arma::colvec tr_lbls, t_lbls;
   tr_lbls = p_np->get_labels_train();
   t_lbls = p_np->get_labels_test();
@@ -64,6 +74,22 @@ int main(){
   tr_data = p_np->get_data_train();
   t_data = p_np->get_data_test();
 
+  //gaussian smoothing implementation
+
+  arma::colvec tr_lbls, t_lbls;
+  tr_lbls = p_gs->get_labels_train();
+  t_lbls = p_gs->get_labels_test();
+  vector<arma::mat> tr_data, t_data;
+  tr_data = p_gs->get_data_train();
+  t_data = p_gs->get_data_test();
+
+  // histogram implementation
+  arma::colvec tr_lbls, t_lbls;
+  tr_lbls = p_hist->get_labels_train();
+  t_lbls = p_hist->get_labels_test();
+  vector<arma::mat> tr_data, t_data;
+  tr_data = p_hist->get_data_train();
+  t_data = p_hist->get_data_test();
 
 
   // assert check for out of bounds calls
@@ -99,8 +125,7 @@ int main(){
   stat1 = Pf.mse(pred_lbls,test_lbls,pred_lbls.size());
   stat2 = Pf.correl(pred_lbls,test_lbls);
   stat3 = Pf.accuracy(pred_lbls,test_lbls);
-    */
+  
   cout << "The testing accuracy is " <<  stat3 << endl;
-
   return 0;
 }

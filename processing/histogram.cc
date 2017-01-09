@@ -1,4 +1,4 @@
-#include "Histogram.h"
+#include "histogram.h"
 #include <stdio.h>
 #include <vector>
 #include <armadillo>
@@ -39,7 +39,7 @@ int Histogram :: process(){
   else if(test_has_been_processed == false){
       test_has_been_processed=true;
       flag=1;
-      use_data=data_train;
+      use_data=data_test;
       cout<<"Processing testing data \n";
   }
   //insert algo here
@@ -61,12 +61,15 @@ int Histogram :: process(){
          }
      }
   }
-    //Figure out how to return histograms
+    //Histogram is added as first element of respective data array
+    std::vector<arma::mat>::iterator it;
     if(flag==0){
-	data_train=hists; // They're not the same dimensions is this kosher?
+      it=data_train.begin();
+      data_train.insert(it,hists);
     }
     else if(flag==1){
-	data_test=hists;// They're not the same dimensions is this kosher?
+      it=data_test.begin();
+      data_test.insert(it,hists);
     }
   cout<<"Processing done \n";
   return 0;

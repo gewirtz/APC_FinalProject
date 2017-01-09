@@ -7,9 +7,9 @@
 
 class Data_processor {
  public:
-  //virtual ~Data_processor();
+  //virtual ~Data_processor() = 0;
 
-  virtual int process(); //Need to specify which data set to run on
+  virtual int process() = 0; //Need to specify which data set to run on
   // consdier setting things to const &d_train, for example
   virtual void set_data_train(std::vector<arma::mat> &d_train)=0;
   virtual void set_data_test(std::vector<arma::mat> &d_test)=0;
