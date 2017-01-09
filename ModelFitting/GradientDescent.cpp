@@ -71,7 +71,6 @@ void GradientDescent::stochasticGradientDescent(Model *m){
 
 
 void GradientDescent::batchGradientDescent(Model *m){
-	cout << "Batch Gradient Descent" << endl;
 	vector<vec> grad;
 	vec normalizer;
 	int num_params = m->get_Params().size();
@@ -79,16 +78,16 @@ void GradientDescent::batchGradientDescent(Model *m){
 	double update;
 	bool finished;
 	//int reset = min(500,iterations/10);
-	normalizer = normalizer.ones(num_params);
+	normalizer = 1.0 * normalizer.ones(num_params);
 
 	for(int i = 0; i < iterations; i++){
 		grad = m->gradient();
 		finished = true;
 		for(int j = 0; j < num_params; j++){
-			cout << "iteration "<< i << " parameter " << j << endl;
+			//cout << "iteration "<< i << " parameter " << j << endl;
 
 			update = norm(grad[j],2);
-
+			cout << "Gradient length " << grad[j].size() << endl;
 			cout << "The update norm is " << update  << endl; 
 			cout << "The maximum gradient element is " << grad[j].max() << endl;
 			cout << "The minimum gradient element is " << grad[j].min() << endl;
@@ -109,36 +108,4 @@ void GradientDescent::batchGradientDescent(Model *m){
 	}
 	cerr << "Did not converge in given number of iterations" << endl;
 }
-/*void GradientDescent::batchGradientDescent(Model *m){
-	vec grad;
-	double update;
-	bool finished;
-	//int reset = min(500,iterations/10);
-	for(int i =0; i < m->get_Params().size(); i++){
-		normalizer = 1.0;
-		finished = true;
-		cout << m->get_Params().size() << endl;
-		for(int j = 0; j < iterations; j++){
-			*if(iterations % reset == 0){
-				normalizer = 1.0;
-			}*
-			grad = m->gradient(i);
-			update = norm(grad,2);
-			if(update > normalizer){
-				normalizer = update;
-			}
-			m->set_Params(i, m->get_Params()[i] - alpha*grad/normalizer);
-			cout << "Iteration " << i << "  " << j << endl;
-			cout << "The update norm is " << update  << endl; 
-			cout << "The maximum gradient element is " << grad.max() << endl;
-			cout << "The minimum gradient element is " << grad.min() << endl;
-			if(update  > tol ){
-				finished = false;
-			}
-		}
-		if(finished){
-			return;
-		}
-	}
-	cerr << "Did not converge in given number of iterations" << endl;
-}*/
+
