@@ -63,10 +63,10 @@ int Histogram :: process(){
   }
     //Figure out how to return histograms
     if(flag==0){
-	data_train=use_data; // They're not the same dimensions is this kosher?
+	data_train=hists; // They're not the same dimensions is this kosher?
     }
     else if(flag==1){
-	data_test=use_data;// They're not the same dimensions is this kosher?
+	data_test=hists;// They're not the same dimensions is this kosher?
     }
   cout<<"Processing done \n";
   return 0;
