@@ -90,8 +90,8 @@ int main(){
   vector<arma::mat> tr_data, t_data;
   tr_data_matform = p_hist->get_data_train();
   t_data_matform = p_hist->get_data_test();
-  std:vec<arma::rowvec> tr_data;
-  std:vec<arma::rowvec> t_data;
+  std:vec<arma::mat> tr_data;
+  std:vec<arma::mat> t_data;
   //For histogram implementation change hist matrix to vector of row vectors 
   //ATTN: These two thigns need testing
   for(int i=0;i<tr_data_matform.n_rows;i++){
