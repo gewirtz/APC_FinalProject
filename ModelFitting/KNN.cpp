@@ -23,7 +23,7 @@ KNN::KNN(vector<arma::mat> train, arma::colvec labels, Optimizer *optim){
   temp.push_back(v.zeros(x.n_cols));
   this->params = temp; // sets all the parameters to 0
 
-  fit();  //fit parameters (average value of each feature for each label)  
+  fit();  //fit parameters (do cross validation for k and find average value of each feature for each label)  
 
   for(int i = 0; i < y.size(); i++){
     this->label_set.insert(y(i));
@@ -160,6 +160,8 @@ mat LinearRegression::concatenate(vector<arma::mat> input){
 }
 
 void LinearRegression::fit(){
-  optim->fitParams(this); //cross-validation 
-  //add code that computes the mean
+  optim->fitParams(this); //cross-validation to find k
+  //computes the mean for each feature for each label
+  
+
 }
