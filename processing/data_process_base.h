@@ -7,7 +7,7 @@
 
 class Data_processor {
  public:
-  virtual ~Data_processor();
+  //virtual ~Data_processor();
 
   virtual int process(); //Need to specify which data set to run on
   // consdier setting things to const &d_train, for example
