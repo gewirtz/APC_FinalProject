@@ -160,5 +160,6 @@ mat LinearRegression::concatenate(vector<arma::mat> input){
 }
 
 void LinearRegression::fit(){
-  optim->fitParams(this); //gradient descent
+  optim->fitParams(this); //cross-validation 
+  //add code that computes the mean
 }

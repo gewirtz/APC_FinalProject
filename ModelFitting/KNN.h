@@ -28,15 +28,14 @@ class LinearRegression : public Model  {
 
  private:
  	arma::mat concatenate(std::vector<arma::mat> input);
-  arma::vec choose_k(arma::mat input); //performs cross validation to choose the best k
-  void fit();   //trains the model (ie updates \beta) for given data x,y 
+  //arma::vec choose_k(arma::mat input); //performs cross validation to choose the best k
+  void fit();   //trains the model (ie performs cross validation to choose k) for given data x,y 
 
  	Optimizer* optim;
   int num_examples;
   arma::mat x; //regressors
   arma::vec y; //labels
-  int k; 
-  std::vec<arma::vec> params; //the average pixel value for each location across all images for each label
+  std::vec<arma::vec> params; //the average pixel value for each location across all images for each label AND k
   std::set<int> label_set; //possible values y_i can take on
  };
 
