@@ -14,8 +14,10 @@ KNN::KNN(vector<arma::mat> train, arma::colvec labels, Optimizer *optim){
     exit(-1);
   }
 
-  this->x = concatenate(train);  //rows contain the ith example, columns contain all instances of a feature
-  this->y = labels; //y_i = label of ith training example
+  srand(1); //shuffle the elements
+  this->x = shuffle(concatenate(train));  //rows contain the ith example, columns contain all instances of a feature
+  srand(1); //preserve same shuffling
+  this->y = shuffle(labels); //y_i = label of ith training example
   this->optim = optim;
 
   vector<vec> temp; 
@@ -168,7 +170,6 @@ mat KNN::concatenate(vector<arma::mat> input){
 }
 
 void KNN::fit(){
-  optim->fitParams(this); //cross-validation for k
   //for each value in label_set get average value of each feature among test objects
   int cur_index = 1; //start at one because k is at index 0
   for (set<int>::iterator i = label_set.begin(); i != label_set.end(); i++) {
@@ -188,4 +189,6 @@ void KNN::fit(){
     set_Params(cur_index,mean_vec);
     cur_index++;  
   }
+  optim->fitParams(this); //cross-validation for k
+  
 }
