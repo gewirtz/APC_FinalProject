@@ -7,13 +7,13 @@
 
 class Optimizer;
 
-class LinearRegression : public Model {
+class KNN : public Model {
  public:
   KNN(std::vector<arma::mat> train, arma::colvec labels, Optimizer *optim); 
   ~KNN();
   
   arma::vec predict(std::vector<arma::mat> input); 
-  arma::vec predict_on_subset(arma::mat test, arma::mat train, int k);
+  arma::vec predict_on_subset(arma::mat test, arma::mat train, int k, arma::vec train_labels);
   void set_Params(int k, arma::vec p); //sets params so params[k] = p
   void set_k(int k);
   std::vector<arma::vec> get_Params();
@@ -23,8 +23,8 @@ class LinearRegression : public Model {
   arma::vec predict_on_subset(arma::mat subset, double k);
 
   // unclear what these are doing for KNN
-  std::vector<arma::vec> gradient() = 0;
-  std::vector<arma::vec> gradient(int k) = 0;
+  std::vector<arma::vec> gradient();
+  std::vector<arma::vec> gradient(int k);
 
  private:
  	arma::mat concatenate(std::vector<arma::mat> input);
@@ -36,7 +36,7 @@ class LinearRegression : public Model {
   int k;
   arma::mat x; //regressors
   arma::vec y; //labels
-  std::vec<arma::vec> params; //the average pixel value for each location across all images for each label 
+  std::vector<arma::vec> params; //the average pixel value for each location across all images for each label 
   std::set<int> label_set; //possible values y_i can take on
  };
 

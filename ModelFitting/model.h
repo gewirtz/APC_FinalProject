@@ -16,7 +16,11 @@ class Model {
   virtual void set_Params(int k, arma::vec p) = 0;
   virtual std::vector<arma::vec> get_Params() = 0;
   virtual int get_num_examples() = 0;
+  virtual arma::mat getTrainset() = 0;
+  virtual arma::vec getLabels() = 0;
+  virtual void set_k(int k) =0;
   virtual double cost(int lower, int upper) = 0;
+  virtual arma::vec predict_on_subset(arma::mat test, arma::mat train, int k, arma::vec train_labels) =0;
   
  private:
   std::vector<arma::vec> params; 

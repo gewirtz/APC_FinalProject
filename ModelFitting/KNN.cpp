@@ -2,6 +2,7 @@
 #include "Optimizer.h"
 #include <cfloat>
 #include <cmath> 
+#include <map>
 
 
 using namespace std;
@@ -51,33 +52,29 @@ arma::vec KNN::predict_on_subset(arma::mat test, arma::mat train, int k_to_use, 
 arma::vec KNN::internal_predict(arma::mat input, arma::mat train, int k_to_use, arma::vec train_labels){
   if(k_to_use<1){
     cerr << "k must be larger than 0" << endl;
-    exit(-1)
+    exit(-1);
   }
   vec labels(input.size());
   vec dists(input.size());
-  uvec sort_indices;
+  vec sort_indices;
   vec closest_k_labels(k_to_use);
-  ind index_to_use;
+  int index_to_use;
   for(int i=0;i<input.size();i++){ // for each item in testset
     for(int j=0;j<train.n_rows;j++){ //get distance to each example in training set
-      dists(j) = norm(input.row(i),train.row(j),2);
+      dists(j) = norm(input.row(i)-train.row(j),2);
     }
-    sort_indices = sort_index(dists).subvec(0,k_to_use-1); //get the indices of the k closest neighbors
+    sort_indices = conv_to<vec>::from(sort_index(dists)).subvec(0,k_to_use-1); //get the indices of the k closest neighbors
     for(int m=0;m<sort_indices.n_elem;m++){
-      index_to_use = sort_indices(m)
-      closest_k_labels(m).fill(train_labels(index_to_use))
+      index_to_use = sort_indices(m);
+      closest_k_labels(m) = train_labels(index_to_use);
     }
     //find the mode of closest_k_labels
     int max = 0;
     int mode = -1;
     int cur_label;
     map<int,int> m;
-    for (set<int>::iterator n = label_set.begin(); n != label_set.end(); n++) {
-      if(cur_index>(train.n_cols)){
-        cerr << "Indexing past the assigned length of params in KNN" << endl;
-        exit(-1);
-      }
-      cur_label = *n;
+    for(int n = 0; n<k_to_use; k++){
+      cur_label = closest_k_labels(n);
       if(m.find(cur_label) != m.end()){
         m[cur_label]++;
       }
@@ -93,7 +90,7 @@ arma::vec KNN::internal_predict(arma::mat input, arma::mat train, int k_to_use, 
         mode = cur_label;
       }
     }
-    labels(i).fill(mode);
+    labels(i) = mode;
   }
   return(labels);
 }
@@ -195,11 +192,12 @@ void KNN::fit(){
     int cur_label = *i;
     uvec indices = find(y==cur_label);
     mat cur_label_samples = x.rows(indices);
-    arma::vec mean_vec.zeros(x.n_cols);
+    arma::vec mean_vec;
+    mean_vec.zeros(x.n_cols);
     for(int c=0;c<cur_label_samples.n_cols;c++){
       arma::vec cur_feature = x.col(c);
       int avgval = mean(cur_feature);
-      mean_vec[c].fill(avgval);
+      mean_vec(c) = avgval;
     }
     set_Params(cur_index,mean_vec);
     cur_index++;  

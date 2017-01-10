@@ -7,7 +7,7 @@ using namespace std;
 using namespace arma;
 
 //TODO: how to add support when the parameter is not an int
-CrossValidation::CrossValidation(double range_start, double range_end, int delta=1, double nfolds=10){
+CrossValidation::CrossValidation(double range_start, double range_end, int delta=1, int nfolds=10){
 	this->param_range_start = range_start;
 	this->param_range_end = range_end;
 	this->delta = delta;
@@ -23,7 +23,7 @@ void CrossValidation::fitParams(Model *m){
 	mat train = m->getTrainset();
 	vec labels = m->getLabels();
 	int num_train = train.n_rows;
-	int num_steps = (range_end-range_start)/delta;
+	int num_steps = (param_range_end-param_range_start)/delta;
 	int items_per_fold = num_train/nfolds;
 	mat train_set, test_set, train_p1, train_p2;
 	vec test_label_set, label_results, train_label_p1, train_label_p2, train_label_set;
@@ -33,8 +33,8 @@ void CrossValidation::fitParams(Model *m){
 	uvec label_comparison;
 	//loop through possible values of parameters
 	for(int i=0; i<=num_steps; i++){ 
-		cur_param=range_start+(i*delta);
-		if(cur_param>range_end || cur_param<range_start){
+		cur_param=param_range_start+(i*delta);
+		if(cur_param>param_range_end || cur_param<param_range_start){
 			cerr << "Current parameter is outside the specified range" << endl;
 			exit(-1);
 		}
@@ -51,11 +51,11 @@ void CrossValidation::fitParams(Model *m){
 			}
 			//because integer division won't necessarily hit all the training examples
 			else{
-				test_end_row = ((i+1)*items_per_fold)-1
+				test_end_row = ((i+1)*items_per_fold)-1;
 			}
 			test_start_row = i*items_per_fold;
 			test_set = train.rows(test_start_row,test_end_row);
-			test_label_set = labels.subvec(start_row,end_row);
+			test_label_set = labels.subvec(test_start_row,test_end_row);
 			//now potentially join two submatrices to get the train_set
 			if(need_to_join==1){
 				train1_start = (i-1)*items_per_fold;
@@ -68,8 +68,14 @@ void CrossValidation::fitParams(Model *m){
 				train_label_p2 = labels.subvec(train2_start,train2_end);
 				train_set = join_cols(train_p1,train_p2);
 				train_label_set = vec(train_label_p1.n_elem+train_label_p2.n_elem);
-				train_label_set.subvec(0,train_label_p1.n_elem-1).fill(train_label_p1);
-				train_label_set.subvec(train_label_p1.n_elem,train_label_set.n_elem).fill(train_label_p2);
+				for(int p = 0; p< train_label_set.n_elem; p++){
+					if(p<train_label_p1.n_elem){
+						train_label_set(p) = train_label_p1(p);
+					}
+					else{
+						train_label_set(p) = train_label_p2(p-train_label_p1.n_elem);
+					}
+				}
 			}
 			else{
 				if(j==0){
@@ -87,9 +93,9 @@ void CrossValidation::fitParams(Model *m){
 			param_error += accu(label_comparison);
 
 		}
-		overall_errors(i).fill(param_error);
+		overall_errors(i) = param_error;
 	}
 	//find which parameter had the smallest error (number of wrong results)
-	int best_index = overall_errors.index_min;
-	m->set_k(range_start+(best_index*delta));
+	int best_index = overall_errors.index_min();
+	m->set_k(param_range_start+(best_index*delta));
 }
