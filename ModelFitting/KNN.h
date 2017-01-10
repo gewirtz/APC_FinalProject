@@ -1,15 +1,9 @@
 #ifndef KNN_H_
 #define KNN_H_
 
-
 #include "model.h"
 #include <vector>
 #include <set>
-
-//initializes a model to choose \beta so as to fit Y = X\beta + \epsilon so as to minimize
-// ||Y - X\beta ||_2^2...decision as in multinomial probit 
-
-//TODO in future versions - add regularization
 
 class Optimizer;
 
