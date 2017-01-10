@@ -38,7 +38,7 @@ int Gaussian_smoothing :: process(){
   else if(test_has_been_processed == false){
       test_has_been_processed=true;
       flag=1;
-      use_data=data_train;
+      use_data=data_test;
       //cout<<"Processing testing data \n";
   }
   //Using a 5X5 filter implying a border of 2
@@ -138,7 +138,7 @@ int Gaussian_smoothing :: process(){
       data_test=use_data;
   }
 
-  cout<<"Processing done \n";
+  //cout<<"Processing done \n";
   return 0;
 }
 

@@ -34,13 +34,13 @@ int Histogram :: process(){
     train_has_been_processed=true;
     flag=0;
     use_data=data_train;
-    cout<<"Processing training data \n";
+    //cout<<"Processing training data \n";
   }
   else if(test_has_been_processed == false){
       test_has_been_processed=true;
       flag=1;
       use_data=data_test;
-      cout<<"Processing testing data \n";
+      //cout<<"Processing testing data \n";
   }
   //insert algo here
   // Initialize arrays - test and train images have same dimensions
@@ -71,7 +71,7 @@ int Histogram :: process(){
       it=data_test.begin();
       data_test.insert(it,hists);
     }
-  cout<<"Processing done \n";
+    //cout<<"Processing done \n";
   return 0;
 }
 

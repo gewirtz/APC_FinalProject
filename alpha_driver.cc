@@ -67,7 +67,7 @@ int main(int argc, char *argv[]){
   vector<arma::mat>  tt_data, train_data;
   arma::colvec train_lbls, test_lbls;
 
-  if (datatpye_flag == 0){ // MNIST
+  if (datatype_flag == 0){ // MNIST
 
     train_data = mnist_load_images(train_directory, train_img, unitflag);
     train_lbls = mnist_load_labels(train_directory, train_lbl);
@@ -76,14 +76,15 @@ int main(int argc, char *argv[]){
 
   }
 
-  else if{datatype_flag == 1){ // PPM
+  else if(datatype_flag == 1){ // PPM
 
-    // train_data = ... etc
+    // train_data = ...
+
   }
 
-  else if{datatype_flag == 2){ // JPEG
+  else if(datatype_flag == 2){ // JPEG
 
-    // train_data = ... etc
+    // train_data = ...
 
   }
   // size checks
@@ -100,6 +101,8 @@ int main(int argc, char *argv[]){
           
   vector<arma::mat> tr_data, t_data;
   arma::colvec tr_lbls, t_lbls;
+  vector<arma::mat> tr_data_matform, t_data_matform;
+
           
   if(process_flag == 0){ // no processing
     p_np=process_driver(train_data,tt_data,train_lbls,test_lbls);
@@ -112,10 +115,14 @@ int main(int argc, char *argv[]){
   }
   else if (process_flag == 1){ // gaussian
     p_gs=process_driver_gs(train_data,tt_data,train_lbls,test_lbls);
+
     tr_lbls = p_gs->get_labels_train();
     t_lbls = p_gs->get_labels_test();
     tr_data = p_gs->get_data_train();
     t_data = p_gs->get_data_test();
+
+    cout << "gaussian train size: " << tr_data.size() << endl;
+    cout << "gassian test size: " << t_data.size() << endl;
   }
   else if (process_flag == 2){ // histogram
     p_hist =  process_driver_hist(train_data, tt_data, train_lbls, test_lbls);
@@ -124,18 +131,20 @@ int main(int argc, char *argv[]){
     t_lbls = p_hist->get_labels_test();
     tr_data_matform = p_hist->get_data_train();
     t_data_matform = p_hist->get_data_test();
+
+    cout << "number of train histograms: " << tr_data_matform.size() << endl;
+    cout << "number of test histograms: " << t_data_matform.size() << endl;
           
     //For histogram implementation change hist matrix to vector of row vectors 
-    for(int i=0;i<tr_data_matform.n_rows;i++){
-      tr_data[i]=tr_data_matform.row(i);
+    for(int i=0;i<tr_data_matform[0].n_rows;i++){
+      tr_data[i]=tr_data_matform[0].row(i);
     }
-    for(int i=0;i<t_data_matform.n_rows;i++){
-      t_data[i]=t_data_matform.row(i);
+    for(int i=0;i<t_data_matform[0].n_rows;i++){
+      t_data[i]=t_data_matform[0].row(i);
     }
   }
-  
-  // exit unit test for processing
-  if (unitflag == 1) exit(1);
+
+  /*
 
   // step 3: Model the data
   //cout << "step 3\n" << endl;
@@ -166,11 +175,14 @@ int main(int argc, char *argv[]){
   stat1 = Pf.mse(pred_lbls,test_lbls,pred_lbls.size());
   stat2 = Pf.correl(pred_lbls,test_lbls);
   stat3 = Pf.accuracy(pred_lbls,test_lbls);
-  */  
+  */
+  /*  
     
   cout << "The testing accuracy is " <<  stat3 << endl;
   for(int i = 0; i < costs.size(); i++){
     cout << costs[i] << endl;
   }
+
+*/
   return 0;
 }

@@ -19,6 +19,6 @@ Histogram* process_driver_hist(vector<arma::mat > &d_train,
   p->set_labels_test(l_test);
   p->process(); // process is in the NO_PROCESSING_H_ header definition
   p->process();
-  printf("history and/or telegrams are happening");
+  //printf("history and/or telegrams are happening");
   return(p);
 }

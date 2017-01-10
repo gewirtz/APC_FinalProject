@@ -19,6 +19,6 @@ Gaussian_smoothing* process_driver_gs(vector<arma::mat > &d_train,
   p->set_labels_test(l_test);
   p->process(); // process is in the NO_PROCESSING_H_ header definition
   p->process();
-  printf("something gaussian is happening");
+  //printf("something gaussian is happening");
   return(p);
 }
