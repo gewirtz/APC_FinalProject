@@ -19,6 +19,18 @@ using namespace arma;
 using namespace std;
 
 int main(int argc, char *argv[]){
+/*
+  mat A = randu<mat>(4,5);
+  vec v = randu<vec>(4);
+  srand(1);
+  mat B = shuffle(A);
+  srand(1);
+  vec u = shuffle(v);
+  cout << A << endl;
+  cout << B << endl;
+  cout << v << endl;
+  cout << u << endl;
+*/
 
   string train_directory, test_directory;
   string train_img, test_img;
@@ -118,7 +130,7 @@ int main(int argc, char *argv[]){
   */
   // step 3: Model the data
   //cout << "step 3\n" << endl;
-  GradientDescent *gd = new GradientDescent(500, .001, .0001, 0, 500);
+  GradientDescent *gd = new GradientDescent(500, .001, 10e-4, 0);
   LinearRegression *fit = new LinearRegression(tr_data, tr_lbls, gd);
  
   cout <<"predicting step\n" << endl;

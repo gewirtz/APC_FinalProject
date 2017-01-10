@@ -7,25 +7,20 @@ class Model;
 
 class GradientDescent : public Optimizer {
  public:
-	// i = 0, stochastic, i = 1, batch, i =2, mixed
-	GradientDescent(int iterations,double alpha, double tol, int method, int batchSize); 
+	// batchSize = 1 is stochastic gradient descent
+	//batchSize = 0 is batch gradient descent, alpha is learning rate 
+	GradientDescent(int iterations,double alpha, double tol, int batchSize); 
 	
 	~GradientDescent();
   	void fitParams(Model* m);
- 	void setMethod(int method);
  	void setBatchSize(int batchSize);
  	int getBatchSize();
- 	int getMethod();
 
  private:
  	int iterations;
  	double alpha;
  	double tol;
  	int batchSize;
- 	int method;
- 	void stochasticGradientDescent(Model *m);
- 	void batchGradientDescent(Model *m); 
- 	void mixedGradientDescent(Model*m);  
 };
 
 #endif  // GRADIENTDESCENT_H_

@@ -18,8 +18,10 @@ class LogisticRegression : public Model  {
   ~LogisticRegression();
   
   arma::vec predict(std::vector<arma::mat> input); 
-  std::vector<arma::vec> gradient(int k); //gradient for example k, used for stoch gradient descent
-  std::vector<arma::vec> gradient(); //gradient for all examples, used for batch gradient descent
+
+  //gradient computed using examples lower to upper
+  std::vector<arma::vec> gradient(int lower, int upper); 
+  
   void set_Params(int k, arma::vec p); //sets params.at(k) = p
   std::vector<arma::vec> get_Params();
   arma::mat getRegressors();
@@ -39,5 +41,7 @@ class LogisticRegression : public Model  {
   std::vector<arma::vec> params; 
   std::set<int> label_set; //possible values y_i can take on
  };
+
+
 
 #endif  // LOGISTICREGRESSION_H_

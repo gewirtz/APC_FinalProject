@@ -16,10 +16,15 @@ LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels,
     cerr << "Need an input\n" << endl;
     exit(-1);
   }
-
-  this->x = concatenate(train);  //rows contain the ith example, columns contain all instances of a feature
-  this->y = labels; //y_i = label of ith training example
+  srand(1); //shuffle the elements
+  this->x = shuffle(concatenate(train));  //rows contain the ith example, columns contain all instances of a feature
+  srand(1); //preserve same shuffling
+  this->y = shuffle(labels); //y_i = label of ith training example
   this->optim = optim;
+
+  for(int i = 0; i < y.size(); i++){
+    this->label_set.insert(y(i));
+  }
 
   vector<vec> temp; 
   vec v;
@@ -28,9 +33,6 @@ LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels,
 
   fit();  //fit beta  
 
-  for(int i = 0; i < y.size(); i++){
-    this->label_set.insert(y(i));
-  }
 } 
 
 
@@ -100,7 +102,7 @@ vector<vec> LinearRegression::gradient(int lower, int upper){
         grad(j) += resid(i) * x(i,j);
       }
     }
-    v.push_back(1.0/x.n_rows*grad);
+    v.push_back(1.0/(upper - lower)*grad);
   }
   return(v);
 }
