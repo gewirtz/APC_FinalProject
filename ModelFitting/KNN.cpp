@@ -22,7 +22,7 @@ KNN::KNN(vector<arma::mat> train, arma::colvec labels, Optimizer *optim){
 
   vector<vec> temp; 
   vec v;
-  temp.push_back(v.zeros(x.n_cols + 1)); //plus one because the first item is k
+  temp.push_back(v.zeros(x.n_cols)); //plus one because the first item is k
   this->params = temp; // sets all the parameters to 0
 
   fit();  //fit parameters (average value of each feature for each label)  
@@ -38,8 +38,21 @@ KNN::~KNN() {
 }
 
 
-vec KNN::predict(vector<arma::mat> input){
+arma::vec KNN::predict(vector<arma::mat> input){
   mat testset = concatenate(input);
+  int k_to_use = k;
+  return(internal_predict(testset,x,k_to_use));
+}
+
+arma::vec KNN::predict_on_subset(arma::mat test, arma::mat train, int k){
+  return(internal_predict(test,train,k));
+}
+
+arma::vec KNN::internal_predict(arma::mat input, arma::mat train, int k){
+  if(k<1){
+    cerr << "k must be larger than 0" << endl;
+    exit(-1)
+  }
   vec labels(input.size());
   vec dists(input.size());
   uvec sort_indices;
@@ -82,10 +95,8 @@ vec KNN::predict(vector<arma::mat> input){
     }
     labels(i).fill(mode);
   }
-
   return(labels);
 }
-
 
 //used for stoch grad descent
 vector<vec> KNN::gradient(int k){ 
@@ -134,8 +145,12 @@ vector<vec> KNN::get_Params(){
   return(params);
 }
 
-mat KNN::getTestset(){
+mat KNN::getTrainset(){
   return(x);
+}
+
+void KNN::set_k(int k){
+  this->k = k;
 }
 
 vec KNN::getLabels(){
@@ -171,9 +186,9 @@ mat KNN::concatenate(vector<arma::mat> input){
 
 void KNN::fit(){
   //for each value in label_set get average value of each feature among test objects
-  int cur_index = 1; //start at one because k is at index 0
+  int cur_index = 0; //start at one because k is at index 0
   for (set<int>::iterator i = label_set.begin(); i != label_set.end(); i++) {
-    if(cur_index>(x.n_cols)){
+    if(cur_index>(x.n_cols-1)){
       cerr << "Indexing past the assigned length of params in KNN" << endl;
       exit(-1);
     }
