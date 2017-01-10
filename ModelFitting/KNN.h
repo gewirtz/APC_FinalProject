@@ -28,7 +28,7 @@ class LinearRegression : public Model {
 
  private:
  	arma::mat concatenate(std::vector<arma::mat> input);
-  arma::vec internal_predict(arma::mat input, arma::mat train, int k);
+  arma::vec internal_predict(arma::mat input, arma::mat train, int k, arma::vec train_labels);
   //arma::vec choose_k(arma::mat input); //performs cross validation to choose the best k
   void fit();   //trains the model (ie performs cross validation to choose k) for given data x,y 
  	Optimizer* optim;

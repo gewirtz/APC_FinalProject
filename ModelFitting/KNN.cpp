@@ -41,43 +41,43 @@ KNN::~KNN() {
 arma::vec KNN::predict(vector<arma::mat> input){
   mat testset = concatenate(input);
   int k_to_use = k;
-  return(internal_predict(testset,x,k_to_use));
+  return(internal_predict(testset,x,k_to_use,y));
 }
 
-arma::vec KNN::predict_on_subset(arma::mat test, arma::mat train, int k){
-  return(internal_predict(test,train,k));
+arma::vec KNN::predict_on_subset(arma::mat test, arma::mat train, int k_to_use, arma::vec train_labels){
+  return(internal_predict(test,train,k_to_use, train_labels));
 }
 
-arma::vec KNN::internal_predict(arma::mat input, arma::mat train, int k){
-  if(k<1){
+arma::vec KNN::internal_predict(arma::mat input, arma::mat train, int k_to_use, arma::vec train_labels){
+  if(k_to_use<1){
     cerr << "k must be larger than 0" << endl;
     exit(-1)
   }
   vec labels(input.size());
   vec dists(input.size());
   uvec sort_indices;
-  vec closest_k_labels(k);
+  vec closest_k_labels(k_to_use);
   ind index_to_use;
   for(int i=0;i<input.size();i++){ // for each item in testset
-    for(int j=0;j<x.n_rows;j++){ //get distance to each example in training set
-      dists(j) = norm(testset.row(i),x.row(j),2);
+    for(int j=0;j<train.n_rows;j++){ //get distance to each example in training set
+      dists(j) = norm(input.row(i),train.row(j),2);
     }
-    sort_indices = sort_index(dists).subvec(0,k-1); //get the indices of the k closest neighbors
-    for(int x=0;x<sort_indices.n_elem;x++){
-      index_to_use = sort_indices(x)
-      closest_k_labels(x).fill(y(index_to_use))
+    sort_indices = sort_index(dists).subvec(0,k_to_use-1); //get the indices of the k closest neighbors
+    for(int m=0;m<sort_indices.n_elem;m++){
+      index_to_use = sort_indices(m)
+      closest_k_labels(m).fill(train_labels(index_to_use))
     }
     //find the mode of closest_k_labels
     int max = 0;
     int mode = -1;
     int cur_label;
     map<int,int> m;
-    for (set<int>::iterator i = label_set.begin(); i != label_set.end(); i++) {
-      if(cur_index>(x.n_cols)){
+    for (set<int>::iterator n = label_set.begin(); n != label_set.end(); n++) {
+      if(cur_index>(train.n_cols)){
         cerr << "Indexing past the assigned length of params in KNN" << endl;
         exit(-1);
       }
-      cur_label = *i;
+      cur_label = *n;
       if(m.find(cur_label) != m.end()){
         m[cur_label]++;
       }

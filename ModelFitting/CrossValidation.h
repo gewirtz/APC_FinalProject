@@ -11,7 +11,6 @@ class CrossValidation : public Optimizer {
 	CrossValidation(double range_start, double range_end, double delta=.01, double nfolds=10); 
 	~CrossValidation();
   	void fitParams(Model* m);
-  	double param_value;
 
  private:
 	double param_range_start;

@@ -81,7 +81,7 @@ void CrossValidation::fitParams(Model *m){
 					train_label_set = labels.subvec(0,test_start_row-1);
 				}
 			}
-			label_results = m->predict_on_subset(test_set,train_set,cur_param);
+			label_results = m->predict_on_subset(test_set,train_set,cur_param,train_label_set);
 			//now find how many results were wrong (label_comparison element==0) and add to param_error
 			label_comparison = test_label_set==label_results;
 			param_error += accu(label_comparison);
