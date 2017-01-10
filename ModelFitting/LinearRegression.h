@@ -20,8 +20,9 @@ class LinearRegression : public Model  {
   
   arma::vec predict(std::vector<arma::mat> input); 
   arma::vec get_exactParams(); //gives exact solution 
-  std::vector<arma::vec> gradient(int k); //gradient for example k, used for stoch gradient descent
-  std::vector<arma::vec> gradient(); //gradient for all examples, used for batch gradient descent
+  //gradient computed using examples lower to upper
+  std::vector<arma::vec> gradient(int lower, int upper); 
+  
   void set_Params(int k, arma::vec p); //sets params.at(k) = p
   std::vector<arma::vec> get_Params();
   arma::mat getRegressors();

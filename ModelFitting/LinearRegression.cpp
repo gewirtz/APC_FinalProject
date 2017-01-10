@@ -81,7 +81,12 @@ vec LinearRegression::get_exactParams(){
 }*/
 
 //used for batch gradient descent
-vector<vec> LinearRegression::gradient(){
+vector<vec> LinearRegression::gradient(int lower, int upper){
+  if(lower < 0 || lower >= upper || upper > num_examples){
+    cerr << "Lower and upper limits " << lower << " and " << upper << " invalid" << endl;
+    cerr << "Need val between 0 and " << num_examples << endl;
+    exit(1);
+  }
   vector<vec> v;
   vec grad;
   vec predictions;
@@ -90,7 +95,7 @@ vector<vec> LinearRegression::gradient(){
     grad = grad.zeros(x.n_cols);
     predictions = x * params[k]; //Y = X\beta
     resid = predictions - y;
-    for(int i = 0; i < x.n_rows;i++){
+    for(int i = lower; i < upper;i++){
       for(int j = 0; j < x.n_cols;j++){
         grad(j) += resid(i) * x(i,j);
       }
@@ -100,7 +105,7 @@ vector<vec> LinearRegression::gradient(){
   return(v);
 }
 
-
+/*
 //used for stoch grad descent
 vector<vec> LinearRegression::gradient(int k){ 
   if(k < 0 || k >= x.n_rows){
@@ -119,7 +124,7 @@ vector<vec> LinearRegression::gradient(int k){
   return(v);
 }
 
-/*
+
 //used for batch gradient descent
 vector<vec> LinearRegression::gradient(){
   vec grad;

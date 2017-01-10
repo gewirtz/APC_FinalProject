@@ -1,15 +1,9 @@
 #ifndef KNN_H_
 #define KNN_H_
 
-
 #include "model.h"
 #include <vector>
 #include <set>
-
-//initializes a model to choose \beta so as to fit Y = X\beta + \epsilon so as to minimize
-// ||Y - X\beta ||_2^2...decision as in multinomial probit 
-
-//TODO in future versions - add regularization
 
 class Optimizer;
 
@@ -23,6 +17,7 @@ class LinearRegression : public Model  {
   std::vector<arma::vec> get_Params();
   arma::vec getLabels();
   int get_num_examples();
+  arma::mat getTestset();
   std::vector<arma::vec> gradient() = 0;
   std::vector<arma::vec> gradient(int k) = 0;
 
