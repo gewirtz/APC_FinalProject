@@ -17,6 +17,7 @@ class LinearRegression : public Model  {
   std::vector<arma::vec> get_Params();
   arma::vec getLabels();
   int get_num_examples();
+  arma::mat getTestset();
   std::vector<arma::vec> gradient() = 0;
   std::vector<arma::vec> gradient(int k) = 0;
 
