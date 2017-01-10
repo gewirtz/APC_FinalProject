@@ -37,22 +37,50 @@ KNN::~KNN() {
 
 
 vec KNN::predict(vector<arma::mat> input){
-  mat test = concatenate(input);
-  vec labels = test * params[0]; //non_integer fit
-  int closest = 0;
-  double distance;
-  double temp;
-  for(int i=0;i<input.size();i++){ //round it
-    distance = DBL_MAX;
-    for(int lab : label_set){
-      temp = std::abs(labels[i] - lab); //find closest label
-      if(temp <= distance){
-        distance = temp;
-        closest = lab;
+  mat testset = concatenate(input);
+  vec labels(input.size());
+  vec dists(input.size());
+  uvec sort_indices;
+  vec closest_k_labels(k);
+  ind index_to_use;
+  for(int i=0;i<input.size();i++){ // for each item in testset
+    for(int j=0;j<x.n_rows;j++){ //get distance to each example in training set
+      dists(j) = norm(testset.row(i),x.row(j),2);
+    }
+    sort_indices = sort_index(dists).subvec(0,k-1); //get the indices of the k closest neighbors
+    for(int x=0;x<sort_indices.n_elem;x++){
+      index_to_use = sort_indices(x)
+      closest_k_labels(x).fill(y(index_to_use))
+    }
+    //find the mode of closest_k_labels
+    int max = 0;
+    int mode = -1;
+    int cur_label;
+    map<int,int> m;
+    for (set<int>::iterator i = label_set.begin(); i != label_set.end(); i++) {
+      if(cur_index>(x.n_cols)){
+        cerr << "Indexing past the assigned length of params in KNN" << endl;
+        exit(-1);
+      }
+      cur_label = *i;
+      if(m.find(cur_label) != m.end()){
+        m[cur_label]++;
+      }
+      else{
+        m[cur_label] = 1;
+      }
+      if(m[cur_label]<1){
+        cerr << "The count of neighbors with a label cannot be less than 1" << endl;
+        exit(-1);
+      }
+      if(m[cur_label] > max){
+        max = m[cur_label];
+        mode = cur_label;
       }
     }
-    labels[i] = closest;
+    labels(i).fill(mode);
   }
+
   return(labels);
 }
 
@@ -160,9 +188,9 @@ void KNN::fit(){
     for(int c=0;c<cur_label_samples.n_cols;c++){
       arma::vec cur_feature = x.col(c);
       int avgval = mean(cur_feature);
-      mean_vec.elem(c).fill(avgval);
+      mean_vec[c].fill(avgval);
     }
-    params.elem(cur_index).fill(mean_vec);
+    set_Params(cur_index,mean_vec);
     cur_index++;  
   }
 }
