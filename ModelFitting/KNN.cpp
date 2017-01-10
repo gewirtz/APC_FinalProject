@@ -38,8 +38,17 @@ KNN::~KNN() {
 }
 
 
-vec KNN::predict(vector<arma::mat> input){
+arma::vec KNN::predict(vector<arma::mat> input){
   mat testset = concatenate(input);
+  int k_to_use = params(1); //might not be an int, might be arma vec?
+  return(internal_predict(testset,x,k_to_use));
+}
+
+arma::vec KNN::predict_on_subset(arma::mat test, arma::mat train, int k){
+  return(internal_predict(test,train,k));
+}
+
+arma::vec KNN::internal_predict(arma::mat input, arma::mat train, int k){
   vec labels(input.size());
   vec dists(input.size());
   uvec sort_indices;
@@ -82,10 +91,8 @@ vec KNN::predict(vector<arma::mat> input){
     }
     labels(i).fill(mode);
   }
-
   return(labels);
 }
-
 
 //used for stoch grad descent
 vector<vec> KNN::gradient(int k){ 
