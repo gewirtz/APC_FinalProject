@@ -12,6 +12,7 @@
 #include "ModelFitting/GradientDescent.h"
 #include "ModelFitting/LinearRegression.h"
 #include "ModelFitting/Performance.h"
+//#include "ModelFitting/LogisticRegression.h"
 #include <armadillo>
 #include <vector>
 #include <assert.h>
@@ -182,25 +183,19 @@ int main(int argc, char *argv[]){
   experienced with it i would assume.
 
   thanks!  
-  /*
+  
 
 
-  /* THIS DOES NOT WORK
-  // step 4: output the results - Noemi coded this I think?
+   THIS DOES NOT WORK
+  step 4: output the results - Noemi coded this I think?
   Performance Pf;
   vec stat1, stat3;
   mat stat2;
   stat1 = Pf.mse(pred_lbls,test_lbls,pred_lbls.size());
   stat2 = Pf.correl(pred_lbls,test_lbls);
   stat3 = Pf.accuracy(pred_lbls,test_lbls);
-  */
-  /*  
-    
-  cout << "The testing accuracy is " <<  stat3 << endl;
-  for(int i = 0; i < costs.size(); i++){
-    cout << costs[i] << endl;
-  }
 
-*/
+*/    
+  cout << "The testing accuracy is " <<  stat3 << endl;
   return 0;
 }

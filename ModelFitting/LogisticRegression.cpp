@@ -43,11 +43,11 @@ vec LogisticRegression::predict(vector<arma::mat> input){
   mat test = concatenate(input);
   vec labels(test.n_rows);
   int fitted_val = -1;
-  vec<double> label_likelihood(label_set.size());
+  vector<double> label_likelihood(label_set.size());
   vec temp;
   double max_prob;
 
-  for(int i = 0 i < test.n_rows; i++){
+  for(int i = 0; i < test.n_rows; i++){
     max_prob = 0.0;
     for(int k = 0; k < label_set.size();k++){
       temp = x.row(i) * params[k];
@@ -129,7 +129,7 @@ vector<vec> LogisticRegression::gradient(int lower, int upper){ //one v rest fit
         grad(i) += (ovr_lab[j] - probs(j)) * x(j,i);
       }
     }
-    v.push_back(-1.0/x.n_rows*grad)
+    v.push_back(-1.0/x.n_rows*grad);
   }
   return(v); //maximizing likelihood is equivalent to minimizing negative likelihood
 }
@@ -187,20 +187,18 @@ vector<vec> LogisticRegression::get_Params(){
 }
 
 mat LogisticRegression::concatenate(vector<arma::mat> input){
-  int num_examples = input.size();
-  //cout << "Given " << num_examples << " examples " << endl;
-  //cout << "Num examples: " << num_examples << endl;
-  if(num_examples <= 0){
-    cerr << "Need an input\n" << endl;
-    exit(-1);
-  }
-  mat data = mat(num_examples,num_rows * num_cols + 1);
-  for(int i=0;i<num_examples;i++){
+  int num_rows = input[0].n_rows;
+  int num_cols = input[0].n_cols;
+  int ex_count = input.size();
+  mat data = mat(ex_count,num_rows * num_cols + 1); //includes constant column
+  for(int i=0; i<ex_count; i++){
     if(input[i].n_rows!=num_rows || input[i].n_cols!=num_cols ){
       cerr << "Need all input data to have same dimensions\n" << endl;
       exit(-1);
     }
+
     data(i,0) = 1.0; //regress on constant
+  
     for(int j=0;j<num_rows;j++){
       for(int k=0;k<num_cols ; k++){
           data(i,j*num_cols+k+1)=input[i](j,k);
