@@ -4,30 +4,32 @@
 import os
 import sys
 import json
-
+import simplejson
 
 home_path=os.getcwd()
-config_file = '%s/config/metadata_configurations.json' % home_path
+config_file = '%s/config/config.json' % home_path
+print config_file
 
 #Read the metadata
-metadata = json.load(open(config_file))
+metadata = simplejson.load(open(config_file))
 
-# Image Processing
-ncores = metadata['processing']['ncores']
-if ncores == 1: 
-	# Serial Implementation of processing
-	os.system('python %s/processing/processing.py %s %s 1' % (home_path,home_path,config_file))
-else:
-	# Parallel Implementation of model fitting
-	os.system('mpirun -np %i python %s/processing/processing.py %s %s %i' % (ncores,home_path,config_file,ncores))
+preprocessing = metadata['preprocessing']
+model_fitting = metadata['model_fitting']
+train_dir = home_path+metadata["dir"]["traning_dir"]
+test_dir = home_path+metadata["dir"]["testing_dir"]
+train_lbl = metadata["files"]["train_lbl"]
+train_img = metadata["files"]["train_img"]
+test_lbl = metadata["files"]["test_lbl"]
+test_img = metadata["files"]["test_img"]
 
 
-# Model Fitting
-methods_fitting = metadata['model_fitting']['methods_to_simulate']
-for met in methods_fitting:
-	print met
-	# To be implemented
-	#os.system('%s/src/model_fitting/ARI_AND_CHASE_CODE ./config/%s ' % (home,file))
+for i in range(len(preprocessing)):
+	preprocess_met = preprocessing[i]
+	model_fit_met = model_fitting[i]
+        cmd = './alpha_drive %s %s %s %s %s %s %s %s' % (train_dir, test_dir, train_lbl, train_img, test_lbl, test_img, preprocess_met, model_fit_met)
+	print cmd
+	#os.system(cmd)
+
 
 
 # Graphical Pos-Processing
