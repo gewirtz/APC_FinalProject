@@ -15,10 +15,10 @@ class GradientDescent : public Optimizer {
   	void fitParams(Model* m);
  	void setBatchSize(int batchSize);
  	int getBatchSize();
- 	std::vector<double> getLastCost();
+ 	std::vector<std::vector<double>> getLastCost();
 
  private:
- 	std::vector<double> cost;  //shows the cost process of the last fit
+ 	std::vector<std::vector<double>> cost;  //shows the cost process of the last fit
  	int iterations;
  	double alpha;
  	double tol;

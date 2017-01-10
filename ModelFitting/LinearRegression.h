@@ -29,7 +29,7 @@ class LinearRegression : public Model  {
   arma::mat getRegressors();
   arma::vec getLabels();
   int get_num_examples();
-  double cost(int lower, int upper); //cost of fitting examples lower (inclusive) to upper (not inclusive)
+  double cost(int lower, int upper, int k); //cost of fitting examples lower (inclusive) to upper (not inclusive)
 
  private:
  	arma::mat concatenate(std::vector<arma::mat> input);

@@ -12,7 +12,7 @@ GradientDescent::GradientDescent(int iterations,double alpha, double tol, int ba
 	this->iterations = iterations; 
 	this->alpha = alpha;
 	this->tol = tol;
-	vector<double> v;
+	vector<vector<double>> v;
 	this->cost = v; 
 	if(batchSize >= 0){
 		this->batchSize = batchSize;
@@ -30,17 +30,20 @@ void GradientDescent::fitParams(Model *m){ //fits via mini batch gradient descen
 	if(length == 0){
 		length = m->get_num_examples();
 	}
-
-	vector<vec> grad;
 	vec normalizer;
 	int num_params = m->get_Params().size();
 	int num_examples = m->get_num_examples();
 	
+	//reset costs
+	vector<vector<double>> v(num_params);
+	this->cost = v;  
+	vector<vec> grad;
+
 	int pos = 0;
 	int upper;
 	double update;
 	bool finished;
-	
+	double temp_cost;
 	normalizer = normalizer.ones(num_params);
 
 	for(int i = 0; i < iterations; i++){
@@ -65,7 +68,9 @@ void GradientDescent::fitParams(Model *m){ //fits via mini batch gradient descen
 				}
 
 				m->set_Params(j, m->get_Params()[j] - alpha*grad[j]/normalizer[j]);
-				cost.push_back(m->cost(pos,upper));
+				temp_cost = m->cost(pos,upper,j);
+				cost[j].push_back(temp_cost);
+				cout << "The cost is " << temp_cost << endl;
 				if(update > tol){
 					finished = false;
 				}
@@ -89,6 +94,6 @@ int GradientDescent::getBatchSize(){
  	return(batchSize);
 }
 
-vector<double> GradientDescent::getLastCost(){
+vector<vector<double>> GradientDescent::getLastCost(){
 	return cost;
 }

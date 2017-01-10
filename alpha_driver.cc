@@ -12,7 +12,7 @@
 #include "ModelFitting/GradientDescent.h"
 #include "ModelFitting/LinearRegression.h"
 #include "ModelFitting/Performance.h"
-//#include "ModelFitting/LogisticRegression.h"
+#include "ModelFitting/LogisticRegression.h"
 #include <armadillo>
 #include <vector>
 #include <assert.h>
@@ -166,23 +166,35 @@ int main(int argc, char *argv[]){
   cout << "Gradient Differences " << endl;
   cout << fit->get_exactParams() - fit->get_Params()[0] << endl;
 
-  vector<double> costs = gd->getLastCost();
+  vector<vector<double>> costs = gd->getLastCost();
 
   /*TO DO: NOEMI+ANDREAS
   Hi, so i want to make the plot i sent to you on fb 
   xy/2d line graph not scatter
-  y-axis vector<double> costs as above
-  x-axis should be a vector<int> iter_num which contains 0, 1,..., costs.size()
+  y-axis vector<double> costs[j] as above, 
+  x-axis should be a vector<int> iter_num which contains 1,..., costs[j].size()
+  note costs[j].size() == costs[k].size() ie they are all the same length
   title can be Gradient Descent 
+  
+  x-axis title Iteration number  
+  y-axis title Cost 
+  legend with parameter j and each line a different color
+  esentially this is the plot(x,y) command in python  
 
-  x-axis title Iteration number 
-  y-axis title 
+  preferrably have the line graphs for =0,1,...,costs.size()-1 all on the same graph 
+  but getting one per file is fine if not
+
   have the system output it and save it to a .png 
-  esentially this is the plot(x,y) command in python.  
+
   i dont know anything about plotting in c++, you guys are much more
   experienced with it i would assume.
 
-  thanks!  
+  
+  perhaps make this a function in performance or something, along the lines of
+  graph(vector<vector<double>> costs, int skip) and have the graph display the cost
+  of every skip iterations (ie if skip is 5 show 0,5,10,15,20,...)
+
+  thanks and let me know if you have any other questions!  
   
 
 

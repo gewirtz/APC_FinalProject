@@ -6,6 +6,7 @@
 
 // initializes a model to classify via the probability model 
 // P(Y=j|X) = \frac{\exp(\theta_j*X_i)}/{1+\sum_k\exp(\theta_k*X_i)} 
+//TO DO, SYNCH WITH ARI MAP CODE, ADD REGULARIZATION
 
 using namespace std;
 using namespace arma;
@@ -49,12 +50,15 @@ vec LogisticRegression::predict(vector<arma::mat> input){
 
   for(int i = 0; i < test.n_rows; i++){
     max_prob = 0.0;
-    for(int k = 0; k < label_set.size();k++){
+
+    //for(int k = 0; k < label_set.size();k++){
+    for(int k : label_set){
       temp = x.row(i) * params[k];
       label_likelihood[k] = 1.0/(1.0+exp(-temp[0]));
       if(label_likelihood[k] > max_prob){
         max_prob = label_likelihood[k];
-        fitted_val = label_set[k]; //get this to synch with ari's code
+        fitted_val = k;
+    //    fitted_val = label_set[k]; //get this to synch with ari's code
       } 
     }
     labels[i] = fitted_val;
@@ -184,6 +188,19 @@ void LogisticRegression::set_Params(int k, arma::vec p){
 
 vector<vec> LogisticRegression::get_Params(){
   return(params);
+}
+
+int LogisticRegression::get_num_examples(){
+  return(num_examples);
+}
+
+double LogisticRegression::cost(int lower, int upper){
+  vec fits = this->y - x*(params[0]);
+  double cost = 0.0;
+  for(int i = 0; i < x.n_rows; i++){
+    cost += pow(fits[i],2);
+  }
+  return(1.0/(2*(upper - lower)) * cost);
 }
 
 mat LogisticRegression::concatenate(vector<arma::mat> input){

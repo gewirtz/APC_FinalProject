@@ -6,6 +6,7 @@
 
 // initializes a model to choose \beta so as to fit Y = X\beta + \epsilon so as to minimize
 // ||Y - X\beta ||_2^2
+//TO DO, SYNCH WITH ARI MAP CODE, ADD REGULARIZATION
 
 using namespace std;
 using namespace arma;
@@ -114,7 +115,7 @@ int LinearRegression::get_num_examples(){
   return(num_examples);
 }
 
-double LinearRegression::cost(int lower, int upper){
+double LinearRegression::cost(int lower, int upper, int k = 0){
   vec fits = this->y - x*(params[0]);
   double cost = 0.0;
   for(int i = 0; i < x.n_rows; i++){
