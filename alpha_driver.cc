@@ -127,10 +127,10 @@ int main(int argc, char *argv[]){
   //cout << (*temp)(0) << endl;
   //cout << (*temp) << endl;
 
-  
+  */
   // step 3: Model the data
   //cout << "step 3\n" << endl;
-  GradientDescent *gd = new GradientDescent(1000, .001, .0001);
+  GradientDescent *gd = new GradientDescent(500, .001, .0001, 0, 500);
   LinearRegression *fit = new LinearRegression(tr_data, tr_lbls, gd);
  
   cout <<"predicting step\n" << endl;
@@ -156,8 +156,9 @@ int main(int argc, char *argv[]){
   stat1 = Pf.mse(pred_lbls,test_lbls,pred_lbls.size());
   stat2 = Pf.correl(pred_lbls,test_lbls);
   stat3 = Pf.accuracy(pred_lbls,test_lbls);
-  
-  cout << "The testing accuracy is " <<  stat3 << endl;
   */  
+    
+  cout << "The testing accuracy is " <<  stat3 << endl;
+
   return 0;
 }

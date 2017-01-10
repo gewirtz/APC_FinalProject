@@ -5,9 +5,10 @@ MF_DEPS = ModelFitting/GradientDescent.cpp ModelFitting/LinearRegression.cpp
 driver = $(MNIST_DEPS) $(PROCESS_DEPS) alpha_driver.cc
 
 #ARMA_INCLUDE_FLAG = -I ../include
-LIB_FLAGS = -larmadillo -llapack -lblas -lgfortran
+LIB_FLAGS = -larmadillo -llapack -lblas 
+#-lgfortran
 OPT = -O2
-CXX = g++
+CXX = g++  
 CXXFLAGS = $(OPT)
 
 all: alpha_driver

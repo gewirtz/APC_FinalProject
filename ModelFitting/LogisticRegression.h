@@ -7,11 +7,8 @@
 #include <set>
 
 
-//initializes a model to choose \beta so as to fit Y = X\beta + \epsilon so as to minimize
-// ||Y - X\beta ||_2^2
-
-//TODO in future versions - add regularization, add logistic regression, handle y as matrix 
-
+// initializes a model to classify via the probability model 
+// P(Y=j|X) = \frac{\exp(\theta_j*X_i)}/{1+\sum_k\exp(\theta_k*X_i)} 
 
 class Optimizer;
 
