@@ -3,7 +3,6 @@
 
 import os
 import sys
-import json
 import simplejson
 
 home_path=os.getcwd()
