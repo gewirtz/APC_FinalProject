@@ -85,11 +85,6 @@ vec KNN::predict(vector<arma::mat> input){
 }
 
 
-vec KNN::get_exactParams(){ 
-  return(pinv(x.t() * x) * x.t() * y);
-}
-
-
 //used for stoch grad descent
 vector<vec> KNN::gradient(int k){ 
   if(k < 0 || k >= x.n_rows){
