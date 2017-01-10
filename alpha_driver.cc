@@ -18,32 +18,41 @@
 using namespace arma;
 using namespace std;
 
-int main(){
-  
+int main(int argc, char *argv[]){
 
   // step 1: load the data
      //if(argc !=6){
    //printf("Missing inputs, Usage: train directory, test directory, train label file name, train image file name, t   est label file name, test label file name")
    //exit(1);
   //}
-   
-  string train_directory = "data/mnist/training/";
-  //string train_directory =argv[1];
-  
-  string test_directory = "data/mnist/testing/";
-  //string test_directory =argv[2];
-  
-  string train_lbl = "train-labels.idx1-ubyte";
-  //string train_lbl = argv[3];
-  
-  string train_img = "train-images.idx3-ubyte";
-  //string train_img = argv[4];
-  
-  string test_lbl = "t10k-labels.idx1-ubyte";
-  //string test_lbl = argv[5];
-  
-  string test_img = "t10k-images.idx3-ubyte";
-  //string test_img = argv[6];
+
+  string train_directory, test_directory;
+  string train_img, test_img;
+  string train_lbl, test_lbl;
+  int unitflag = 0;
+
+  if (argc!=8){
+    // keep this for testing
+    train_directory = "data/mnist/training/";
+    test_directory = "data/mnist/testing/";
+    train_lbl = "train-labels.idx1-ubyte";
+    train_img = "train-images.idx3-ubyte";
+    test_lbl = "t10k-labels.idx1-ubyte";
+    test_img = "t10k-images.idx3-ubyte";
+
+
+  }
+  else{
+
+    train_directory = argv[1];
+    test_directory =argv[2];
+    train_lbl = argv[3];
+    train_img = argv[4];
+    test_lbl = argv[5];
+    test_img = argv[6];
+    unitflag = atoi(argv[7]);
+
+  }
   
   
   vector<arma::mat>  tt_data, train_data;
@@ -54,6 +63,18 @@ int main(){
   tt_data = mnist_load_images(test_directory, test_img);
   test_lbls = mnist_load_labels(test_directory, test_lbl);
 
+  // output for unit testing:
+
+  if(unitflag){
+
+    // size checks
+    cout << "train_data size: " << train_data.size() << endl;
+    cout << "train_lbl size: " << train_lbls.n_elem << endl;
+    cout << "test_data size: " << tt_data.size() << endl;
+    cout << "test_lbl size: " << test_lbls.n_elem << endl;
+
+  }
+
   // step 2: Process the data
 
   No_processing *p_np;
@@ -61,8 +82,8 @@ int main(){
   Histogram *p_hist;
 
   p_np=process_driver(train_data,tt_data,train_lbls,test_lbls);
-  p_gs=process_driver_gs(train_data,tt_data,train_lbls,test_lbls);
-  p_hist =  process_driver_hist(train_data, tt_data, train_lbls, test_lbls);
+  //p_gs=process_driver_gs(train_data,tt_data,train_lbls,test_lbls);
+  //p_hist =  process_driver_hist(train_data, tt_data, train_lbls, test_lbls);
 
 
   // Ari, chase, this is how you would use the no processing, smoothing, and histogram pre-processing:
@@ -74,6 +95,7 @@ int main(){
   tr_data = p_np->get_data_train();
   t_data = p_np->get_data_test();
 
+  /*
   //gaussian smoothing implementation
 
   arma::colvec tr_lbls, t_lbls;
@@ -136,5 +158,6 @@ int main(){
   stat3 = Pf.accuracy(pred_lbls,test_lbls);
   
   cout << "The testing accuracy is " <<  stat3 << endl;
+  */  
   return 0;
 }
