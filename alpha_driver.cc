@@ -144,7 +144,7 @@ int main(int argc, char *argv[]){
     }
   }
 
-  /*
+
 
   // step 3: Model the data
   //cout << "step 3\n" << endl;
@@ -166,6 +166,24 @@ int main(int argc, char *argv[]){
   cout << fit->get_exactParams() - fit->get_Params()[0] << endl;
 
   vector<double> costs = gd->getLastCost();
+
+  /*TO DO: NOEMI+ANDREAS
+  Hi, so i want to make the plot i sent to you on fb 
+  xy/2d line graph not scatter
+  y-axis vector<double> costs as above
+  x-axis should be a vector<int> iter_num which contains 0, 1,..., costs.size()
+  title can be Gradient Descent 
+
+  x-axis title Iteration number 
+  y-axis title 
+  have the system output it and save it to a .png 
+  esentially this is the plot(x,y) command in python.  
+  i dont know anything about plotting in c++, you guys are much more
+  experienced with it i would assume.
+
+  thanks!  
+  /*
+
 
   /* THIS DOES NOT WORK
   // step 4: output the results - Noemi coded this I think?

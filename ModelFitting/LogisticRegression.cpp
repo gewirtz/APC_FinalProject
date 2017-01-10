@@ -10,35 +10,61 @@
 using namespace std;
 using namespace arma;
 
+
 LogisticRegression::LogisticRegression(vector<arma::mat> train, arma::colvec labels, Optimizer *optim){
-  this->num_rows = train[0].n_rows;
-  this->num_cols = train[0].n_cols;
-  this->x = concatenate(train);  //rows contain the ith example, columns contain all instances of a feature
-  this->y = labels; //y_i = label of ith training example
+  this->num_examples = train.size();
+  if(num_examples <= 0){
+    cerr << "Need an input\n" << endl;
+    exit(-1);
+  }
+  srand(506); //shuffle the elements
+  this->x = shuffle(concatenate(train));  //rows contain the ith example, columns contain all instances of a feature
+  srand(506); //preserve same shuffling
+  this->y = shuffle(labels); //y_i = label of ith training example
   this->optim = optim;
+
   for(int i = 0; i < y.size(); i++){
     this->label_set.insert(y(i));
   }
+
   vector<vec> temp; 
   vec v;
-  for(int i = 0; i < label_set.size();i++){
-    temp.push_back(v.zeros(x.n_cols)); //one set of parameters per label
-  }
+  temp.push_back(v.zeros(x.n_cols));
   this->params = temp;
+
   fit();  //fit beta  
-} 
+
+}  
 
 LogisticRegression::~LogisticRegression() {}
 
-void LogisticRegression::set_Params(int k, arma::vec p){
-  if(k < 0 || k >= params.size()){
-    cerr << "Index " << k << " out of bounds.  Need in range 0 " << params.size() << endl;
+
+vec LogisticRegression::predict(vector<arma::mat> input){
+  mat test = concatenate(input);
+  vec labels(test.n_rows);
+  int fitted_val = -1;
+  vec<double> label_likelihood(label_set.size());
+  vec temp;
+  double max_prob;
+
+  for(int i = 0 i < test.n_rows; i++){
+    max_prob = 0.0;
+    for(int k = 0; k < label_set.size();k++){
+      temp = x.row(i) * params[k];
+      label_likelihood[k] = 1.0/(1.0+exp(-temp[0]));
+      if(label_likelihood[k] > max_prob){
+        max_prob = label_likelihood[k];
+        fitted_val = label_set[k]; //get this to synch with ari's code
+      } 
+    }
+    labels[i] = fitted_val;
   }
-  params.at(k) = p;
+  return(labels);
 }
 
 
-//zeros<vec>(10)
+
+/*
 //MAP (maximum aposteriori) fit
 vec LogisticRegression::predict(vector<arma::mat> input){
   mat test = concatenate(input);
@@ -47,7 +73,7 @@ vec LogisticRegression::predict(vector<arma::mat> input){
   double max_prob;
   double temp;
   double sum;
-  vec fits; //coefficient fits for each class k, give by theta_{k}*x_i
+  vec fits; //coefficient fits for each class k, given by theta_{k}*x_i
 
   for(int i = 0; i < test.n_rows;i++){
     fits = fits.zeros(label_set.size());
@@ -70,6 +96,42 @@ vec LogisticRegression::predict(vector<arma::mat> input){
     labels[i] = fitted_val; 
   }
   return(labels);
+}
+*/
+
+vector<vec> LogisticRegression::gradient(int lower, int upper){ //one v rest fit
+  if(lower < 0 || lower >= upper || upper > num_examples){
+    cerr << "Lower and upper limits " << lower << " and " << upper << " invalid" << endl;
+    cerr << "Need val between 0 and " << num_examples << endl;
+    exit(1);
+  }
+  vector<vec> v;
+  vec ovr_lab(upper - lower); //one v rest labels
+  vec grad; 
+  vec probs;
+
+  for(int k = 0; k < label_set.size(); k++){
+    //create one v rest label set for label k
+    for(int i = lower; i < upper;  i++){
+      if(y[i] == k){
+        ovr_lab[i] = 1;
+      }
+      else{
+        ovr_lab[i] = 0;
+      }
+    }
+
+    grad = grad.zeros(x.n_cols); //reset grad
+    probs = 1.0/(1.0+exp(-x*params[k])); 
+    
+    for(int i = 0; i < x.n_cols; i++){ //i=1...nparams
+      for(int j = lower; j < upper; j++){ // j=1...examples
+        grad(i) += (ovr_lab[j] - probs(j)) * x(j,i);
+      }
+    }
+    v.push_back(-1.0/x.n_rows*grad)
+  }
+  return(v); //maximizing likelihood is equivalent to minimizing negative likelihood
 }
 
 /*
@@ -111,6 +173,15 @@ vec LogisticRegression::predict(vector<arma::mat> input){
 
 */
 
+
+void LogisticRegression::set_Params(int k, arma::vec p){
+  if(k < 0 || k >= params.size()){
+    cerr << "Index " << k << " out of bounds.  Need in range 0 " << params.size() << endl;
+  }
+  params.at(k) = p;
+}
+
+
 vector<vec> LogisticRegression::get_Params(){
   return(params);
 }
@@ -145,29 +216,5 @@ void LogisticRegression::fit(){
   optim->fitParams(this);
 }
 
-vec LogisticRegression::gradient(int k){ //one v rest fit
-  if(k < 0 || k >= params.size()){
-    cerr << "Index " << k << " out of bounds.  Need in range 0 " << params.size() << endl;
-  }
-  vec ovr_lab(x.n_rows); //one v rest labels
 
-  for(int i = 0; i < x.n_rows;  i++){
-    if(y[i] == k){
-      ovr_lab[i] = 1;
-    }
-    else{
-      ovr_lab[i] = 0;
-    }
-  }
-
-  vec grad;
-  grad = grad.zeros(x.n_cols);
-  vec probs = 1.0/(1.0+exp(-x*params.at(k)));
-  for(int i = 0; i < x.n_cols; i++){ //i=1...nparams
-    for(int j = 0; j < x.n_rows; j++){ // j=1...examples
-      grad(i) += x(j,i)*(ovr_lab[j] - probs(j) );
-    }
-  }
-  return(-1.0/x.n_rows*grad); //maximize likelihood
-}
 

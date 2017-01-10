@@ -16,9 +16,9 @@ LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels,
     cerr << "Need an input\n" << endl;
     exit(-1);
   }
-  srand(1); //shuffle the elements
+  srand(524); //shuffle the elements
   this->x = shuffle(concatenate(train));  //rows contain the ith example, columns contain all instances of a feature
-  srand(1); //preserve same shuffling
+  srand(524); //preserve same shuffling
   this->y = shuffle(labels); //y_i = label of ith training example
   this->optim = optim;
 
@@ -36,9 +36,7 @@ LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels,
 } 
 
 
-LinearRegression::~LinearRegression() { 
-  //delete [] params; 
-}
+LinearRegression::~LinearRegression() {}
 
 
 vec LinearRegression::predict(vector<arma::mat> input){
@@ -66,23 +64,8 @@ vec LinearRegression::get_exactParams(){
   return(pinv(x.t() * x) * x.t() * y);
 }
 
-/*vec LinearRegression::gradient(int k){ //gradient of kth param
-  if(k < 0 || k >= params.size()){
-    cerr << "Index " << k << " out of bounds.  Need in range 0 " << params.size() << endl;
-  }
-  vec grad;
-  grad = grad.zeros(x.n_cols);
-  vec predictions = x * params[k]; //Y = X\beta
-  vec resid = y - predictions;
-  for(int i = 0; i < x.n_rows;  i++){
-    for(int j = 0; j < x.n_cols;j++){
-      grad(j) += resid(i) * x(i,j);
-    }
-  }
-  return(1.0/x.n_rows*grad);
-}*/
 
-//used for batch gradient descent
+//gradient between lower and upper
 vector<vec> LinearRegression::gradient(int lower, int upper){
   if(lower < 0 || lower >= upper || upper > num_examples){
     cerr << "Lower and upper limits " << lower << " and " << upper << " invalid" << endl;
@@ -107,43 +90,6 @@ vector<vec> LinearRegression::gradient(int lower, int upper){
   return(v);
 }
 
-/*
-//used for stoch grad descent
-vector<vec> LinearRegression::gradient(int k){ 
-  if(k < 0 || k >= x.n_rows){
-    cerr << "Index " << k << " out of bounds.  Need in range 0, " << x.n_rows << endl;
-  }
-  vec grad;
-  grad = grad.zeros(x.n_cols);
-  vec prediction = x.row(k) * params[0]; //Y = X\beta
-  double resid = prediction[0] - y[k];  
-  
-  for(int j = 0; j < x.n_cols;j++){
-      grad(j) = resid * x(k,j);
-  }  
-  vector<vec> v;
-  v.push_back(grad);
-  return(v);
-}
-
-
-//used for batch gradient descent
-vector<vec> LinearRegression::gradient(){
-  vec grad;
-  grad = grad.zeros(x.n_cols);
-  vec predictions = x * params[0]; //Y = X\beta
-  vec resid = y - predictions;
-
-  for(int i = 0; i < x.n_rows;  i++){
-    for(int j = 0; j < x.n_cols;j++){
-      grad(j) += resid(i) * x(i,j);
-    }
-  }
-  vector<vec> v;
-  v.push_back(1.0/x.n_rows*grad);
-  return(v);
-}
-*/
 
 void LinearRegression::set_Params(int k, arma::vec p){
   if(k < 0 || k >= params.size()){

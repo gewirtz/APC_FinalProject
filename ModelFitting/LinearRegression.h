@@ -22,14 +22,14 @@ class LinearRegression : public Model  {
   arma::vec predict(std::vector<arma::mat> input); 
   arma::vec get_exactParams(); //gives exact solution 
   //gradient computed using examples lower to upper
-  std::vector<arma::vec> gradient(int lower, int upper); 
+  std::vector<arma::vec> gradient(int lower, int upper);  //gradient using examples lower (inclusive) to upper (not inclusive)
   
   void set_Params(int k, arma::vec p); //sets params.at(k) = p
   std::vector<arma::vec> get_Params();
   arma::mat getRegressors();
   arma::vec getLabels();
   int get_num_examples();
-  double cost(int lower, int upper); //cost of fitting examples lower to upper
+  double cost(int lower, int upper); //cost of fitting examples lower (inclusive) to upper (not inclusive)
 
  private:
  	arma::mat concatenate(std::vector<arma::mat> input);
