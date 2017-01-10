@@ -13,6 +13,7 @@
 
 class Optimizer;
 
+
 class LinearRegression : public Model  {
  public:
   LinearRegression(std::vector<arma::mat> train, arma::colvec labels, Optimizer *optim); 
@@ -28,6 +29,7 @@ class LinearRegression : public Model  {
   arma::mat getRegressors();
   arma::vec getLabels();
   int get_num_examples();
+  double cost(int lower, int upper); //cost of fitting examples lower to upper
 
  private:
  	arma::mat concatenate(std::vector<arma::mat> input);

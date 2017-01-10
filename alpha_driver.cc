@@ -147,6 +147,7 @@ int main(int argc, char *argv[]){
   cout << "Gradient Differences " << endl;
   cout << fit->get_exactParams() - fit->get_Params()[0] << endl;
 
+  vector<double> costs = gd->getLastCost();
 
   /* THIS DOES NOT WORK
   // step 4: output the results - Noemi coded this I think?
@@ -159,6 +160,8 @@ int main(int argc, char *argv[]){
   */  
     
   cout << "The testing accuracy is " <<  stat3 << endl;
-
+  for(int i = 0; i < costs.size(); i++){
+    cout << costs[i] << endl;
+  }
   return 0;
 }

@@ -16,7 +16,8 @@ class Model {
   virtual void set_Params(int k, arma::vec p) = 0;
   virtual std::vector<arma::vec> get_Params() = 0;
   virtual int get_num_examples() = 0;
-
+  virtual double cost(int lower, int upper) = 0;
+  
  private:
   std::vector<arma::vec> params; 
   int num_examples;

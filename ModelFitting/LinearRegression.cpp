@@ -168,6 +168,14 @@ int LinearRegression::get_num_examples(){
   return(num_examples);
 }
 
+double LinearRegression::cost(int lower, int upper){
+  vec fits = this->y - x*(params[0]);
+  double cost = 0.0;
+  for(int i = 0; i < x.n_rows; i++){
+    cost += pow(fits[i],2);
+  }
+  return(1.0/(2*(upper - lower)) * cost);
+}
 
 mat LinearRegression::concatenate(vector<arma::mat> input){
   int num_rows = input[0].n_rows;
@@ -190,6 +198,7 @@ mat LinearRegression::concatenate(vector<arma::mat> input){
   }
   return(data);
 }
+
 
 void LinearRegression::fit(){
   optim->fitParams(this); //gradient descent
