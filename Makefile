@@ -6,9 +6,10 @@ driver = $(MNIST_DEPS) $(PROCESS_DEPS) alpha_driver.cc
 
 #ARMA_INCLUDE_FLAG = -I ../include
 LIB_FLAGS = -larmadillo -llapack -lblas 
-#-lgfortran
+#-m32 -lgfortran
 OPT = -O2
-CXX = g++  
+CXX = g++ 
+#-std=c++11
 CXXFLAGS = $(OPT)
 
 all: alpha_driver

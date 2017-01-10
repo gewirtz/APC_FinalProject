@@ -6,7 +6,7 @@
 using namespace std;
 using namespace arma;
 
-GradientDescent::GradientDescent(int iterations, double alpha, double tol, int method, int batchSize){
+GradientDescent::GradientDescent(int iterations,double alpha, double tol, int method, int batchSize){
 	this->iterations = iterations;
 	this->alpha = alpha;
 	this->tol = tol;
