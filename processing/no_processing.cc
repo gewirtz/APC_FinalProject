@@ -38,14 +38,14 @@ int No_processing :: process(){
   if(train_has_been_processed == false){
     //Don't let user process already processed data but also no need to throw up lots of errors
     train_has_been_processed=true;
-    cout<<"Processing training data \n";
-    cout<<"Processing done \n";
+    //cout<<"Processing training data \n";
+    //cout<<"Processing done \n";
     return 0;
   }
   if(test_has_been_processed == false){
       test_has_been_processed=true;
-      cout<<"Processing testing data \n";
-      cout<<"Processing done \n";
+      //cout<<"Processing testing data \n";
+      //cout<<"Processing done \n";
       return 0;
   }
   return 0;

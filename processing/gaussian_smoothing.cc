@@ -33,13 +33,13 @@ int Gaussian_smoothing :: process(){
       train_has_been_processed=true;
       flag=0;
       use_data=data_train;
-      cout<<"Processing training data \n";
+      //cout<<"Processing training data \n";
   }
   else if(test_has_been_processed == false){
       test_has_been_processed=true;
       flag=1;
       use_data=data_train;
-      cout<<"Processing testing data \n";
+      //cout<<"Processing testing data \n";
   }
   //Using a 5X5 filter implying a border of 2
   int filter_size=5;
