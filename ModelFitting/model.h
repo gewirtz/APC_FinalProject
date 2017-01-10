@@ -19,7 +19,7 @@ class Model {
   virtual arma::mat getTrainset() = 0;
   virtual arma::vec getLabels() = 0;
   virtual void set_k(int k) =0;
-  virtual double cost(int lower, int upper) = 0;
+  virtual double cost(int lower, int upper, int k) = 0;
   virtual arma::vec predict_on_subset(arma::mat test, arma::mat train, int k, arma::vec train_labels) =0;
   
  private:

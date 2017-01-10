@@ -39,6 +39,18 @@ LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels,
 
 LinearRegression::~LinearRegression() {}
 
+//TO DO: Find better way to do this
+  mat LinearRegression::getTrainset(){
+    mat m;
+    return(m);
+  }
+  void LinearRegression::set_k(int k){}
+
+  vec LinearRegression::predict_on_subset(mat test, mat train, int k, vec train_labels){
+    vec v;
+    return(v);
+  }
+
 
 vec LinearRegression::predict(vector<arma::mat> input){
   mat test = concatenate(input);
@@ -115,7 +127,7 @@ int LinearRegression::get_num_examples(){
   return(num_examples);
 }
 
-double LinearRegression::cost(int lower, int upper, int k = 0){
+double LinearRegression::cost(int lower, int upper, int k){
   vec fits = this->y - x*(params[0]);
   double cost = 0.0;
   for(int i = 0; i < x.n_rows; i++){

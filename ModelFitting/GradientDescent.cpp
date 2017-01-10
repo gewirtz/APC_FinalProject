@@ -44,9 +44,9 @@ void GradientDescent::fitParams(Model *m){ //fits via mini batch gradient descen
 	double update;
 	bool finished;
 	double temp_cost;
-	normalizer = normalizer.ones(num_params);
 
 	for(int i = 0; i < iterations; i++){
+		normalizer = normalizer.ones(num_params);
 		pos = 0;
 
 		while(pos < num_examples){

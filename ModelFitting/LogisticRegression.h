@@ -16,7 +16,7 @@ class LogisticRegression : public Model  {
  public:
   LogisticRegression(std::vector<arma::mat> train, arma::colvec labels, Optimizer *optim); 
   ~LogisticRegression();
-  
+
   arma::vec predict(std::vector<arma::mat> input); 
 
   //gradient computed using examples lower to upper
@@ -27,7 +27,13 @@ class LogisticRegression : public Model  {
   arma::mat getRegressors();
   arma::vec getLabels();
   int get_num_examples();
-  double cost(int lower, int upper); //cost of fitting examples lower to upper
+  double cost(int lower, int upper, int k); //cost of fitting examples lower to upper
+
+
+  arma::mat getTrainset();
+  void set_k(int k);
+  arma::vec predict_on_subset(arma::mat test, arma::mat train, int k, arma::vec train_labels);
+
 
  private:
   arma::mat concatenate(std::vector<arma::mat> input);

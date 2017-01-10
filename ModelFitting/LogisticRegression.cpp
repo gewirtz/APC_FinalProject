@@ -39,6 +39,20 @@ LogisticRegression::LogisticRegression(vector<arma::mat> train, arma::colvec lab
 
 LogisticRegression::~LogisticRegression() {}
 
+  
+
+//TO DO: Find a better way to do this
+  mat LogisticRegression::getTrainset(){
+    mat m;
+    return(m);
+  }
+  void LogisticRegression::set_k(int k){}
+
+  vec LogisticRegression::predict_on_subset(mat test, mat train, int k, vec train_labels){
+    vec v;
+    return(v);
+  }
+
 
 vec LogisticRegression::predict(vector<arma::mat> input){
   mat test = concatenate(input);
@@ -194,10 +208,10 @@ int LogisticRegression::get_num_examples(){
   return(num_examples);
 }
 
-double LogisticRegression::cost(int lower, int upper){
-  vec fits = this->y - x*(params[0]);
+double LogisticRegression::cost(int lower, int upper, int k){
+  vec fits = this->y - 1.0/(1.0-exp(x*params[k]));
   double cost = 0.0;
-  for(int i = 0; i < x.n_rows; i++){
+  for(int i = lower; i < upper; i++){
     cost += pow(fits[i],2);
   }
   return(1.0/(2*(upper - lower)) * cost);
@@ -225,7 +239,9 @@ mat LogisticRegression::concatenate(vector<arma::mat> input){
   return(data);
 }
 
-
+vec LogisticRegression::getLabels(){
+  return(y);
+}
 
 void LogisticRegression::fit(){
   optim->fitParams(this);
