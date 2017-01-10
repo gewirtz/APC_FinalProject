@@ -148,6 +148,35 @@ void grayscalePPM(PPMImage *img){
     }
 }
 
+vector<arma::mat> convertToArma(PPMImage *img){
+
+    vector<arma::mat > all_images;
+
+    //for(int i=0;i<img->x*img->y;i++){
+
+    // create vector of doubles
+    arma::mat cur_img(img->y,img->x);
+
+    // all the images are the same size!
+    // the images are stored in LITTLE-ENDIAN, no need
+    // to reverse --> confusing!
+
+    for(int row = 0; row < img->x; row++){
+      for(int col = 0; col < img->y; col++){
+
+        // adds pixel array
+        cur_img(row,col) = (double) img->data[row*col].red;
+
+      } // end col
+    } // end row
+
+    //puts current image at the end of the list
+    all_images.push_back(cur_img);
+
+    //} // end num_img
+    return all_images;
+}
+
 
 // vector<mat> ppm_load_images(string directory, string filename){
 //     PPMImage *image;
@@ -167,6 +196,7 @@ void grayscalePPM(PPMImage *img){
 int main(){
     PPMImage *image;
     image = readPPM("car_0001.ppm");
+
 
     //image = ppm_load_images("can_bottom.ppm");
     grayscalePPM(image);
