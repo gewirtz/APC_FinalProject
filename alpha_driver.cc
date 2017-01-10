@@ -14,17 +14,11 @@
 #include "ModelFitting/Performance.h"
 #include <armadillo>
 #include <vector>
-
+#include <assert.h>
 using namespace arma;
 using namespace std;
 
 int main(int argc, char *argv[]){
-
-  // step 1: load the data
-     //if(argc !=6){
-   //printf("Missing inputs, Usage: train directory, test directory, train label file name, train image file name, t   est label file name, test label file name")
-   //exit(1);
-  //}
 
   string train_directory, test_directory;
   string train_img, test_img;
@@ -39,8 +33,6 @@ int main(int argc, char *argv[]){
     train_img = "train-images.idx3-ubyte";
     test_lbl = "t10k-labels.idx1-ubyte";
     test_img = "t10k-images.idx3-ubyte";
-
-
   }
   else{
 
@@ -50,30 +42,26 @@ int main(int argc, char *argv[]){
     train_img = argv[4];
     test_lbl = argv[5];
     test_img = argv[6];
-    unitflag = atoi(argv[7]);
+
+    unitflag = atoi( argv[7] );
 
   }
   
   
   vector<arma::mat>  tt_data, train_data;
   arma::colvec train_lbls, test_lbls;
-  
-  train_data = mnist_load_images(train_directory, train_img);
+
+  train_data = mnist_load_images(train_directory, train_img, unitflag);
   train_lbls = mnist_load_labels(train_directory, train_lbl);
-  tt_data = mnist_load_images(test_directory, test_img);
+  tt_data = mnist_load_images(test_directory, test_img, unitflag);
   test_lbls = mnist_load_labels(test_directory, test_lbl);
 
   // output for unit testing:
-
-  if(unitflag){
-
-    // size checks
-    cout << "train_data size: " << train_data.size() << endl;
-    cout << "train_lbl size: " << train_lbls.n_elem << endl;
-    cout << "test_data size: " << tt_data.size() << endl;
-    cout << "test_lbl size: " << test_lbls.n_elem << endl;
-
-  }
+  // size checks
+  cout << "train_data size: " << train_data.size() << endl;
+  cout << "train_lbl size: " << train_lbls.n_elem << endl;
+  cout << "test_data size: " << tt_data.size() << endl;
+  cout << "test_lbl size: " << test_lbls.n_elem << endl;
 
   // step 2: Process the data
 

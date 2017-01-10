@@ -4,12 +4,13 @@
 #include <vector>
 #include <cassert>
 #include <string>
+#include <assert.h>
 #include "reverse.cc"
 
 using namespace std;
 using namespace arma;
 
-vector<arma::mat> mnist_load_images(string directory, string filename){
+vector<arma::mat> mnist_load_images(string directory, string filename, int unitflag){
 //void mnist_load_images(string directory, string filename){
 
  vector<arma::mat > all_images;
@@ -20,7 +21,7 @@ vector<arma::mat> mnist_load_images(string directory, string filename){
 
  assert( mnist_image.is_open() == 1 );
 
- cout << "processing " << filename << "\n";
+ //cout << "processing " << filename << "\n";
 
  int magic = 0;
  int num_img = 0;
@@ -72,6 +73,15 @@ vector<arma::mat> mnist_load_images(string directory, string filename){
 
         // adds pixel array
         cur_img(row,col) = (double) pixel;
+	
+	double unit_px = (double) pixel;
+	if(unitflag == 1){
+	  unit_px = -1;
+	}
+
+	// make sure the pixel is within range 0-255
+	assert( unit_px <= 255);
+	assert( unit_px >= 0);
 
       } // end col
     } // end row

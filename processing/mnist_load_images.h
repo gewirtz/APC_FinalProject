@@ -5,6 +5,6 @@
 #include <vector>
 #include <string>
 
-std::vector<arma::mat> mnist_load_images(std::string directory, std::string filename);
+std::vector<arma::mat> mnist_load_images(std::string directory, std::string filename, int unitflag);
 
 #endif
