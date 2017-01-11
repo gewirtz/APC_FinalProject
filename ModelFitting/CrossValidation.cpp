@@ -6,7 +6,6 @@
 using namespace std;
 using namespace arma;
 
-//TODO: how to add support when the parameter is not an int
 CrossValidation::CrossValidation(double range_start, double range_end, double delta, int nfolds){
 	this->param_range_start = range_start;
 	this->param_range_end = range_end;
@@ -25,6 +24,7 @@ void CrossValidation::fitParams(Model *m){}
 
 mat CrossValidation::calculate_dists(mat train){
 	mat dists(train.n_rows,train.n_rows);
+	double val;
   	for(int i=0;i<train.n_rows;i++){
 
   		if(i%1000 == 0){
@@ -55,7 +55,7 @@ void CrossValidation::fitParams(KNN *m){
 	mat train_set, test_set, train_p1, train_p2;
 	vec test_label_set, label_results, train_label_p1, train_label_p2, train_label_set;
 	int cur_param, test_start_row, test_end_row, train1_start, train1_end, train2_start, train2_end, need_to_join;
-	double param_error,val;
+	double param_error;
 	vec overall_errors(num_steps);
 	uvec label_comparison;
 	//calculate distance matrix
