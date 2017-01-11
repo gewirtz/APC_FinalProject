@@ -1,6 +1,6 @@
 #include "CrossValidation.h"
 #include <math.h>
-#include "HyperModel.h"
+#include "KNN.h"
 #include <armadillo>
 
 using namespace std;
@@ -19,7 +19,7 @@ CrossValidation::~CrossValidation(){}
 void CrossValidation::fitParams(Model *m){}
 
 //runs KNN cross validation where k=nfolds to find best parameter in model for the range of possible param vals
-void CrossValidation::fitParams(HyperModel *m){
+void CrossValidation::fitParams(KNN *m){
 	//repeat using each division as test set
 	mat train = m->getTrainset();
 	vec labels = m->getLabels();

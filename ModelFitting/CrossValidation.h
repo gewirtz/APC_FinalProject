@@ -2,7 +2,8 @@
 #define CROSSVALIDATION_H_
 
 #include "Optimizer.h"
-#include "HyperModel.h"
+#include "model.h"
+#include "KNN.h"
 class HyperModel;
 
 class CrossValidation : public Optimizer {
@@ -10,7 +11,7 @@ class CrossValidation : public Optimizer {
 	
 	CrossValidation(double range_start, double range_end, int delta , int nfolds ); 
 	~CrossValidation();
-  	void fitParams(HyperModel *m);
+  	void fitParams(KNN *m);
   	void fitParams(Model *m);
 
  private:

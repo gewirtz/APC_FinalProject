@@ -2,13 +2,12 @@
 #define KNN_H_
 
 #include "model.h"
-#include "HyperModel.h"
 #include <vector>
 #include <set>
 
 class Optimizer;
 
-class KNN : public HyperModel {
+class KNN : public Model {
  public:
   KNN(std::vector<arma::mat> train, arma::colvec labels, Optimizer *optim); 
   ~KNN();
