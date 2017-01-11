@@ -175,20 +175,6 @@ arma::mat convertToArma(PPMImage *img){
 }
 
 
-// vector<mat> ppm_load_images(string directory, string filename){
-//     PPMImage *image;
-//     int i=0;
-//     string fileout = "cars_000";
-//     while(fileExists(fileout)){
-//         fileout = filename + "_" + to_string(i);
-//         readPPM(fileout);
-//         cout << fileout <<endl;
-//         fileout = "cars_000"
-//         i++;
-//     }
-
-// }
-
 int fileCount(const char* direc){
     DIR *dir;
     struct dirent *ent;
@@ -226,11 +212,7 @@ vector<string> fileNames(const char* direc){
     
 }
 
-
-int main(){
-
-    string testing_data ="/home/andreas/APC524/Project/data/cars/training_cars/";
-
+vector<arma::mat> readPPMfolder(string testing_data){
     vector<string> fnames;
     fnames = fileNames(testing_data.c_str());
 
@@ -239,15 +221,20 @@ int main(){
     for(int i=2;i<fnames.size();i++){
         //cout << (string) fnames[i] << endl;
         PPMImage *image;
-        image = readPPM((testing_data + fnames[3]).c_str());
+        image = readPPM((testing_data + fnames[i]).c_str());
         grayscalePPM(image);
         //convertToArma(image);
         arma.push_back(convertToArma(image));
         //cout << fnames[3] << endl;
     }
 
-    //arma[0].print();
     //writePPM("test.ppm",image);
-    cout << "Press any key..." <<endl;
-    getchar();
+    return arma;
+}
+
+
+int main(){
+
+    vector<arma::mat> data = readPPMfolder("/home/andreas/APC524/Project/data/cars/training_cars/");
+
 }  

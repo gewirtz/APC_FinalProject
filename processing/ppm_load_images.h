@@ -6,6 +6,7 @@
 #include <string>
 
 arma::mat ppm_load_images(std::string directory, std::string filename);
+vector<arma::mat> readPPMfolder(string testing_data)
 string[] fileNames(const char*, int);
 int fileCount(const char*)
 
