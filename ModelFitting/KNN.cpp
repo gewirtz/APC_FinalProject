@@ -30,7 +30,6 @@ KNN::KNN(vector<arma::mat> train, arma::colvec labels, Optimizer *optim){
   this->y = tempvec;
 
   this->optim = optim;
-  cout <<"shuffled in constructor" << endl;
   for(int i = 0; i < y.size(); i++){
     this->label_set.insert(y(i));
   }
@@ -38,7 +37,6 @@ KNN::KNN(vector<arma::mat> train, arma::colvec labels, Optimizer *optim){
   vec v(1);
   temp.push_back(v.zeros());
   this->params = temp; // sets all the parameters to 0
-  cout <<"about to fit" << endl;
   
   fit();  //fit parameters (average value of each feature for each label)  
 } 
@@ -61,7 +59,9 @@ arma::vec KNN::predict(vector<arma::mat> input){
   //create the distance matrix
   mat dists(testset.n_rows,x.n_rows);
   for(int i=0;i<testset.n_rows;i++){
-    cout << "calculating distance for example " << i << " of " << testset.n_rows -1 << endl;
+    if(i%1000==0){
+      cout << "calculating distance for example " << i << " of " << testset.n_rows -1 << endl;
+    }
     for(int j=0;j<x.n_rows;j++){
       dists(i,j) = norm(testset.row(i)-x.row(j),2);
     }
@@ -173,7 +173,7 @@ mat KNN::concatenate(vector<arma::mat> input){
 }
 
 void KNN::fit(){
-  cout << "okay yall about to go to CV object fitParams" << endl;
+  
   optim->fitParams(this); //cross-validation for k
   
 }

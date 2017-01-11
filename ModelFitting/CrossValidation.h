@@ -9,7 +9,7 @@
 class CrossValidation : public Optimizer {
  public:
 	
-	CrossValidation(double range_start, double range_end, int delta , int nfolds ); 
+	CrossValidation(double range_start, double range_end, double delta , int nfolds ); 
 	~CrossValidation();
   	void fitParams(KNN *m);
   	void fitParams(Model *m);
@@ -17,7 +17,7 @@ class CrossValidation : public Optimizer {
  private:
 	double param_range_start;
 	double param_range_end; 
-	int delta;
+	double delta;
 	int nfolds;
 	arma::mat calculate_dists(arma::mat samples);
 };
