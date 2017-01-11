@@ -2,6 +2,7 @@
 #include "processing/mnist_load_images.h"
 #include "processing/mnist_load_labels.h"
 #include "processing/mnist_count_images.h"
+#include "processing/ppm_load_images.h"
 #include "processing/no_processing.h"
 #include "processing/no_processing_test.h"
 #include "processing/gaussian_smoothing.h"
@@ -81,7 +82,10 @@ int main(int argc, char *argv[]){
 
   else if(datatype_flag == 1){ // PPM
 
-    // train_data = ...
+    train_data = ppm_load_images(train_directory);
+    //train_lbls = ppm_load_labels(train_directory);
+    tt_data = ppm_load_images(test_directory);
+    //test_lbls = ppm_load_labels(test_directory);
 
   }
 

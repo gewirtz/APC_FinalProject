@@ -212,7 +212,7 @@ vector<string> fileNames(const char* direc){
     
 }
 
-vector<arma::mat> readPPMfolder(string testing_data){
+vector<arma::mat> ppm_load_images(string testing_data){
     vector<string> fnames;
     fnames = fileNames(testing_data.c_str());
 
@@ -233,8 +233,8 @@ vector<arma::mat> readPPMfolder(string testing_data){
 }
 
 
-int main(){
+// int main(){
 
-    vector<arma::mat> data = readPPMfolder("/home/andreas/APC524/Project/data/cars/training_cars/");
+//     vector<arma::mat> data = ppm_load_images("/home/andreas/APC524/Project/data/cars/training_cars/");
 
-}  
+// }  
