@@ -19,6 +19,7 @@ class CrossValidation : public Optimizer {
 	double param_range_end; 
 	int delta;
 	int nfolds;
+	arma::mat calculate_dists(arma::mat samples);
 };
 
 #endif  // CROSSVALIDATION_H_

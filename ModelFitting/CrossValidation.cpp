@@ -16,7 +16,23 @@ CrossValidation::CrossValidation(double range_start, double range_end, int delta
 }
 
 CrossValidation::~CrossValidation(){}
+
 void CrossValidation::fitParams(Model *m){}
+
+
+mat CrossValidation::calculate_dists(mat train){
+	mat dists(train.n_rows,train.n_rows);
+  	for(int i=0;i<train.n_rows;i++){
+  		cout << "calculating distance for example " << i << " of " << train.n_rows -1 << endl;
+    	for(int j=0;j<i;j++){
+    		val = norm(train.row(i)-train.row(j),2);
+      		dists(i,j) = val;
+      		dists(j,i) = val;
+    	}
+    	dists(i,i) = 0.0;
+  	}
+  	return(dists);
+}
 
 //runs KNN cross validation where k=nfolds to find best parameter in model for the range of possible param vals
 void CrossValidation::fitParams(KNN *m){
@@ -33,16 +49,7 @@ void CrossValidation::fitParams(KNN *m){
 	vec overall_errors(num_steps);
 	uvec label_comparison;
 	//calculate distance matrix
-	mat dists(train.n_rows,train.n_rows);
-  	for(int i=0;i<train.n_rows;i++){
-  		cout << "calculating distance for example " << i << " of " << train.n_rows -1 << endl;
-    	for(int j=0;j<i;j++){
-    		val = norm(train.row(i)-train.row(j),2);
-      		dists(i,j) = val;
-      		dists(j,i) = val;
-    	}
-    	dists(i,i) = 0.0;
-  	}
+	mat dists = calculate_dists(train);
   	mat dists_to_pass, dists_to_pass_p1, dists_to_pass_p2;
   	//loop through possible values of parameters
 	for(int i=0; i<num_steps; i++){ 
