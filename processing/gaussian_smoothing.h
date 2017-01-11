@@ -1,16 +1,17 @@
-#ifndef NO_PROCESSING_H_
-#define NO_PROCESSING_H_
+#ifndef GAUSSIAN_SMOOTHING_H_
+#define GAUSSIAN_SMOOTHING_H_
 
 #include <armadillo>
 #include <vector>
 #include "data_process_base.h"
 
-class No_processing : public Data_processor{
+class Gaussian_smoothing : public Data_processor{
 
   public:
-    No_processing();
-   ~No_processing();
-
+  Gaussian_smoothing();
+   ~Gaussian_smoothing();
+   //Process will be run twice - once for train and once for test
+   //Test will always process first
     int process();
     void set_data_train(std::vector<arma::mat > &d_train);
     void set_data_test(std::vector<arma::mat > &d_test);
@@ -33,4 +34,4 @@ class No_processing : public Data_processor{
 
 };
 
-#endif //NO_PROCESSING_H_
+#endif //GAUSSIAN_SMOOTHING_H_

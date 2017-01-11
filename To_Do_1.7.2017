@@ -1,0 +1,17 @@
+Alpha:
+  Data processing:
+   Nina: Abstract class (send to Bill 12.8 afternoon)
+   Bill & Nina: No processing derived class -- Done!
+  
+  Model processing:
+   Ari & Chase: Model processing
+   Andreas & Noemi: Prediction & diagnostics 
+  
+Next steps: (Beta)
+  Import function types: Andreas, Bill & (Nina?)
+  Derived processing classes: Nina & Bill -- Done!
+  More model fun: Ari and Chase
+  Unit Testing: Bill.  
+      Note:  It looks like unit testing is NOT straightforward in C++.  I looked at Google Test and it would require some alterations to our code that
+             I'm not that comfortable with.  I'm going to try scripting in Python instead
+  Graphical and automatic report: Noemi

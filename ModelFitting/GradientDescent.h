@@ -7,14 +7,22 @@ class Model;
 
 class GradientDescent : public Optimizer {
  public:
- //is there a better way to pass the gradient 
-	GradientDescent(int iterations,double alpha, double tol); 
+	// batchSize = 1 is stochastic gradient descent
+	//batchSize = 0 is batch gradient descent, alpha is learning rate 
+	GradientDescent(int iterations,double alpha, double tol, int batchSize); 
+	
+	~GradientDescent();
   	void fitParams(Model* m);
- 
+ 	void setBatchSize(int batchSize);
+ 	int getBatchSize();
+ 	std::vector<std::vector<double>> getLastCost();
+
  private:
+ 	std::vector<std::vector<double>> cost;  //shows the cost process of the last fit
  	int iterations;
  	double alpha;
  	double tol;
+ 	int batchSize;
 };
 
 #endif  // GRADIENTDESCENT_H_

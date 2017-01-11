@@ -6,40 +6,63 @@
 
 // initializes a model to choose \beta so as to fit Y = X\beta + \epsilon so as to minimize
 // ||Y - X\beta ||_2^2
+//TO DO, SYNCH WITH ARI MAP CODE, ADD REGULARIZATION
 
 using namespace std;
 using namespace arma;
 
 LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels, Optimizer *optim){
-    this->x = concatenate(train);  //rows contain the ith example, columns contain all instances of a feature
-    this->y = labels; //y_i = label of ith training example
-    this->optim = optim;
-    int num_rows = train[0].n_rows;
-    int num_cols = train[0].n_cols;
-    this->params = get_exactParams();
-    //cTHIS WILL BE THE USED METHOD IN FUTURE
-  	//this->params = zeros<vec>(num_rows*(num_cols+1)); //initialize beta in above formulation
-    //fit();  //fit beta  
-    for(int i = 0; i < y.size(); i++){
-     this->label_set.insert(y(i));
-   }
- } 
-
- vec LinearRegression::predict(vector<arma::mat> input){
-  mat test = concatenate(input);
-  if(test.n_cols != x.n_cols){
-    cerr << "Need test to have same number of features as training data\n" << endl;
+  this->num_examples = train.size();
+  if(num_examples <= 0){
+    cerr << "Need an input\n" << endl;
     exit(-1);
   }
-    vec labels = test * params; //non_integer fit
-    int closest = 0;
-    double distance;
-    double temp;
-    for(int i=0;i<input.size();i++){ //round it
-      distance = DBL_MAX;
-      for(int lab : label_set){
-       temp = std::abs(labels[i] - lab); //find closest label
-       if(temp <= distance){
+  srand(524); //shuffle the elements
+  this->x = shuffle(concatenate(train));  //rows contain the ith example, columns contain all instances of a feature
+  srand(524); //preserve same shuffling
+  this->y = shuffle(labels); //y_i = label of ith training example
+  this->optim = optim;
+
+  for(int i = 0; i < y.size(); i++){
+    this->label_set.insert(y(i));
+  }
+
+  vector<vec> temp; 
+  vec v;
+  temp.push_back(v.zeros(x.n_cols));
+  this->params = temp;
+
+  fit();  //fit beta  
+
+} 
+
+
+LinearRegression::~LinearRegression() {}
+
+//TO DO: Find better way to do this
+  mat LinearRegression::getTrainset(){
+    mat m;
+    return(m);
+  }
+  void LinearRegression::set_k(int k){}
+
+  vec LinearRegression::predict_on_subset(mat test, mat train, int k, vec train_labels){
+    vec v;
+    return(v);
+  }
+
+
+vec LinearRegression::predict(vector<arma::mat> input){
+  mat test = concatenate(input);
+  vec labels = test * params[0]; //non_integer fit
+  int closest = 0;
+  double distance;
+  double temp;
+  for(int i=0;i<input.size();i++){ //round it
+    distance = DBL_MAX;
+    for(int lab : label_set){
+      temp = std::abs(labels[i] - lab); //find closest label
+      if(temp <= distance){
         distance = temp;
         closest = lab;
       }
@@ -49,88 +72,95 @@ LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels,
   return(labels);
 }
 
-vec LinearRegression::get_exactParams(){
+
+vec LinearRegression::get_exactParams(){ 
   return(pinv(x.t() * x) * x.t() * y);
 }
 
-vec LinearRegression::get_Params(){
- return(params);
+
+//gradient between lower and upper
+vector<vec> LinearRegression::gradient(int lower, int upper){
+  if(lower < 0 || lower >= upper || upper > num_examples){
+    cerr << "Lower and upper limits " << lower << " and " << upper << " invalid" << endl;
+    cerr << "Need val between 0 and " << num_examples << endl;
+    exit(1);
+  }
+  vector<vec> v;
+  vec grad;
+  vec predictions;
+  vec resid;
+  for(int k = 0; k < params.size(); k++){
+    grad = grad.zeros(x.n_cols);
+    predictions = x * params[k]; //Y = X\beta
+    resid = predictions - y;
+    for(int i = lower; i < upper;i++){
+      for(int j = 0; j < x.n_cols;j++){
+        grad(j) += resid(i) * x(i,j);
+      }
+    }
+    v.push_back(1.0/(upper - lower)*grad);
+  }
+  return(v);
 }
 
 
-mat LinearRegression::concatenate(vector<arma::mat> input){
-    /*if(input == NULL){
-      cerr << "Null input\n" << endl;
-      exit(-1);
-    }*/
-  int num_examples = input.size();
-    //cout << "Num examples: " << num_examples << endl;
-  if(num_examples <= 0){
-    cerr << "Need an input\n" << endl;
-    exit(-1);
+void LinearRegression::set_Params(int k, arma::vec p){
+  if(k < 0 || k >= params.size()){
+    cerr << "Index " << k << " out of bounds.  Need in range 0 " << params.size() << endl;
   }
+  params.at(k) = p;
+}
+
+vector<vec> LinearRegression::get_Params(){
+  return(params);
+}
+
+mat LinearRegression::getRegressors(){
+  return(x);
+}
+
+vec LinearRegression::getLabels(){
+  return(y);
+}
+
+int LinearRegression::get_num_examples(){
+  return(num_examples);
+}
+
+double LinearRegression::cost(int lower, int upper, int k){
+  vec fits = this->y - x*(params[0]);
+  double cost = 0.0;
+  for(int i = 0; i < x.n_rows; i++){
+    cost += pow(fits[i],2);
+  }
+  return(1.0/(2*(upper - lower)) * cost);
+}
+
+mat LinearRegression::concatenate(vector<arma::mat> input){
   int num_rows = input[0].n_rows;
-  int num_cols = input[0].n_cols + 1; //regress on pixels and a constant
-  mat data = mat(num_examples,num_rows * num_cols);
-  for(int i=0;i<num_examples;i++){
-    if(input[i].n_rows!=num_rows || input[i].n_cols!=num_cols - 1){
+  int num_cols = input[0].n_cols;
+  int ex_count = input.size();
+  mat data = mat(ex_count,num_rows * num_cols + 1); //includes constant column
+  for(int i=0; i<ex_count; i++){
+    if(input[i].n_rows!=num_rows || input[i].n_cols!=num_cols ){
       cerr << "Need all input data to have same dimensions\n" << endl;
       exit(-1);
     }
+
+    data(i,0) = 1.0; //regress on constant
+  
     for(int j=0;j<num_rows;j++){
-    //cout << j << endl;
-      for(int k=0;k<num_cols;k++){
-        if(k == 0){
-          data(i,j*num_cols+k)=1.0; //constant for regression
-        }
-        else{
-          data(i,j*num_cols+k)=input[i](j,k-1);
-        }
+      for(int k=0;k<num_cols ; k++){
+          data(i,j*num_cols+k+1)=input[i](j,k);
       }
     }
   }
   return(data);
 }
 
-/*arma::vec fit_value(arma::vec xi){
-  return(xi*params);
-}*/
-
 
 void LinearRegression::fit(){
- optim->fitParams(this);
+  optim->fitParams(this); //gradient descent
 }
 
-vec LinearRegression::gradient(){
-    vec grad = zeros<vec>(x.n_cols);
-    vec predictions = x * params; //Y = X\beta
-    vec resid = y - predictions; 
-    for(int i = 0; i < x.n_cols; i++){
-      for(int j = 0; j < x.n_rows;j++){
-        grad(i) += resid(j)*x(j,i);
-      }
-    }
-    return(grad); 
-  }
-
-
-    /*for(int i = 0; i < x.n_cols;i++){
-      grad[i] = accu(resid % x.col(i));
-    }
-    return(grad);
-  }
-  */
-    //rewrote as was taking too long
-    /*
-  	vec grad = zeros<vec>(x.n_cols);
-    double fitted_val;
-  	for(int i = 0; i < x.n_cols; i++){
-  		for(int j = 0; j < x.n_rows;j++){
-        fitted_val = conv_to<double>::from(x.row(j)*params);
-	  		grad(i) += -(y(j) - fitted_val)*x(j,i);
-	  	}
-  	}
-  	return(grad); 
-  }
-*/
 

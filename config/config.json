@@ -1,0 +1,12 @@
+{
+"dir":{
+     "traning_dir":"data/mnist/training",
+     "testing_dir":"/data/mnist/testing"},
+"files":{
+       "train_lbl":"train-labels.idx1-ubyte",
+       "train_img":"train-images.idx3-ubyte",
+       "test_lbl":"t10k-labels.idx1-ubyte",
+       "test_img":"t10k-images.idx3-ubyte"},
+"preprocessing":["no_processing", "gaussian_smothing"],
+"model_fitting":["linear_regression","linear_regression"]
+}
