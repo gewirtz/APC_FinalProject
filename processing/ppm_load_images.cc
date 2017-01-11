@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <armadillo>
 #include <sys/stat.h>
+#include <dirent.h>
 
 
 using namespace std;
@@ -150,16 +151,12 @@ void grayscalePPM(PPMImage *img){
 
 vector<arma::mat> convertToArma(PPMImage *img){
 
-    vector<arma::mat > all_images;
+    vector<arma::mat> all_images;
 
     //for(int i=0;i<img->x*img->y;i++){
 
     // create vector of doubles
     arma::mat cur_img(img->y,img->x);
-
-    // all the images are the same size!
-    // the images are stored in LITTLE-ENDIAN, no need
-    // to reverse --> confusing!
 
     for(int row = 0; row < img->x; row++){
       for(int col = 0; col < img->y; col++){
@@ -192,15 +189,88 @@ vector<arma::mat> convertToArma(PPMImage *img){
 
 // }
 
+int fileCount(const char* direc){
+    DIR *dir;
+    struct dirent *ent;
+    if ((dir = opendir(direc)) !=NULL){
+        int i=0;
+        int n_elem;
+        //vec(string) names;
+        while ((ent = readdir(dir)) !=NULL){
+            //names[i]=ent->d_name;
+            //printf("%s\n",ent->d_name);
+            i++;
+        }
+        n_elem = i-2;
+        closedir(dir);
+        return n_elem;
+    }
+}
+
+vector<string> fileNames(const char* direc){
+    DIR *dir;
+    struct dirent *ent;
+    if ((dir = opendir(direc)) !=NULL){
+        vector<string> f_names;
+      
+        while ((ent = readdir(dir)) !=NULL){
+            //printf("%s\n",ent->d_name);
+            f_names.push_back(ent->d_name);
+        }
+        closedir(dir);
+        return f_names;
+    } //else{
+      // perror("");
+      //  return EXIT_FAILURE;
+    //}
+    
+}
+
 
 int main(){
+
+    string testing_data ="/home/andreas/APC524/Project/data/cars/training_cars";
+
+    // DIR *dir;
+    // struct dirent *ent;
+    // if ((dir = opendir("/home/andreas/APC524/Project/data/cars/training_cars")) !=NULL){
+    //     int i=0;
+    //     int n_elem;
+    //     //vec(string) names;
+    //     while ((ent = readdir(dir)) !=NULL){
+    //         //names[i]=ent->d_name;
+    //         //printf("%s\n",ent->d_name);
+    //         i++;
+    //     }
+    //     n_elem = i-2; // Counts two too many
+    //     printf("%d",n_elem);
+    //     //names.print();
+    //     closedir(dir);
+    // }
+
+    //printf("%d",n_elem);
+
+    //int n_elem = sizeof(names)/sizeof(names[0]);
+
+
+    
+   
+    //int n_elem = fileCount(testing_data.c_str());
+    vector<string> fnames;
+    fnames = fileNames(testing_data.c_str());
+
+    for(int i=0;i<fnames.size();i++){
+        cout << fnames[i]  <<endl;
+    }
+
     PPMImage *image;
+    vector<arma::mat> arma;
     image = readPPM("car_0001.ppm");
 
-
-    //image = ppm_load_images("can_bottom.ppm");
     grayscalePPM(image);
+    arma = convertToArma(image);
+    //arma[0].print();
     writePPM("test.ppm",image);
-    printf("Press any key...");
+    cout << "Press any key..." <<endl;
     getchar();
 }  
