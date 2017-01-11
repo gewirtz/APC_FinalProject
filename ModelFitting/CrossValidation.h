@@ -4,7 +4,7 @@
 #include "Optimizer.h"
 #include "model.h"
 #include "KNN.h"
-class HyperModel;
+
 
 class CrossValidation : public Optimizer {
  public:
