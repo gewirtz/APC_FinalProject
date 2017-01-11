@@ -1,0 +1,11 @@
+TODO:
+
+1. Fix concatenation to be done once, change model.h and derived classes
+2. Add smoothing function into Ari's files
+3. Profiling
+4. Unit Testing
+5. Add Open MP/ Profile again
+6. Naive Bayes
+7. Fix cross validation so that it has a legit function for the regression model class
+8. come up with working alpha driver within time limit (shorten examples, etc)
+9. Add some summary statistics to print as it runs? What is nina doing on the output end?
