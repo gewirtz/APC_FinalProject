@@ -7,6 +7,7 @@
        "train_img":"train-images.idx3-ubyte",
        "test_lbl":"t10k-labels.idx1-ubyte",
        "test_img":"t10k-images.idx3-ubyte"},
-"preprocessing":[0,1],
-"model_fitting":[0]
+"preprocessing":[0],
+"model_fitting":[0],
+"test_unit":0
 }
