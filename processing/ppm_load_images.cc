@@ -149,9 +149,9 @@ void grayscalePPM(PPMImage *img){
     }
 }
 
-vector<arma::mat> convertToArma(PPMImage *img){
+arma::mat convertToArma(PPMImage *img){
 
-    vector<arma::mat> all_images;
+    //vector<arma::mat> all_images;
 
     //for(int i=0;i<img->x*img->y;i++){
 
@@ -161,7 +161,7 @@ vector<arma::mat> convertToArma(PPMImage *img){
     for(int row = 0; row < img->x; row++){
       for(int col = 0; col < img->y; col++){
 
-        // adds pixel array
+        // adds pixel array - only does 'red' pixel since greyscale
         cur_img(row,col) = (double) img->data[row*col].red;
 
       } // end col
@@ -171,7 +171,7 @@ vector<arma::mat> convertToArma(PPMImage *img){
     //all_images.push_back(cur_img);
 
     //} // end num_img
-    return all_images;
+    return cur_img;
 }
 
 
@@ -229,33 +229,8 @@ vector<string> fileNames(const char* direc){
 
 int main(){
 
-    string testing_data ="/home/andreas/APC524/Project/data/cars/training_cars";
+    string testing_data ="/home/andreas/APC524/Project/data/cars/training_cars/";
 
-    // DIR *dir;
-    // struct dirent *ent;
-    // if ((dir = opendir("/home/andreas/APC524/Project/data/cars/training_cars")) !=NULL){
-    //     int i=0;
-    //     int n_elem;
-    //     //vec(string) names;
-    //     while ((ent = readdir(dir)) !=NULL){
-    //         //names[i]=ent->d_name;
-    //         //printf("%s\n",ent->d_name);
-    //         i++;
-    //     }
-    //     n_elem = i-2; // Counts two too many
-    //     printf("%d",n_elem);
-    //     //names.print();
-    //     closedir(dir);
-    // }
-
-    //printf("%d",n_elem);
-
-    //int n_elem = sizeof(names)/sizeof(names[0]);
-
-
-    
-   
-    //int n_elem = fileCount(testing_data.c_str());
     vector<string> fnames;
     fnames = fileNames(testing_data.c_str());
 
@@ -264,9 +239,11 @@ int main(){
     for(int i=2;i<fnames.size();i++){
         //cout << (string) fnames[i] << endl;
         PPMImage *image;
-        image = readPPM((testing_data + "/" + fnames[i]).c_str());
-        //grayscalePPM(image);
-        //arma.push_back(convertToArma(image));
+        image = readPPM((testing_data + fnames[3]).c_str());
+        grayscalePPM(image);
+        //convertToArma(image);
+        arma.push_back(convertToArma(image));
+        //cout << fnames[3] << endl;
     }
 
     //arma[0].print();
