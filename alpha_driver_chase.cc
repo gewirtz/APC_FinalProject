@@ -153,7 +153,7 @@ int main(int argc, char *argv[]){
 
   // step 3: Model the data
   //cout << "step 3\n" << endl;
-  GradientDescent *gd = new GradientDescent(500, .001, 10e-4, 0);
+  GradientDescent *gd = new GradientDescent(100, .001, 10e-4, 0);
   //LinearRegression *fit = new LinearRegression(tr_data, tr_lbls, gd);
   
   LogisticRegression *fit = new LogisticRegression(tr_data, tr_lbls, gd);
