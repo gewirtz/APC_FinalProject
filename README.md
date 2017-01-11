@@ -24,6 +24,10 @@ vim config/config.json
 #      model_fitting: 2 for Logistic Regression
 #      model_fitting: 3 for kNN
 #      model_fitting: 4 for Naive Bayes
+# 
+#  2.5 Set the "test_unit" variable, if 
+
+
 
 # 3. Run Simulation
 python ./driver.py
