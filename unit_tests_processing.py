@@ -31,13 +31,13 @@ class TestProcess(unittest.TestCase):
         self.assertEqual(test_data_size, test_lbl_size)
 
 
-    def testPPMexpected(self):
+    def testPPMExpected(self):
 
         #the numers are flags for 
         #"manipulate data flag" 0/1 (can change data to be bad to check if assertions catch it)
         #"processing type flag" 0/1/2 no processing / gaussian / histogram
         #"image type flag" 0/1/2 mnist / ppm/ jpg
-        inp_args = ["alpha_driver", 'folder location training', 'folder location testing',
+        inp_args = ["alpha_driver", 'data/cars/training/', 'data/cars/testing/',
                     'dummy', 'dummy','dummy','dummy',
                     "0","0","1"]
 
