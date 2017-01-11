@@ -1,6 +1,6 @@
 #include "GradientDescent.h"
 #include <math.h>
-#include "model.h"
+#include "GradientModel.h"
 #include <armadillo>
 
 using namespace std;
@@ -25,9 +25,18 @@ GradientDescent::GradientDescent(int iterations,double alpha, double tol, int ba
 
 GradientDescent::~GradientDescent(){}
 
+void GradientDescent::fitParams(Model *m){
+	cerr << "Only call GradientDescent on objects of type GradientModel" << endl;
+	exit(1);
+}
+
+void GradientDescent::fitParams(KNN *m){
+	cerr << "Only call GradientDescent on objects of type GradientModel" << endl;
+	exit(1);
+}
 
 
-void GradientDescent::fitParams(Model *m){ //fits via mini batch gradient descent
+void GradientDescent::fitParams(GradientModel* m){ //fits via mini batch gradient descent
 	int length = batchSize;
 	if(length == 0){
 		length = m->get_num_examples();
@@ -88,11 +97,13 @@ void GradientDescent::fitParams(Model *m){ //fits via mini batch gradient descen
 					}
 					else{ 
 						alphas[j] *= 1.05;
+						prev_update[j] = update; 
 					}
 				}
 				else{
 					alphas[j] = alpha;
 					m->set_Params(j, m->get_Params()[j] - alphas[j]*grad[j]/update);
+					prev_update[j] = update; 
 				}
 				
 				//update cost
@@ -100,8 +111,7 @@ void GradientDescent::fitParams(Model *m){ //fits via mini batch gradient descen
 				cost[j].push_back(temp_cost);
 				
 				//update previous update
-				prev_update[j] = update; 
-				if(j == 1){
+				if(j == 0){
 					cout << "Iteration " << i << " Parameter " << j << " Position " << pos << endl;
 					cout << "The update norm is " << update  << endl; 
 					cout << "The maximum gradient element is " << grad[j].max() << endl;

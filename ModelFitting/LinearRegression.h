@@ -2,7 +2,7 @@
 #define LINEARREGRESSION_H_
 
 
-#include "model.h"
+#include "GradientModel.h"
 #include <vector>
 #include <set>
 
@@ -13,8 +13,7 @@
 
 class Optimizer;
 
-
-class LinearRegression : public Model  {
+class LinearRegression : public GradientModel  {
  public:
   LinearRegression(std::vector<arma::mat> train, arma::colvec labels, Optimizer *optim); 
   ~LinearRegression();
@@ -26,15 +25,11 @@ class LinearRegression : public Model  {
   
   void set_Params(int k, arma::vec p); //sets params.at(k) = p
   std::vector<arma::vec> get_Params();
-  arma::mat getRegressors();
   arma::vec getLabels();
   int get_num_examples();
   double cost(int lower, int upper, int k); //cost of fitting examples lower (inclusive) to upper (not inclusive)
-
   arma::mat getTrainset();
-  void set_k(int k);
-  arma::vec predict_on_subset(arma::mat test, arma::mat train, int k, arma::vec train_labels);
-  
+
  private:
  	arma::mat concatenate(std::vector<arma::mat> input);
  

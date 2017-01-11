@@ -12,16 +12,25 @@ using namespace std;
 using namespace arma;
 
 LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels, Optimizer *optim){
-  this->num_examples = train.size();
-  if(num_examples <= 0){
-    cerr << "Need an input\n" << endl;
-    exit(-1);
-  }
   srand(524); //shuffle the elements
   this->x = shuffle(concatenate(train));  //rows contain the ith example, columns contain all instances of a feature
   srand(524); //preserve same shuffling
   this->y = shuffle(labels); //y_i = label of ith training example
   this->optim = optim;
+
+  mat tempmat;
+  tempmat = this->x.rows(0,10000);
+  this->x = tempmat;
+  vec tempvec;
+  tempvec = this->y.subvec(0,10000);
+  this->y = tempvec;
+
+  this->num_examples = x.n_rows;
+  if(num_examples <= 0){
+    cerr << "Need an input\n" << endl;
+    exit(-1);
+  }
+
 
   for(int i = 0; i < y.size(); i++){
     this->label_set.insert(y(i));
@@ -38,18 +47,6 @@ LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels,
 
 
 LinearRegression::~LinearRegression() {}
-
-//TO DO: Find better way to do this
-  mat LinearRegression::getTrainset(){
-    mat m;
-    return(m);
-  }
-  void LinearRegression::set_k(int k){}
-
-  vec LinearRegression::predict_on_subset(mat test, mat train, int k, vec train_labels){
-    vec v;
-    return(v);
-  }
 
 
 vec LinearRegression::predict(vector<arma::mat> input){
@@ -115,7 +112,7 @@ vector<vec> LinearRegression::get_Params(){
   return(params);
 }
 
-mat LinearRegression::getRegressors(){
+mat LinearRegression::getTrainset(){
   return(x);
 }
 
