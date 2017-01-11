@@ -25,12 +25,16 @@ int main(int argc, char *argv[]){
   vec v = randu<vec>(4);
   srand(1);
   mat B = shuffle(A);
-  srand(1);
-  vec u = shuffle(v);
+  //srand(1);
+  //vec u = shuffle(v);
   cout << A << endl;
   cout << B << endl;
-  cout << v << endl;
-  cout << u << endl;
+  //cout << v << endl;
+  //cout << u << endl;
+  cout << mean(B,0) << endl;
+  cout << mean(B,1) << endl;
+  cout << mean(A,0) << endl;
+  cout << mean(A,1) << endl;
   */
 
   string train_directory, test_directory;
@@ -149,10 +153,12 @@ int main(int argc, char *argv[]){
 
   // step 3: Model the data
   //cout << "step 3\n" << endl;
-  GradientDescent *gd = new GradientDescent(100, .001, 10e-4, 0);
+  GradientDescent *gd = new GradientDescent(500, .001, 10e-4, 0);
   //LinearRegression *fit = new LinearRegression(tr_data, tr_lbls, gd);
   
   LogisticRegression *fit = new LogisticRegression(tr_data, tr_lbls, gd);
+
+
   cout <<"predicting step\n" << endl;
   arma::vec pred_lbls = fit->predict(t_data);
   

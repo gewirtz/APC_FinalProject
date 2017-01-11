@@ -15,7 +15,7 @@ class Optimizer;
 
 class LinearRegression : public GradientModel  {
  public:
-  LinearRegression(std::vector<arma::mat> train, arma::colvec labels, Optimizer *optim); 
+  LinearRegression(std::vector<arma::mat> train, arma::colvec labels, Optimizer *optim, bool normalize = true); 
   ~LinearRegression();
   
   arma::vec predict(std::vector<arma::mat> input); 
@@ -32,16 +32,23 @@ class LinearRegression : public GradientModel  {
 
  private:
  	arma::mat concatenate(std::vector<arma::mat> input);
- 
+  arma::mat standardize(arma::mat data);
   void fit();   //trains the model (ie updates \beta) for given data x,y 
-
-
+  bool trained;
+  bool normalize;
  	Optimizer* optim;
   int num_examples;
   arma::mat x; //regressors
   arma::vec y; //labels
   std::vector<arma::vec> params; 
   std::set<int> label_set; //possible values y_i can take on
+  arma::rowvec tr_means;
+  arma::rowvec tr_stdev;
+  std::vector<bool> remove; 
+  int num_rows;
+  int num_cols;
+  int num_regressors;
+
  };
 
 #endif  // LINEARREGRESSION_H_

@@ -14,7 +14,7 @@ class Optimizer;
 
 class LogisticRegression : public GradientModel  {
  public:
-  LogisticRegression(std::vector<arma::mat> train, arma::colvec labels, Optimizer *optim); 
+  LogisticRegression(std::vector<arma::mat> train, arma::colvec labels, Optimizer *optim, bool normalize = true); 
   ~LogisticRegression();
 
   arma::vec predict(std::vector<arma::mat> input); 
@@ -29,16 +29,14 @@ class LogisticRegression : public GradientModel  {
   int get_num_examples();
   double cost(int lower, int upper, int k); //cost of fitting examples lower to upper
 
-/*
-  void set_k(int k);
-  arma::vec predict_on_subset(arma::mat test, arma::mat train, int k, arma::vec train_labels);
-*/
 
  private:
   arma::mat concatenate(std::vector<arma::mat> input);
+  arma::mat standardize(arma::mat data);
  
   void fit();   //trains the model (ie updates \beta) for given data x,y 
-
+  bool trained;
+  bool normalize;
 
   Optimizer* optim;
   int num_examples;
@@ -48,6 +46,13 @@ class LogisticRegression : public GradientModel  {
   std::set<int> label_set; //possible values y_i can take on
   std::vector<std::vector<int>> ovr_labels;
   void set_ovr_labels();
+  arma::rowvec tr_means;
+  arma::rowvec tr_stdev;
+  std::vector<bool> remove; 
+  int num_rows;
+  int num_cols;
+  int num_regressors;
+
  };
 
 
