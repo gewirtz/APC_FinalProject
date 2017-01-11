@@ -168,7 +168,7 @@ vector<arma::mat> convertToArma(PPMImage *img){
     } // end row
 
     //puts current image at the end of the list
-    all_images.push_back(cur_img);
+    //all_images.push_back(cur_img);
 
     //} // end num_img
     return all_images;
@@ -259,18 +259,18 @@ int main(){
     vector<string> fnames;
     fnames = fileNames(testing_data.c_str());
 
-    for(int i=0;i<fnames.size();i++){
-        cout << fnames[i]  <<endl;
+    vector<arma::mat> arma;
+
+    for(int i=2;i<fnames.size();i++){
+        //cout << (string) fnames[i] << endl;
+        PPMImage *image;
+        image = readPPM((testing_data + "/" + fnames[i]).c_str());
+        //grayscalePPM(image);
+        //arma.push_back(convertToArma(image));
     }
 
-    PPMImage *image;
-    vector<arma::mat> arma;
-    image = readPPM("car_0001.ppm");
-
-    grayscalePPM(image);
-    arma = convertToArma(image);
     //arma[0].print();
-    writePPM("test.ppm",image);
+    //writePPM("test.ppm",image);
     cout << "Press any key..." <<endl;
     getchar();
 }  
