@@ -2,7 +2,7 @@
 #define LOGISTICREGRESSION_H_
 
 
-#include "model.h"
+#include "GradientModel.h"
 #include <vector>
 #include <set>
 
@@ -12,7 +12,7 @@
 
 class Optimizer;
 
-class LogisticRegression : public Model  {
+class LogisticRegression : public GradientModel  {
  public:
   LogisticRegression(std::vector<arma::mat> train, arma::colvec labels, Optimizer *optim); 
   ~LogisticRegression();
@@ -24,16 +24,15 @@ class LogisticRegression : public Model  {
   
   void set_Params(int k, arma::vec p); //sets params.at(k) = p
   std::vector<arma::vec> get_Params();
-  arma::mat getRegressors();
+  arma::mat getTrainset();
   arma::vec getLabels();
   int get_num_examples();
   double cost(int lower, int upper, int k); //cost of fitting examples lower to upper
 
-
-  arma::mat getTrainset();
+/*
   void set_k(int k);
   arma::vec predict_on_subset(arma::mat test, arma::mat train, int k, arma::vec train_labels);
-
+*/
 
  private:
   arma::mat concatenate(std::vector<arma::mat> input);
@@ -47,6 +46,8 @@ class LogisticRegression : public Model  {
   arma::vec y; //labels
   std::vector<arma::vec> params; 
   std::set<int> label_set; //possible values y_i can take on
+  std::vector<std::vector<int>> ovr_labels;
+  void set_ovr_labels();
  };
 
 

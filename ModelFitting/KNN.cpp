@@ -9,11 +9,6 @@ using namespace std;
 using namespace arma;
 
 KNN::KNN(vector<arma::mat> train, arma::colvec labels, Optimizer *optim){
-  this->num_examples = train.size();
-  if(num_examples <= 0){
-    cerr << "Need an input\n" << endl;
-    exit(-1);
-  }
 
   srand(1); //shuffle the elements
   this->x = shuffle(concatenate(train));  //rows contain the ith example, columns contain all instances of a feature
@@ -28,9 +23,13 @@ KNN::KNN(vector<arma::mat> train, arma::colvec labels, Optimizer *optim){
   vec tempvec;
   tempvec = this->y.subvec(0,10000);
   this->y = tempvec;
+  this->num_examples = this->x.n_rows;
+   if(num_examples <= 0){
+    cerr << "Need an input\n" << endl;
+    exit(-1);
+  }
 
   this->optim = optim;
-  cout <<"shuffled in constructor" << endl;
   for(int i = 0; i < y.size(); i++){
     this->label_set.insert(y(i));
   }
@@ -38,7 +37,6 @@ KNN::KNN(vector<arma::mat> train, arma::colvec labels, Optimizer *optim){
   vec v(1);
   temp.push_back(v.zeros());
   this->params = temp; // sets all the parameters to 0
-  cout <<"about to fit" << endl;
   
   fit();  //fit parameters (average value of each feature for each label)  
 } 
@@ -61,7 +59,9 @@ arma::vec KNN::predict(vector<arma::mat> input){
   //create the distance matrix
   mat dists(testset.n_rows,x.n_rows);
   for(int i=0;i<testset.n_rows;i++){
-    cout << "calculating distance for example " << i << " of " << testset.n_rows -1 << endl;
+    if(i%1000==0){
+      cout << "calculating distance for example " << i << " of " << testset.n_rows -1 << endl;
+    }
     for(int j=0;j<x.n_rows;j++){
       dists(i,j) = norm(testset.row(i)-x.row(j),2);
     }
@@ -126,34 +126,6 @@ arma::vec KNN::internal_predict(arma::mat input, arma::mat train, int k_to_use, 
 
 
 
-double KNN::cost(int lower, int upper, int k){
-  lower = upper;
-  k = 10;
-  return(lower*upper);
-}
-
-
-//used for stoch grad descent
-vector<vec> KNN::gradient(int k, int j){ 
-  if(k < 0 || k >= x.n_rows){
-    cerr << "Index " << k << " out of bounds.  Need in range 0, " << x.n_rows << endl;
-  }
-  vec grad;
-  grad = grad.zeros(x.n_cols);
-  vec prediction = x.row(k) * params[0]; //Y = X\beta
-  double resid = y[k] - prediction[0];  
-  
-  for(int j = 0; j < x.n_cols;j++){
-      grad(j) = resid * x(k,j);
-  }  
-  vector<vec> v;
-  j = 7;
-  v.push_back(grad);
-  return(v);
-}
-
-
-
 void KNN::set_Params(int k, arma::vec p){
   if(k !=0){
     cerr << "Index " << k << " out of bounds while trying to set params" << endl;
@@ -201,32 +173,7 @@ mat KNN::concatenate(vector<arma::mat> input){
 }
 
 void KNN::fit(){
-  //for each value in label_set get average value of each feature among test objects
-  /*
-  int cur_index = 0; 
-  for (set<int>::iterator i = label_set.begin(); i != label_set.end(); i++) {
-    cout << "cur index: " << cur_index << endl;
-    if(cur_index>(x.n_cols-1)){
-      cerr << "Indexing past the assigned length of params in KNN" << endl;
-      exit(-1);
-    }
-    int cur_label = *i;
-    cout << "cur_label: " << cur_label << endl;
-    uvec indices = find(y==cur_label);
-    mat cur_label_samples = x.rows(indices);
-    arma::vec mean_vec;
-    mean_vec.zeros(x.n_cols);
-    for(int c=0;c<cur_label_samples.n_cols;c++){
-      arma::vec cur_feature = x.col(c);
-      int avgval = mean(cur_feature);
-      mean_vec(c) = avgval;
-    }
-    cout << "passed inner for loop" << endl;
-    set_Params(cur_index,mean_vec);
-    cur_index++;  
-  }
-  */
-  cout << "okay yall about to go to CV object fitParams" << endl;
+
   optim->fitParams(this); //cross-validation for k
   
 }

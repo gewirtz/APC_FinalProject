@@ -2,8 +2,7 @@
 #define GRADIENTDESCENT_H_
 
 #include "Optimizer.h"
-
-class Model;
+#include "GradientModel.h"
 
 class GradientDescent : public Optimizer {
  public:
@@ -12,7 +11,10 @@ class GradientDescent : public Optimizer {
 	GradientDescent(int iterations,double alpha, double tol, int batchSize); 
 	
 	~GradientDescent();
-  	void fitParams(Model* m);
+  	void fitParams(GradientModel* m);
+  	void fitParams(Model *m);
+	void fitParams(KNN *m);
+
  	void setBatchSize(int batchSize);
  	int getBatchSize();
  	std::vector<std::vector<double>> getLastCost();
