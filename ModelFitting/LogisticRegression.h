@@ -47,6 +47,8 @@ class LogisticRegression : public Model  {
   arma::vec y; //labels
   std::vector<arma::vec> params; 
   std::set<int> label_set; //possible values y_i can take on
+  std::vector<std::vector<int>> ovr_labels;
+  void set_ovr_labels();
  };
 
 

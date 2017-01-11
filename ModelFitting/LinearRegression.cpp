@@ -31,7 +31,7 @@ LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels,
   vec v;
   temp.push_back(v.zeros(x.n_cols));
   this->params = temp;
-
+  cout << "fitting params " << endl;
   fit();  //fit beta  
 
 } 

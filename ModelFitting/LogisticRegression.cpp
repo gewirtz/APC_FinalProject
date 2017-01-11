@@ -30,16 +30,31 @@ LogisticRegression::LogisticRegression(vector<arma::mat> train, arma::colvec lab
 
   vector<vec> temp; 
   vec v;
-  temp.push_back(v.zeros(x.n_cols));
+  for(int i = 0; i < label_set.size();i++){
+    temp.push_back(v.zeros(x.n_cols));
+  }
   this->params = temp;
-
+  set_ovr_labels();
   fit();  //fit beta  
-
 }  
 
 LogisticRegression::~LogisticRegression() {}
 
-  
+void LogisticRegression::set_ovr_labels(){
+  vector<int> temp = vector<int>(num_examples);
+  for(int k = 0; k < label_set.size(); k++){
+    //create one v rest label set for label k
+    for(int i = 0; i < num_examples;  i++){
+      if(y[i] == k){
+        temp[i] = 1;
+      }
+      else{
+        temp[i] = 0;
+      }
+    }
+    ovr_labels.push_back(temp);
+  }
+}
 
 //TO DO: Find a better way to do this
   mat LogisticRegression::getTrainset(){
@@ -61,13 +76,12 @@ vec LogisticRegression::predict(vector<arma::mat> input){
   vector<double> label_likelihood(label_set.size());
   vec temp;
   double max_prob;
-
   for(int i = 0; i < test.n_rows; i++){
     max_prob = 0.0;
 
     //for(int k = 0; k < label_set.size();k++){
     for(int k : label_set){
-      temp = x.row(i) * params[k];
+      temp = test.row(i) * params[k];
       label_likelihood[k] = 1.0/(1.0+exp(-temp[0]));
       if(label_likelihood[k] > max_prob){
         max_prob = label_likelihood[k];
@@ -124,72 +138,23 @@ vector<vec> LogisticRegression::gradient(int lower, int upper){ //one v rest fit
     exit(1);
   }
   vector<vec> v;
-  vec ovr_lab(upper - lower); //one v rest labels
   vec grad; 
   vec probs;
 
   for(int k = 0; k < label_set.size(); k++){
-    //create one v rest label set for label k
-    for(int i = lower; i < upper;  i++){
-      if(y[i] == k){
-        ovr_lab[i] = 1;
-      }
-      else{
-        ovr_lab[i] = 0;
-      }
-    }
 
     grad = grad.zeros(x.n_cols); //reset grad
     probs = 1.0/(1.0+exp(-x*params[k])); 
     
     for(int i = 0; i < x.n_cols; i++){ //i=1...nparams
       for(int j = lower; j < upper; j++){ // j=1...examples
-        grad(i) += (ovr_lab[j] - probs(j)) * x(j,i);
+        grad(i) += (ovr_labels[k] [j] - probs(j)) * x(j,i);
       }
     }
-    v.push_back(-1.0/x.n_rows*grad);
+    v.push_back(-1.0/(upper - lower)*grad);
   }
   return(v); //maximizing likelihood is equivalent to minimizing negative likelihood
 }
-
-/*
-//zeros<vec>(10)
-//MAP (maximum aposteriori) fit
-vec LogisticRegression::predict(vector<arma::mat> input){
-  mat test = concatenate(input);
-  vec labels(test.n_rows);
-  int fitted_val;
-  double max_prob;
-  double temp;
-  double sum;
-  vec fits; //coefficient fits for each class k, give by theta_{k}*x_i
-
-  for(int i = 0; i < test.n_rows;i++){
-    fits = fits.zeros(label_set.size());
-    max_prob = 0.0;
-    sum = 0.0;
-    for(int k = 0; k < label_set.size() - 1; k++){
-      //fits.at(k) = (test.row(i) *  params.at(k));  //compute denominator of logistic function
-      vec v = test.row(i) *  params.at(k);
-      fits.at(k) = v[0];
-      sum += fits.at(k);
-    }
-    sum = 1.0 + exp(-sum); //logistic function
-    temp = 1.0 / sum; //probability of the Kth class where label set is given by {0,1,...,K}
-    fitted_val = label_set.size() - 1;
-    for(int k = 0; k < label_set.size() - 1; k++){
-      temp = exp(-fits.at(k))/sum;
-      if(temp > max_prob){
-        max_prob = temp; //choose the greatest
-        fitted_val = k; 
-      }
-    }
-    labels[i] = fitted_val; 
-  }
-  return(labels);
-}
-
-*/
 
 
 void LogisticRegression::set_Params(int k, arma::vec p){
@@ -209,10 +174,10 @@ int LogisticRegression::get_num_examples(){
 }
 
 double LogisticRegression::cost(int lower, int upper, int k){
-  vec fits = this->y - 1.0/(1.0-exp(x*params[k]));
+  vec resid = this->y - 1.0/(1.0+exp(-x*params[k]));
   double cost = 0.0;
   for(int i = lower; i < upper; i++){
-    cost += pow(fits[i],2);
+    cost += pow(resid[i],2);
   }
   return(1.0/(2*(upper - lower)) * cost);
 }
