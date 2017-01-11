@@ -9,10 +9,12 @@
 #include "processing/histogram.h"
 #include "processing/histogram_test.h"
 #include "processing/data_process_base.h"
+#include "ModelFitting/CrossValidation.h"
+#include "ModelFitting/KNN.h"
 #include "ModelFitting/GradientDescent.h"
-#include "ModelFitting/LinearRegression.h"
+//#include "ModelFitting/LinearRegression.h"
 #include "ModelFitting/Performance.h"
-#include "ModelFitting/LogisticRegression.h"
+//#include "ModelFitting/LogisticRegression.h"
 #include <armadillo>
 #include <vector>
 #include <assert.h>
@@ -150,8 +152,12 @@ int main(int argc, char *argv[]){
   // step 3: Model the data
   //cout << "step 3\n" << endl;
   GradientDescent *gd = new GradientDescent(500, .001, 10e-4, 0);
-  LinearRegression *fit = new LinearRegression(tr_data, tr_lbls, gd);
- 
+  cout << "About to make CV object" << endl;
+  //LinearRegression *fit = new LinearRegression(tr_data, tr_lbls, gd);
+  CrossValidation *cv = new CrossValidation(1.0,100,20,10); 
+  cout << "About to make KNN object" << endl;
+  KNN *fit = new KNN(tr_data, tr_lbls, cv);
+
   cout <<"predicting step\n" << endl;
   arma::vec pred_lbls = fit->predict(t_data);
   
@@ -161,40 +167,28 @@ int main(int argc, char *argv[]){
       correct += 1.0;
     }
   }
-  double stat3 = correct / pred_lbls.size();
+  double stat3 = (correct / pred_lbls.n_elem)*100;
 
-  cout << "Gradient Differences " << endl;
-  cout << fit->get_exactParams() - fit->get_Params()[0] << endl;
+  cout << "KNN Differences: " << endl;
+  cout << stat3 << endl;
 
   vector<vector<double>> costs = gd->getLastCost();
 
   /*TO DO: NOEMI+ANDREAS
   Hi, so i want to make the plot i sent to you on fb 
   xy/2d line graph not scatter
-  y-axis vector<double> costs[j] as above, 
-  x-axis should be a vector<int> iter_num which contains 1,..., costs[j].size()
-  note costs[j].size() == costs[k].size() ie they are all the same length
+  y-axis vector<double> costs as above
+  x-axis should be a vector<int> iter_num which contains 0, 1,..., costs.size()
   title can be Gradient Descent 
-  
-  x-axis title Iteration number  
-  y-axis title Cost 
-  legend with parameter j and each line a different color
-  esentially this is the plot(x,y) command in python  
 
-  preferrably have the line graphs for =0,1,...,costs.size()-1 all on the same graph 
-  but getting one per file is fine if not
-
+  x-axis title Iteration number 
+  y-axis title 
   have the system output it and save it to a .png 
-
+  esentially this is the plot(x,y) command in python.  
   i dont know anything about plotting in c++, you guys are much more
   experienced with it i would assume.
 
-  
-  perhaps make this a function in performance or something, along the lines of
-  graph(vector<vector<double>> costs, int skip) and have the graph display the cost
-  of every skip iterations (ie if skip is 5 show 0,5,10,15,20,...)
-
-  thanks and let me know if you have any other questions!  
+  thanks!  
   
 
 

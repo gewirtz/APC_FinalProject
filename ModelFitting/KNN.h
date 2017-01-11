@@ -13,27 +13,25 @@ class KNN : public Model {
   ~KNN();
   
   arma::vec predict(std::vector<arma::mat> input); 
-  arma::vec predict_on_subset(arma::mat test, arma::mat train, int k, arma::vec train_labels);
-  void set_Params(int k, arma::vec p); //sets params so params[k] = p
-  void set_k(int k);
+  arma::vec predict_on_subset(arma::mat test, arma::mat train, int k, arma::vec train_labels, arma::mat dists);
+  void set_Params(int k, arma::vec); //sets params so params[k] = p
   std::vector<arma::vec> get_Params();
   arma::vec getLabels();
   int get_num_examples();
   arma::mat getTrainset();
+  double cost(int lower, int upper, int k);
   arma::vec predict_on_subset(arma::mat subset, double k);
 
   // unclear what these are doing for KNN
-  std::vector<arma::vec> gradient();
-  std::vector<arma::vec> gradient(int k);
+  std::vector<arma::vec> gradient(int lower, int upper);
 
  private:
  	arma::mat concatenate(std::vector<arma::mat> input);
-  arma::vec internal_predict(arma::mat input, arma::mat train, int k, arma::vec train_labels);
+  arma::vec internal_predict(arma::mat input, arma::mat train, int k, arma::vec train_labels, const arma::mat dists);
   //arma::vec choose_k(arma::mat input); //performs cross validation to choose the best k
   void fit();   //trains the model (ie performs cross validation to choose k) for given data x,y 
  	Optimizer* optim;
   int num_examples;
-  int k;
   arma::mat x; //regressors
   arma::vec y; //labels
   std::vector<arma::vec> params; //the average pixel value for each location across all images for each label 

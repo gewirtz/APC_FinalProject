@@ -8,15 +8,15 @@ class Model;
 class CrossValidation : public Optimizer {
  public:
 	
-	CrossValidation(double range_start, double range_end, int delta, int nfolds); 
+	CrossValidation(double range_start, double range_end, int delta , int nfolds ); 
 	~CrossValidation();
   	void fitParams(Model* m);
 
  private:
 	double param_range_start;
 	double param_range_end; 
-	double delta;
-	double nfolds;
+	int delta;
+	int nfolds;
 };
 
 #endif  // CROSSVALIDATION_H_
