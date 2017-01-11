@@ -20,7 +20,8 @@ class GradientDescent : public Optimizer {
  	std::vector<std::vector<double>> getLastCost();
 
  private:
- 	std::vector<std::vector<double>> cost;  //shows the cost process of the last fit
+ 	std::vector<std::vector<double>> cost;  //shows the cost process 
+ 	std::vector<double> last_cost;
  	int iterations;
  	double alpha;
  	double tol;

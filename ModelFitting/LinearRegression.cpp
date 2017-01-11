@@ -11,19 +11,23 @@
 using namespace std;
 using namespace arma;
 
-LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels, Optimizer *optim){
+LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels, Optimizer *optim, bool normalize){
+  this->num_rows = train[0].n_rows;
+  this->num_cols = train[0].n_cols;
+  this->normalize = normalize;
+  this->trained = false;
   srand(524); //shuffle the elements
   this->x = shuffle(concatenate(train));  //rows contain the ith example, columns contain all instances of a feature
   srand(524); //preserve same shuffling
   this->y = shuffle(labels); //y_i = label of ith training example
   this->optim = optim;
 
-  mat tempmat;
-  tempmat = this->x.rows(0,10000);
-  this->x = tempmat;
-  vec tempvec;
-  tempvec = this->y.subvec(0,10000);
-  this->y = tempvec;
+  //mat tempmat;
+  //tempmat = this->x.rows(0,10000);
+  //this->x = tempmat;
+  //vec tempvec;
+  //tempvec = this->y.subvec(0,10000);
+  //this->y = tempvec;
 
   this->num_examples = x.n_rows;
   if(num_examples <= 0){
@@ -42,6 +46,7 @@ LinearRegression::LinearRegression(vector<arma::mat> train, arma::colvec labels,
   this->params = temp;
   cout << "fitting params " << endl;
   fit();  //fit beta  
+  this->trained = true;
 
 } 
 
@@ -134,8 +139,6 @@ double LinearRegression::cost(int lower, int upper, int k){
 }
 
 mat LinearRegression::concatenate(vector<arma::mat> input){
-  int num_rows = input[0].n_rows;
-  int num_cols = input[0].n_cols;
   int ex_count = input.size();
   mat data = mat(ex_count,num_rows * num_cols + 1); //includes constant column
   for(int i=0; i<ex_count; i++){
@@ -143,6 +146,7 @@ mat LinearRegression::concatenate(vector<arma::mat> input){
       cerr << "Need all input data to have same dimensions\n" << endl;
       exit(-1);
     }
+
 
     data(i,0) = 1.0; //regress on constant
   
@@ -152,9 +156,56 @@ mat LinearRegression::concatenate(vector<arma::mat> input){
       }
     }
   }
+  if(normalize){
+    return(standardize(data));
+  }
   return(data);
 }
 
+mat LinearRegression::standardize(mat data){
+  if(!this->trained){
+    this->tr_means = mean(data,0);
+    this->tr_stdev = stddev(data,0,0);
+    this->remove = vector<bool>(data.n_cols);
+    remove[0] = false;
+    int count = 1;
+    for(int j = 1; j < data.n_cols; j++){
+      if(tr_stdev[j]> 0.001){
+          remove[j] = false;
+          count += 1;
+        }
+        else{ //prevent nans
+          remove[j] = true;
+        }
+    }
+    this->num_regressors = count;
+  }
+
+  mat new_data(data.n_rows, this->num_regressors);
+  int pos;
+  int j;
+  for(int i = 0; i < new_data.n_rows;i++){
+    new_data(i,0) = 1.0;
+    pos = 1;
+    j = 1;
+    while(j < new_data.n_cols){
+      if(remove[pos]){
+        pos += 1;
+      }
+      else{
+        new_data(i,j) = (data(i,pos) - tr_means[pos])/tr_stdev[pos];
+        if(isnan(new_data(i,j))){
+          cout << "pos " << pos << endl;
+          cout << "mean " << tr_means[pos] << endl;
+          cout << "stdev " << tr_stdev[pos] << endl;
+        }
+        j += 1;
+        pos+= 1;
+      }
+    }
+  }
+  return(new_data);
+}
 
 void LinearRegression::fit(){
   optim->fitParams(this); //gradient descent
