@@ -47,6 +47,8 @@ int main(int argc, char *argv[]){
     // keep this for testing
     train_directory = "data/mnist/training/";
     test_directory = "data/mnist/testing/";
+    train_directory_ppm = "data/cars/training/";
+    test_directory_ppm = "data/cars/testing/"
     train_lbl = "train-labels.idx1-ubyte";
     train_img = "train-images.idx3-ubyte";
     test_lbl = "t10k-labels.idx1-ubyte";
@@ -82,9 +84,9 @@ int main(int argc, char *argv[]){
 
   else if(datatype_flag == 1){ // PPM
 
-    train_data = ppm_load_images(train_directory);
+    train_data = ppm_load_images(train_directory_ppm);
     //train_lbls = ppm_load_labels(train_directory);
-    tt_data = ppm_load_images(test_directory);
+    tt_data = ppm_load_images(test_directory_ppm);
     //test_lbls = ppm_load_labels(test_directory);
 
   }
