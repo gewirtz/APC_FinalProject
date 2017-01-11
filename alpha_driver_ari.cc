@@ -11,7 +11,7 @@
 #include "processing/data_process_base.h"
 #include "ModelFitting/CrossValidation.h"
 #include "ModelFitting/KNN.h"
-#include "ModelFitting/GradientDescent.h"
+//#include "ModelFitting/GradientDescent.h"
 //#include "ModelFitting/LinearRegression.h"
 #include "ModelFitting/Performance.h"
 //#include "ModelFitting/LogisticRegression.h"
@@ -151,7 +151,7 @@ int main(int argc, char *argv[]){
 
   // step 3: Model the data
   //cout << "step 3\n" << endl;
-  GradientDescent *gd = new GradientDescent(500, .001, 10e-4, 0);
+  //GradientDescent *gd = new GradientDescent(500, .001, 10e-4, 0);
   cout << "About to make CV object" << endl;
   //LinearRegression *fit = new LinearRegression(tr_data, tr_lbls, gd);
   CrossValidation *cv = new CrossValidation(1.0,100,20,10); 
@@ -172,7 +172,7 @@ int main(int argc, char *argv[]){
   cout << "KNN Differences: " << endl;
   cout << stat3 << endl;
 
-  vector<vector<double>> costs = gd->getLastCost();
+  //vector<vector<double>> costs = gd->getLastCost();
 
   /*TO DO: NOEMI+ANDREAS
   Hi, so i want to make the plot i sent to you on fb 
