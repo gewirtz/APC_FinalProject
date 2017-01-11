@@ -9,11 +9,6 @@ using namespace std;
 using namespace arma;
 
 KNN::KNN(vector<arma::mat> train, arma::colvec labels, Optimizer *optim){
-  this->num_examples = train.size();
-  if(num_examples <= 0){
-    cerr << "Need an input\n" << endl;
-    exit(-1);
-  }
 
   srand(1); //shuffle the elements
   this->x = shuffle(concatenate(train));  //rows contain the ith example, columns contain all instances of a feature
@@ -28,6 +23,11 @@ KNN::KNN(vector<arma::mat> train, arma::colvec labels, Optimizer *optim){
   vec tempvec;
   tempvec = this->y.subvec(0,10000);
   this->y = tempvec;
+  this->num_examples = this->x.n_rows;
+   if(num_examples <= 0){
+    cerr << "Need an input\n" << endl;
+    exit(-1);
+  }
 
   this->optim = optim;
   for(int i = 0; i < y.size(); i++){
@@ -173,7 +173,7 @@ mat KNN::concatenate(vector<arma::mat> input){
 }
 
 void KNN::fit(){
-  
+
   optim->fitParams(this); //cross-validation for k
   
 }
