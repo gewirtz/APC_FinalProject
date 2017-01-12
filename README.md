@@ -23,7 +23,6 @@ vim config/config.json
 #      model_fitting: 1 for Regularized Regression
 #      model_fitting: 2 for Logistic Regression
 #      model_fitting: 3 for kNN
-#      model_fitting: 4 for Naive Bayes
 # 
 #  2.5 Set the "test_unit" variable, 0 for normal run, 1 for testing
 
