@@ -9,30 +9,68 @@
 #include "processing/histogram.h"
 #include "processing/histogram_test.h"
 #include "processing/data_process_base.h"
-#include "ModelFitting/CrossValidation.h"
-#include "ModelFitting/KNN.h"
 //#include "ModelFitting/GradientDescent.h"
 //#include "ModelFitting/LinearRegression.h"
 #include "ModelFitting/Performance.h"
-//#include "ModelFitting/LogisticRegression.h"
+#//include "ModelFitting/LogisticRegression.h"
+#include "ModelFitting/CrossValidation.h"
+#include "ModelFitting/KNN.h"
 #include <armadillo>
 #include <vector>
 #include <assert.h>
 using namespace arma;
 using namespace std;
 
+
+namespace{
+
+  mat concatenate(vector<arma::mat> input){
+    int ex_count = input.size();
+    if(ex_count == 0){
+      cerr << "Call concatenate on non-empty data " << endl;
+      exit(1);
+    }
+    int num_rows = input[0].n_rows;
+    int num_cols = input[0].n_cols;
+    mat data = mat(ex_count,num_rows * num_cols); 
+
+    //fill data, rows are examples cols are pixels
+    for(int i=0; i<ex_count; i++){
+      if(input[i].n_rows!=num_rows || input[i].n_cols!=num_cols ){
+        cerr << "Need all input data to have same dimensions\n" << endl;
+        exit(-1);
+      }
+      for(int j=0;j<num_rows;j++){
+        for(int k=0;k<num_cols ; k++){
+            data(i,j*num_cols+k)=input[i](j,k);
+        }
+      }
+    }
+    return(data);
+  };
+}
+
 int main(int argc, char *argv[]){
   /*
-  mat A = randu<mat>(4,5);
+  vector<arma::mat> v;
+  arma::mat A = randu<mat>(4,5);
+  v.push_back(A);
+  cout << A << endl;
+  cout << concatenate(v) << endl;
+
   vec v = randu<vec>(4);
   srand(1);
   mat B = shuffle(A);
-  srand(1);
-  vec u = shuffle(v);
+  //srand(1);
+  //vec u = shuffle(v);
   cout << A << endl;
   cout << B << endl;
-  cout << v << endl;
-  cout << u << endl;
+  //cout << v << endl;
+  //cout << u << endl;
+  cout << mean(B,0) << endl;
+  cout << mean(B,1) << endl;
+  cout << mean(A,0) << endl;
+  cout << mean(A,1) << endl;
   */
 
   string train_directory, test_directory;
@@ -117,6 +155,7 @@ int main(int argc, char *argv[]){
     
   }
   else if (process_flag == 1){ // gaussian
+    cout << "Gaussian smoothing" << endl;
     p_gs=process_driver_gs(train_data,tt_data,train_lbls,test_lbls);
 
     tr_lbls = p_gs->get_labels_train();
@@ -151,44 +190,123 @@ int main(int argc, char *argv[]){
 
   // step 3: Model the data
   //cout << "step 3\n" << endl;
-  //GradientDescent *gd = new GradientDescent(500, .001, 10e-4, 0);
-  cout << "About to make CV object" << endl;
+  //GradientDescent *gd = new GradientDescent(100, .001, 10e-4, 0);
   //LinearRegression *fit = new LinearRegression(tr_data, tr_lbls, gd);
-  CrossValidation *cv = new CrossValidation(1.0,100,20,10); 
-  cout << "About to make KNN object" << endl;
-  KNN *fit = new KNN(tr_data, tr_lbls, cv);
-
-  cout <<"predicting step\n" << endl;
-  arma::vec pred_lbls = fit->predict(t_data);
   
-  double correct = 0.0;
+  mat c_train = concatenate(tr_data);
+  mat c_test = concatenate(t_data);
+  CrossValidation *cv = new CrossValidation(1.0,21,4,10);
+  KNN *fit = new KNN(c_train, tr_lbls, cv);
+
+
+  arma::vec pred_lbls = fit->predict(c_test);
+  
+
+  double correc = 0.0;
   for(int i = 0; i < pred_lbls.size(); i++){
     if(pred_lbls(i) == test_lbls[i]){
-      correct += 1.0;
+      correc += 1.0;
     }
   }
-  double stat3 = (correct / pred_lbls.n_elem)*100;
+  double stat3 = (correc / pred_lbls.n_elem)*100;
 
-  cout << "KNN Differences: " << endl;
+  cout << "KNN Percent Correct: " << endl;
   cout << stat3 << endl;
+/*
+
+  //determines accuracy
+  int numClasses = fit->getLabelSet().size();
+
+  double num_correct = 0.0;
+  vec type1, type2, accByClass, countByClass;
+  type1 = type1.zeros(numClasses); //saying it is class i but it isnt ie s
+  type2 = type2.zeros(numClasses);  //predicting it is not class i but it is 
+  accByClass = accByClass.zeros(numClasses);
+  countByClass = countByClass.zeros(numClasses);
+  bool correct;
+
+  for(int i = 0; i < numClasses; i++){
+    correct = false;
+    countByClass[test_lbls(i)] += 1.0;
+    
+    if(pred_lbls(i) == test_lbls[i]){
+      num_correct += 1.0;
+      correct = true;
+    }
+
+    if(correct){
+      accByClass[test_lbls(i)] += 1.0;
+    }
+    else{
+      type2[test_lbls(i)] += 1.0;
+      type1[pred_lbls(i)] += 1.0;
+    }
+  }
+
+
+  double total_acc = num_correct / pred_lbls.size();
+  vec type1_freq = type1 / (pred_lbls.size() - countByClass);
+  vec class_acc = accByClass / countByClass; 
+  vec type2_freq = type2/countByClass;   
+  //accuracy by class
+
+  for(int i = 0; i < fit->getLabelSet().size(); i++){
+    cout << "For label "<< i << ", the class testing accuracy is " << class_acc[i] << endl;
+    cout << "For label " << i << ", the test frequency of type 1 error is " << type1_freq[i] << endl;
+    cout << "For label " << i << ", the test frequency of type 2 error is " << type2_freq[i] << endl;
+    cout << endl;
+  }
+  cout << endl;
+  cout << endl;
+  cout << "The overall testing accuracy is " <<  total_acc << endl;
+*/
+  //TYPE 1 errors
+
+  //Type 2 errors
+
+
+  //Time to train
+
+  //Time to predict
+
+
+
+
+
+
+
+  //cout << "Gradient Differences " << endl;
+  //cout << fit->get_exactParams() - fit->get_Params()[0] << endl;
 
   //vector<vector<double>> costs = gd->getLastCost();
 
   /*TO DO: NOEMI+ANDREAS
   Hi, so i want to make the plot i sent to you on fb 
   xy/2d line graph not scatter
-  y-axis vector<double> costs as above
-  x-axis should be a vector<int> iter_num which contains 0, 1,..., costs.size()
+  y-axis vector<double> costs[j] as above, 
+  x-axis should be a vector<int> iter_num which contains 1,..., costs[j].size()
+  note costs[j].size() == costs[k].size() ie they are all the same length
   title can be Gradient Descent 
+  
+  x-axis title Iteration number  
+  y-axis title Cost 
+  legend with parameter j and each line a different color
+  esentially this is the plot(x,y) command in python  
 
-  x-axis title Iteration number 
-  y-axis title 
+  preferrably have the line graphs for =0,1,...,costs.size()-1 all on the same graph 
+  but getting one per file is fine if not
+
   have the system output it and save it to a .png 
-  esentially this is the plot(x,y) command in python.  
+
   i dont know anything about plotting in c++, you guys are much more
   experienced with it i would assume.
 
-  thanks!  
+  
+  perhaps make this a function in performance or something, along the lines of
+  graph(vector<vector<double>> costs, int skip) and have the graph display the cost
+  of every skip iterations (ie if skip is 5 show 0,5,10,15,20,...)
+
+  thanks and let me know if you have any other questions!  
   
 
 
@@ -202,6 +320,6 @@ int main(int argc, char *argv[]){
   stat3 = Pf.accuracy(pred_lbls,test_lbls);
 
 */    
-  cout << "The testing accuracy is " <<  stat3 << endl;
+
   return 0;
 }

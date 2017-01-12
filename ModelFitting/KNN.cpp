@@ -28,10 +28,10 @@ KNN::KNN(arma::mat train, arma::colvec labels, Optimizer *optim, bool normalize)
   this->y = shuffle(labels); //y_i = label of ith training example
 
   mat tempmat;
-  tempmat = this->x.rows(0,10000);
+  tempmat = this->x.rows(0,5000);
   this->x = tempmat;
   vec tempvec;
-  tempvec = this->y.subvec(0,10000);
+  tempvec = this->y.subvec(0,5000);
   this->y = tempvec;
   this->num_examples = this->x.n_rows;
   if(num_examples <= 0){
@@ -63,13 +63,14 @@ arma::vec KNN::predict(mat testset){
     exit(1);
   }
   if(normalize){ //set cols to mean 0 stdev 1
-    testset = standardize(testset);
+    mat temp = standardize(testset);
+    testset = temp;
   }
   mat temp = testset.rows(0,4000);
   testset = temp;
   int k_to_use = params[0](0);
   //create the distance matrix
-  mat dists(testset.n_rows,x.n_rows);
+  mat dists(x.n_rows,testset.n_rows);
   rowvec rw, rw2;
   for(int i=0;i<x.n_rows;i++){
     if(i%1000==0){
@@ -89,7 +90,6 @@ arma::vec KNN::predict_on_subset(arma::mat test, arma::mat train, int k_to_use, 
 }
 
 arma::vec KNN::internal_predict(arma::mat input, arma::mat train, int k_to_use, arma::vec train_labels, const arma::mat dists){
-  cout << "internal_predict" << endl;
   arma::mat dists_copy = dists;
   if(k_to_use<1){
     cerr << "k must be larger than 0" << endl;
@@ -105,10 +105,10 @@ arma::vec KNN::internal_predict(arma::mat input, arma::mat train, int k_to_use, 
   double maxval;
 
   for(int i=0;i<input.n_rows;i++){ // for each item in testset
-    maxval = dists.row(i).max();
+    maxval = dists.col(i).max();
     for(int f=0;f<k_to_use;f++){
-      index_to_use = dists_copy.row(i).index_min();
-      dists_copy.row(i)(index_to_use) = maxval;
+      index_to_use = dists_copy.col(i).index_min();
+      dists_copy.col(i)(index_to_use) = maxval;
       closest_k_labels(f) = train_labels(index_to_use);
     }
     
