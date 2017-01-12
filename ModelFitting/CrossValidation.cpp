@@ -1,7 +1,8 @@
 #include "CrossValidation.h"
 #include <math.h>
 #include "KNN.h"
-#include <armadillo>
+#include "GradientModel.h"
+
 
 using namespace std;
 using namespace arma;
@@ -20,18 +21,20 @@ CrossValidation::CrossValidation(double range_start, double range_end, double de
 CrossValidation::~CrossValidation(){}
 
 void CrossValidation::fitParams(Model *m){}
-
+void CrossValidation::fitParams(GradientModel *m){}
 
 mat CrossValidation::calculate_dists(mat train){
 	mat dists(train.n_rows,train.n_rows);
 	double val;
+	rowvec rw, rw2;
   	for(int i=0;i<train.n_rows;i++){
-
   		if(i%1000 == 0){
   			cout << "calculating distance for example " << i << " of " << train.n_rows -1 << endl;
   		}
+  		rw = train.row(i);
     	for(int j=0;j<i;j++){
-    		val = norm(train.row(i)-train.row(j),2);
+    		rw2 = train.row(j);
+    		val = norm(rw-rw2,2);
       		dists(i,j) = val;
       		dists(j,i) = val;
     	}

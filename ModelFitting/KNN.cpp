@@ -58,12 +58,15 @@ arma::vec KNN::predict(vector<arma::mat> input){
   int k_to_use = params[0](0);
   //create the distance matrix
   mat dists(testset.n_rows,x.n_rows);
-  for(int i=0;i<testset.n_rows;i++){
+  rowvec rw, rw2;
+  for(int i=0;i<x.n_rows;i++){
     if(i%1000==0){
       cout << "calculating distance for example " << i << " of " << testset.n_rows -1 << endl;
     }
-    for(int j=0;j<x.n_rows;j++){
-      dists(i,j) = norm(testset.row(i)-x.row(j),2);
+    rw = x.row(i);
+    for(int j=0;j<testset.n_rows;j++){
+      rw2 = testset.row(j);
+      dists(i,j) = norm(rw-rw2,2);
     }
   }
   return(internal_predict(testset,x,k_to_use,y,dists));
