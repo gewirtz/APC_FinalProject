@@ -7,7 +7,6 @@ import simplejson
 
 home_path=os.getcwd()
 config_file = '%s/config/config.json' % home_path
-print config_file
 
 #Read the metadata
 metadata = simplejson.load(open(config_file))
@@ -24,7 +23,7 @@ t_unit = metadata["test_unit"]
 
 cmd = './alpha_driver "%s" "%s" "%s" "%s" "%s" "%s" %i %i %i' % (train_dir, test_dir, train_lbl, train_img, test_lbl, test_img, t_unit, preprocessing[0], model_fitting[0])
 print cmd
-#os.system(cmd)
+os.system(cmd)
 
 
 
