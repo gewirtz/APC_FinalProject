@@ -7,12 +7,12 @@
 #include "../processing/gaussian_smoothing.h"
 #include "../processing/gs_processing_test.h"
 #include "../processing/data_process_base.h"
-#include "ModelFitting/GradientDescent.h"
-#include "ModelFitting/LinearRegression.h"
-#include "ModelFitting/Performance.h"
-#include "ModelFitting/LogisticRegression.h"
-#include "ModelFitting/KNN.h"
-#include "ModelFitting/CrossValidation.h"
+#include "../ModelFitting/GradientDescent.h"
+#include "../ModelFitting/LinearRegression.h"
+#include "../ModelFitting/Performance.h"
+#include "../ModelFitting/LogisticRegression.h"
+#include "../ModelFitting/KNN.h"
+#include "../ModelFitting/CrossValidation.h"
 
 
 #include <armadillo>
@@ -20,6 +20,34 @@
 #include <assert.h>
 using namespace arma;
 using namespace std;
+
+namespace{
+
+  mat concatenate(vector<arma::mat> input){
+    int ex_count = input.size();
+    if(ex_count == 0){
+      cerr << "Call concatenate on non-empty data " << endl;
+      exit(1);
+    }
+    int num_rows = input[0].n_rows;
+    int num_cols = input[0].n_cols;
+    mat data = mat(ex_count,num_rows * num_cols); 
+
+    //fill data, rows are examples cols are pixels
+    for(int i=0; i<ex_count; i++){
+      if(input[i].n_rows!=num_rows || input[i].n_cols!=num_cols ){
+        cerr << "Need all input data to have same dimensions\n" << endl;
+        exit(-1);
+      }
+      for(int j=0;j<num_rows;j++){
+        for(int k=0;k<num_cols ; k++){
+            data(i,j*num_cols+k)=input[i](j,k);
+        }
+      }
+    }
+    return(data);
+  };
+}
 
 int main(int argc, char *argv[]){
 
@@ -63,27 +91,40 @@ int main(int argc, char *argv[]){
   processed_data_test[0]  = tt_data;
   processed_data_test[1]  = t_data_gauss;
   
+  mat c_train_data = concatenate(train_data);
+  mat c_tr_data_gauss= concatenate(tr_data_gauss);
+  mat c_tt_data = concatenate(tt_data);
+  mat c_t_data_gauss = concatenate(t_data_gauss);
+
   GradientDescent *gd = new GradientDescent(100, .001, 10e-4, 0);
   CrossValidation *cv = new CrossValidation(1.0,100,20,10); 
 
-  KNN *fit_knn0; = new KNN(train_data, tr_lbls, cv);
-  KNN *fit_knn1; = new KNN(tr_data_gauss, tr_lbls, cv);
-  LogisticRegression *fit_gd0 = new LogisticRegression(train_data, tr_lbls, cv);
-  LogisticRegression *fit_gd1 = new LogisticRegression(tr_data_gauss, tr_lbls, cv);
+  cout << "Fitting KNN without preprocessing" << endl;
+  KNN *fit_knn0 = new KNN(c_train_data, tr_lbls, cv);
+  cout << "Fitting KNN with Gaussian Smoothing" << endl;
+  KNN *fit_knn1 = new KNN(c_tr_data_gauss, tr_lbls, cv);
+  cout << "Fitting Logisitic Regession without preprocessing" << endl;
+  LogisticRegression *fit_lr0 = new LogisticRegression(c_train_data, tr_lbls, gd);
+      cout << "Fitting Logistic Regression with Gaussian Smoothing" << endl;
+  LogisticRegression *fit_lr1 = new LogisticRegression(c_tr_data_gauss, tr_lbls, gd);
 
 
   cout <<"predicting step\n" << endl;
   vector<vec> fits;
-  fits.push_back(fit_knn0->predict(tt_data));
-  fits.push_back(fit_knn1->predict(t_data_gauss))
-  fits.push_back(fit_gd0->predict(tt_data))
-  fits.push_back(fit_gd1->predict(t_data_gauss)) 
-
+  cout << 0 << endl;
+  fits.push_back(fit_knn0->predict(c_tt_data));
+    cout << 1 << endl;
+  fits.push_back(fit_knn1->predict(c_t_data_gauss));
+      cout << 2 << endl;
+  fits.push_back(fit_lr0->predict(c_tt_data));
+      cout << 3 << endl;
+  fits.push_back(fit_lr1->predict(c_t_data_gauss)); 
+    cout << 4 << endl;
   //determines accuracy
 
-  int numClasses = fit->getLabelSet().size();
+  int numClasses = fit_knn0->getLabelSet().size();
   vec pred_lbls;
-  char* name;
+  string name;
   double num_correct = 0.0;
   vec type1, type2, accByClass, countByClass;
 
@@ -110,7 +151,7 @@ int main(int argc, char *argv[]){
     countByClass = countByClass.zeros(numClasses);
     bool correct;
 
-    for(int i = 0; i < numClasses; i++){
+    for(int i = 0; i < pred_lbls.size(); i++){
       correct = false;
       countByClass[test_lbls(i)] += 1.0;
       
@@ -137,7 +178,7 @@ int main(int argc, char *argv[]){
 
     cout << "Results for " << name << ": " << endl;
     cout << endl; 
-    for(int i = 0; i < fit->getLabelSet().size(); i++){
+    for(int i = 0; i < numClasses; i++){
       cout << "For label "<< i << ", the class testing accuracy is " << class_acc[i] << endl;
       cout << "For label " << i << ", the test frequency of type 1 error is " << type1_freq[i] << endl;
       cout << "For label " << i << ", the test frequency of type 2 error is " << type2_freq[i] << endl;
