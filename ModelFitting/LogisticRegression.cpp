@@ -50,6 +50,8 @@ LogisticRegression::LogisticRegression(arma::mat train, arma::colvec labels, Opt
   for(int i = 0; i < y.size(); i++){
     this->label_set.insert(y(i));
   }
+
+  set_ovr_labels();
   vector<vec> temp; 
   vec v;
   for(int i = 0; i < label_set.size();i++){
@@ -116,6 +118,7 @@ vec LogisticRegression::predict(arma::mat test){
 }
 
 vector<vec> LogisticRegression::gradient(int lower, int upper){ //one v rest fit
+   //cout << "Gradient" << endl;
   if(lower < 0 || lower >= upper || upper > num_examples){
     cerr << "Lower and upper limits " << lower << " and " << upper << " invalid" << endl;
     cerr << "Need val between 0 and " << num_examples << endl;
@@ -130,7 +133,15 @@ vector<vec> LogisticRegression::gradient(int lower, int upper){ //one v rest fit
     probs = 1.0/(1.0+exp(-x*params[k])); 
     
     for(int i = 0; i < x.n_cols; i++){ //i=1...nparams
+      //cout << i << endl;
       for(int j = lower; j < upper; j++){ // j=1...examples
+        /*cout << j << endl;
+        cout << "ovr" << endl;
+        cout << ovr_labels[k][j] << endl;
+        cout << "probs" << endl;
+        cout << probs(j) << endl; 
+        cout<<"x" << endl;
+        cout << x(j,i) << endl;*/
         grad(i) += (ovr_labels[k][j] - probs(j)) * x(j,i);
       }
     }
@@ -172,6 +183,7 @@ mat LogisticRegression::getTrainset(){
 
 mat LogisticRegression::standardize(mat data){
   if(!this->trained){
+    cout << "Training standardization " << endl;
     this->trained = true; //memoize results so as to not run in predict
     this->tr_means = mean(data,0);
     this->tr_stdev = stddev(data,0,0);

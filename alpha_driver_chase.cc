@@ -49,12 +49,33 @@ namespace{
 }
 
 int main(int argc, char *argv[]){
-  /*
+/*
   vector<arma::mat> v;
   arma::mat A = randu<mat>(4,5);
+  arma::mat B = randu<mat>(4,5);
   v.push_back(A);
+  v.push_back(B);
+  cout << "A" << endl; 
   cout << A << endl;
-  cout << concatenate(v) << endl;
+  cout << "B" << endl; 
+  cout << B << endl;
+  cout << "concat" << endl;
+  cout << endl;
+  mat m = concatenate(v) ;
+  cout << m << endl;
+    cout << endl;
+  cout << m.n_rows << endl;
+    cout << endl;
+  cout << m.n_cols << endl;
+  vec u;
+  m = join_rows(u.ones(m.n_rows),m);
+  cout << "concat" << endl;
+  cout << endl;
+  cout << m << endl;
+    cout << endl;
+  cout << m.n_rows << endl;
+    cout << endl;
+  cout << m.n_cols << endl;
 
   vec v = randu<vec>(4);
   srand(1);
@@ -69,7 +90,7 @@ int main(int argc, char *argv[]){
   cout << mean(B,1) << endl;
   cout << mean(A,0) << endl;
   cout << mean(A,1) << endl;
-  */
+*/
 
   string train_directory, test_directory;
   string train_img, test_img;
@@ -193,7 +214,7 @@ int main(int argc, char *argv[]){
   
   mat c_train = concatenate(tr_data);
   mat c_test = concatenate(t_data);
-  LinearRegression *fit = new LinearRegression(c_train, tr_lbls, gd,false);
+  LinearRegression *fit = new LinearRegression(c_train, tr_lbls, gd);
 
 
   cout <<"predicting step\n" << endl;
@@ -210,7 +231,7 @@ int main(int argc, char *argv[]){
   countByClass = countByClass.zeros(numClasses);
   bool correct;
 
-  for(int i = 0; i < numClasses; i++){
+  for(int i = 0; i < pred_lbls.size(); i++){
     correct = false;
     countByClass[test_lbls(i)] += 1.0;
     

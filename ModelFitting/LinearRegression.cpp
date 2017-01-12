@@ -34,7 +34,7 @@ LinearRegression::LinearRegression(arma::mat train, arma::colvec labels, Optimiz
   u = u.ones(train.n_rows);
   train = join_rows(u,train);
 
-  
+
   srand(524); //shuffle the elements
   this->x = shuffle(train);  //rows contain the ith example, columns contain all instances of a feature
   srand(524); //preserve same shuffling
@@ -70,6 +70,7 @@ vec LinearRegression::predict(arma::mat test){
     exit(1);
   }
   if(normalize){ //set cols to mean 0 stdev 1
+    cout << "Normalizing test" << endl;
     test = standardize(test);
   }
   vec u;

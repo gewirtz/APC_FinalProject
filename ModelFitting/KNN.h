@@ -9,7 +9,7 @@ class Optimizer;
 
 class KNN : public Model {
  public:
-  KNN(arma::mat train, arma::colvec labels, Optimizer *optim, bool normalize = true);; 
+  KNN(arma::mat train, arma::colvec labels, Optimizer *optim, bool normalize = true); 
   ~KNN();
   
   arma::vec predict(arma::mat testset); 
@@ -24,7 +24,7 @@ class KNN : public Model {
  
  private:
   arma::mat standardize(arma::mat data);
-  arma::vec internal_predict(arma::mat input, arma::mat train, int k, arma::vec train_labels, const arma::mat dists);
+  arma::vec internal_predict(arma::mat input, arma::mat train, int k, arma::vec train_labels, arma::mat dists);
   void fit();   //trains the model (ie performs cross validation to choose k) for given data x,y 
  	bool trained;
   bool normalize;

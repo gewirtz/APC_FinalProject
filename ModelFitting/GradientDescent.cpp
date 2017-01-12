@@ -75,7 +75,7 @@ void GradientDescent::batchGradientDescent(GradientModel *m){
 	double thresh = .1;
 
 	for(int i = 0; i < iterations; i++){
-		if(i > iterations/3.0 || i > 100){
+		/*if(i > iterations/3.0 || i > 100){
 			thresh = 10e-3;
 		}
 		if(i > iterations/2.0 || i > 500){
@@ -83,7 +83,8 @@ void GradientDescent::batchGradientDescent(GradientModel *m){
 		}
 		if(i > 3.0*iterations/4.0 || i > 1000){
 			thresh = 10e-9;
-		}
+		}*/
+		
 
 		pos = 0;
 
