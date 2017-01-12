@@ -42,7 +42,7 @@ int main(int argc, char *argv[]){
   string train_lbl, test_lbl;
   int unitflag = 0;
   int datatype_flag = 0;
-  int process_flag = 0;
+  int process_flag = 1;
 
   if (argc!=10){
     // keep this for testing
@@ -119,6 +119,7 @@ int main(int argc, char *argv[]){
     
   }
   else if (process_flag == 1){ // gaussian
+    cout << "Gaussian smoothing" << endl;
     p_gs=process_driver_gs(train_data,tt_data,train_lbls,test_lbls);
 
     tr_lbls = p_gs->get_labels_train();
@@ -173,7 +174,7 @@ int main(int argc, char *argv[]){
   countByClass = countByClass.zeros(numClasses);
   bool correct;
 
-  for(int i = 0; i < pred_lbls.size(); i++){
+  for(int i = 0; i < numClasses; i++){
     correct = false;
     countByClass[test_lbls(i)] += 1.0;
     
@@ -199,9 +200,10 @@ int main(int argc, char *argv[]){
   //accuracy by class
 
   for(int i = 0; i < fit->getLabelSet().size(); i++){
-    cout << "For label "<< i << ", the class accuracy is " << class_acc[i] << endl;
-    cout << "For label " << i << ", the frequency of type 1 error is " << type1_freq[i] << endl;
-    cout << "For label " << i << ", the frequency of type 2 error is " << type2_freq[i] << endl;
+    cout << "" << endl;
+    cout << "For label "<< i << ", the class testing accuracy is " << class_acc[i] << endl;
+    cout << "For label " << i << ", the test frequency of type 1 error is " << type1_freq[i] << endl;
+    cout << "For label " << i << ", the test frequency of type 2 error is " << type2_freq[i] << endl;
     cout << endl;
   }
   cout << endl;
