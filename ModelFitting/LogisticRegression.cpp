@@ -246,11 +246,6 @@ mat LogisticRegression::standardize(mat data){
       }
       else{
         new_data(i,j) = (data(i,pos) - tr_means[pos])/tr_stdev[pos];
-        if(isnan(new_data(i,j))){
-          cout << "pos " << pos << endl;
-          cout << "mean " << tr_means[pos] << endl;
-          cout << "stdev " << tr_stdev[pos] << endl;
-        }
         j += 1;
         pos+= 1;
       }

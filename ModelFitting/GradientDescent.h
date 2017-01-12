@@ -14,6 +14,8 @@ class GradientDescent : public Optimizer {
   	void fitParams(GradientModel* m);
   	void fitParams(Model *m);
 	void fitParams(KNN *m);
+	void batchGradientDescent(GradientModel *m);
+	void mixedBatchGradientDescent(GradientModel *m);
 
  	void setBatchSize(int batchSize);
  	int getBatchSize();
@@ -21,7 +23,6 @@ class GradientDescent : public Optimizer {
 
  private:
  	std::vector<std::vector<double>> cost;  //shows the cost process 
- 	std::vector<double> last_cost;
  	int iterations;
  	double alpha;
  	double tol;

@@ -35,13 +35,17 @@ void GradientDescent::fitParams(KNN *m){
 	cerr << "Only call GradientDescent on objects of type GradientModel" << endl;
 	exit(1);
 }
-
-
 void GradientDescent::fitParams(GradientModel *m){ //fits via mini batch gradient descent
-	int length = batchSize;
-	if(length == 0){
-		length = m->get_num_examples();
+	if(batchSize == 0 || batchSize >= m->get_num_examples()){
+		batchGradientDescent(m);
 	}
+	else{
+		mixedBatchGradientDescent(m);
+	}
+}
+
+void GradientDescent::batchGradientDescent(GradientModel *m){
+	int length = m->get_num_examples();
 
 	int num_params = m->get_Params().size();
 	int num_examples = m->get_num_examples();
@@ -68,16 +72,18 @@ void GradientDescent::fitParams(GradientModel *m){ //fits via mini batch gradien
 	int upper;
 	double update;
 	bool finished;
-	double thresh = 1.0;
+	double thresh = .1;
 
 	for(int i = 0; i < iterations; i++){
-		if(i > iterations/2){
-			thresh = 10e-1;
+		if(i > iterations/3.0 || i > 100){
+			thresh = 10e-3;
 		}
-		if(i > 3.0 *iterations/4){
+		if(i > iterations/2.0 || i > 500){
 			thresh = 10e-5;
 		}
-
+		if(i > 3.0*iterations/4.0 || i > 1000){
+			thresh = 10e-9;
+		}
 
 		pos = 0;
 
@@ -99,24 +105,30 @@ void GradientDescent::fitParams(GradientModel *m){ //fits via mini batch gradien
 				temp_cost = m->cost(pos,upper,j);
 				cost[j].push_back(temp_cost);
 				
-				if(temp_cost - thresh> last_cost[j]){ //bold driver method for updating params
-					m->set_Params(j, m->get_Params()[j] + alphas[j]*grad[j]); //undo weight change
-					alphas[j] *= .5; //reduce alpha
-				}
-
-				else{ 
-					alphas[j] *= 1.05;
-					last_cost[j] = temp_cost;
-				}
-
 				if(j == 0){
 					cout << "Iteration " << i << " Parameter " << j << " Position " << pos << endl;
 					cout << "The update norm is " << update  << endl; 
 					cout << "The maximum gradient element is " << grad[j].max() << endl;
 					cout << "The minimum gradient element is " << grad[j].min() << endl;
-					cout << "Alpha is " << alphas[j] << endl;
 					cout << "The cost is " << temp_cost << endl;
 					cout << "The last cost was " << last_cost[j] << endl;
+				}
+
+				if(temp_cost - thresh> last_cost[j]){ //bold driver method for updating params
+					m->set_Params(j, m->get_Params()[j] + alphas[j]*grad[j]); //undo weight change
+					alphas[j] *= .5; //reduce alpha
+					if(alphas[j] < 10e-10){ //reset if it gets too small
+						alphas[j] = alpha;
+					}
+				}
+
+				else{ 
+					alphas[j] = alphas[j]*1.05;
+					last_cost[j] = min(temp_cost,last_cost[j]);
+				}
+
+				if(j == 0){
+					cout << "Alpha is " << alphas[j] << endl;
 				}
 			}
 			pos += length;
@@ -126,22 +138,13 @@ void GradientDescent::fitParams(GradientModel *m){ //fits via mini batch gradien
 			return;
 		}
 	}
-	cerr << "Did not converge in given number of iterations" << endl;
+	cerr << "Did not converge in " << iterations << " iterations" << endl;
 }
 
 
 
-/*
-void mixedBatchGradientDescent(Model *m, int k){
-
-}
-*/
-/*
-void GradientDescent::fitParams(Model *m){ //fits via mini batch gradient descent
-	int length = batchSize;
-	if(length == 0){
-		length = m->get_num_examples();
-	}
+void GradientDescent::mixedBatchGradientDescent(GradientModel *m){ //fits via mini batch gradient descent
+	int length = m->get_num_examples();
 	vec normalizer;
 	int num_params = m->get_Params().size();
 	int num_examples = m->get_num_examples();
@@ -157,11 +160,9 @@ void GradientDescent::fitParams(Model *m){ //fits via mini batch gradient descen
 	bool finished;
 	double temp_cost;
 
+	normalizer = normalizer.ones(num_params);
 	for(int i = 0; i < iterations; i++){
-
-		normalizer = normalizer.ones(num_params);
 		pos = 0;
-
 		while(pos < num_examples){
 			upper = pos + length;
 			if(upper > num_examples){
@@ -201,9 +202,9 @@ void GradientDescent::fitParams(Model *m){ //fits via mini batch gradient descen
 			return;
 		}
 	}
-	cerr << "Did not converge in given number of iterations" << endl;
+	cerr << "Did not converge in " << iterations << " iterations" << endl;
 }
-*/
+
 
 void GradientDescent::setBatchSize(int batchSize){
 	this->batchSize = batchSize;
