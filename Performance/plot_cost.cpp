@@ -3,7 +3,8 @@
 //
 //  Noemi Vergopolan
 //
-
+//
+// Library requiered: -lpython2.7`
 
 #include <cmath>
 #include "matplotlibcpp.h"
