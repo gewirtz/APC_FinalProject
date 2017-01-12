@@ -97,7 +97,7 @@ int main(int argc, char *argv[]){
   mat c_t_data_gauss = concatenate(t_data_gauss);
 
   GradientDescent *gd = new GradientDescent(100, .001, 10e-4, 0);
-  CrossValidation *cv = new CrossValidation(1.0,100,20,10); 
+  CrossValidation *cv = new CrossValidation(1.0,21,4,10); 
 
   cout << "Fitting KNN without preprocessing" << endl;
   KNN *fit_knn0 = new KNN(c_train_data, tr_lbls, cv);
@@ -111,15 +111,15 @@ int main(int argc, char *argv[]){
 
   cout <<"predicting step\n" << endl;
   vector<vec> fits;
-  cout << 0 << endl;
-  fits.push_back(fit_knn0->predict(c_tt_data));
-    cout << 1 << endl;
-  fits.push_back(fit_knn1->predict(c_t_data_gauss));
-      cout << 2 << endl;
-  fits.push_back(fit_lr0->predict(c_tt_data));
-      cout << 3 << endl;
-  fits.push_back(fit_lr1->predict(c_t_data_gauss)); 
-    cout << 4 << endl;
+  vec v;
+  v = fit_knn0->predict(c_tt_data);
+  fits.push_back(v);
+  v = fit_knn1->predict(c_t_data_gauss);
+  fits.push_back(v);
+  v = fit_lr0->predict(c_tt_data);
+  fits.push_back(v);
+  v = fit_lr1->predict(c_t_data_gauss);
+  fits.push_back(v); 
   //determines accuracy
 
   int numClasses = fit_knn0->getLabelSet().size();
@@ -127,6 +127,8 @@ int main(int argc, char *argv[]){
   string name;
   double num_correct = 0.0;
   vec type1, type2, accByClass, countByClass;
+  double max_acc = -1.0;
+  string champ = "";
 
   for(int i = 0; i < fits.size();i++){
     pred_lbls = fits[i];
@@ -176,16 +178,21 @@ int main(int argc, char *argv[]){
     vec type2_freq = type2/countByClass;   
     //accuracy by class
 
-    cout << "Results for " << name << ": " << endl;
+    cout << endl << "Results for " << name << ": " << endl;
     cout << endl; 
     for(int i = 0; i < numClasses; i++){
       cout << "For label "<< i << ", the class testing accuracy is " << class_acc[i] << endl;
       cout << "For label " << i << ", the test frequency of type 1 error is " << type1_freq[i] << endl;
-      cout << "For label " << i << ", the test frequency of type 2 error is " << type2_freq[i] << endl;
-      cout << endl;
+      cout << "For label " << i << ", the test frequency of type 2 error is " << type2_freq[i] << endl<<endl;
     }
-    cout << endl;
-    cout << endl;
+    cout << endl<< endl;
     cout << "The overall testing accuracy for " << name << " is " <<  total_acc << endl;
+    if(total_acc > max_acc){
+      total_acc = max_acc;
+      champ = name;
+    }
+
   }
+  cout << endl << endl;
+  cout << "We recommend proceeding with " << name << endl<< endl; 
 }
