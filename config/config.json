@@ -8,6 +8,6 @@
        "test_lbl":"t10k-labels.idx1-ubyte",
        "test_img":"t10k-images.idx3-ubyte"},
 "preprocessing":[0],
-"model_fitting":[0],
+"model_fitting":[1],
 "test_unit":0
 }

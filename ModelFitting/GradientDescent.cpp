@@ -117,8 +117,9 @@ void GradientDescent::batchGradientDescent(GradientModel *m){
 				if(temp_cost - thresh> last_cost[j]){ //bold driver method for updating params
 					m->set_Params(j, m->get_Params()[j] + alphas[j]*grad[j]); //undo weight change
 					alphas[j] *= .5; //reduce alpha
-					if(alphas[j] < 10e-10){ //reset if it gets too small
+					if(alphas[j] < 10e-25){ //reset if it gets too small, try to move away from local min
 						alphas[j] = alpha;
+						last_cost[j] = temp_cost;
 					}
 				}
 

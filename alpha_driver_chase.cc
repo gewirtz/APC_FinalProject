@@ -153,7 +153,7 @@ int main(int argc, char *argv[]){
 
   // step 3: Model the data
   //cout << "step 3\n" << endl;
-  GradientDescent *gd = new GradientDescent(500, .001, 10e-4, 0);
+  GradientDescent *gd = new GradientDescent(100, .001, 10e-4, 0);
   //LinearRegression *fit = new LinearRegression(tr_data, tr_lbls, gd);
   
   LogisticRegression *fit = new LogisticRegression(tr_data, tr_lbls, gd);
@@ -163,17 +163,50 @@ int main(int argc, char *argv[]){
   arma::vec pred_lbls = fit->predict(t_data);
   
   //determines accuracy
-  double correct = 0.0;
+  int numClasses = fit->getLabelSet().size();
+
+  double num_correct = 0.0;
+  vec type1, type2, accByClass, countByClass;
+  type1 = type1.zeros(numClasses); //saying it is class i but it isnt ie s
+  type2 = type2.zeros(numClasses);  //predicting it is not class i but it is 
+  accByClass = accByClass.zeros(numClasses);
+  countByClass = countByClass.zeros(numClasses);
+  bool correct;
+
   for(int i = 0; i < pred_lbls.size(); i++){
+    correct = false;
+    countByClass[test_lbls(i)] += 1.0;
+    
     if(pred_lbls(i) == test_lbls[i]){
-      correct += 1.0;
+      num_correct += 1.0;
+      correct = true;
+    }
+
+    if(correct){
+      accByClass[test_lbls(i)] += 1.0;
+    }
+    else{
+      type2[test_lbls(i)] += 1.0;
+      type1[pred_lbls(i)] += 1.0;
     }
   }
-  double stat3 = correct / pred_lbls.size();
 
+
+  double total_acc = num_correct / pred_lbls.size();
+  vec type1_freq = type1 / (pred_lbls.size() - countByClass);
+  vec class_acc = accByClass / countByClass; 
+  vec type2_freq = type2/countByClass;   
   //accuracy by class
 
-  //for(int lab : fit->get)
+  for(int i = 0; i < fit->getLabelSet().size(); i++){
+    cout << "For label "<< i << ", the class accuracy is " << class_acc[i] << endl;
+    cout << "For label " << i << ", the frequency of type 1 error is " << type1_freq[i] << endl;
+    cout << "For label " << i << ", the frequency of type 2 error is " << type2_freq[i] << endl;
+    cout << endl;
+  }
+  cout << endl;
+  cout << endl;
+  cout << "The overall testing accuracy is " <<  total_acc << endl;
 
   //TYPE 1 errors
 
@@ -235,6 +268,6 @@ int main(int argc, char *argv[]){
   stat3 = Pf.accuracy(pred_lbls,test_lbls);
 
 */    
-  cout << "The testing accuracy is " <<  stat3 << endl;
+
   return 0;
 }
