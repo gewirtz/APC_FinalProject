@@ -188,11 +188,11 @@ int main(int argc, char *argv[]){
     cout << endl<< endl;
     cout << "The overall testing accuracy for " << name << " is " <<  total_acc << endl;
     if(total_acc > max_acc){
-      total_acc = max_acc;
+      max_acc = total_acc;
       champ = name;
     }
 
   }
   cout << endl << endl;
-  cout << "We recommend proceeding with " << name << endl<< endl; 
+  cout << "We recommend proceeding with " << champ << endl<< endl; 
 }
