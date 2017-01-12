@@ -2,9 +2,11 @@
 #define CROSSVALIDATION_H_
 
 #include "Optimizer.h"
-#include "model.h"
-#include "KNN.h"
+#include <armadillo>
 
+class KNN;
+class Model;
+class GradientModel;
 
 class CrossValidation : public Optimizer {
  public:
@@ -13,6 +15,7 @@ class CrossValidation : public Optimizer {
 	~CrossValidation();
   	void fitParams(KNN *m);
   	void fitParams(Model *m);
+  	void fitParams(GradientModel *m);
 
  private:
 	double param_range_start;

@@ -1,10 +1,9 @@
 #ifndef OPTIMIZER_H_
 #define OPTIMIZER_H_
 
-#include "GradientModel.h"
-#include "KNN.h"
-
 class Model;
+class KNN;
+class GradientModel;
 
 
 class Optimizer {
