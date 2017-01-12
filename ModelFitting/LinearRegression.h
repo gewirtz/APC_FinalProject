@@ -15,10 +15,10 @@ class Optimizer;
 
 class LinearRegression : public GradientModel  {
  public:
-  LinearRegression(std::vector<arma::mat> train, arma::colvec labels, Optimizer *optim, bool normalize = true); 
+  LinearRegression(arma::mat train, arma::colvec labels, Optimizer *optim, bool normalize = true); 
   ~LinearRegression();
   
-  arma::vec predict(std::vector<arma::mat> input); 
+  arma::vec predict(arma::mat input); 
   arma::vec get_exactParams(); //gives exact solution 
   //gradient computed using examples lower to upper
   std::vector<arma::vec> gradient(int lower, int upper);  //gradient using examples lower (inclusive) to upper (not inclusive)
@@ -32,7 +32,6 @@ class LinearRegression : public GradientModel  {
   std::set<int> getLabelSet();
 
  private:
- 	arma::mat concatenate(std::vector<arma::mat> input);
   arma::mat standardize(arma::mat data);
   void fit();   //trains the model (ie updates \beta) for given data x,y 
   bool trained;
@@ -46,9 +45,8 @@ class LinearRegression : public GradientModel  {
   arma::rowvec tr_means;
   arma::rowvec tr_stdev;
   std::vector<bool> remove; 
-  int num_rows;
-  int num_cols;
   int num_regressors;
+  int initial_regressors;
 
  };
 

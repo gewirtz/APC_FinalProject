@@ -10,7 +10,7 @@ class Optimizer;
 class Model {
  public:
   virtual ~Model() {}
-  virtual arma::vec predict(std::vector<arma::mat> input) = 0;
+  virtual arma::vec predict(arma::mat input) = 0;
   virtual void set_Params(int k, arma::vec p) = 0;
   virtual std::vector<arma::vec> get_Params() = 0;
   virtual int get_num_examples() = 0;
