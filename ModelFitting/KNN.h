@@ -20,7 +20,8 @@ class KNN : public Model {
   int get_num_examples();
   arma::mat getTrainset();
   arma::vec predict_on_subset(arma::mat subset, double k);
-
+  std::set<int> getLabelSet();
+ 
  private:
  	arma::mat concatenate(std::vector<arma::mat> input);
   arma::vec internal_predict(arma::mat input, arma::mat train, int k, arma::vec train_labels, const arma::mat dists);

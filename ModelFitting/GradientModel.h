@@ -21,7 +21,8 @@ class GradientModel : public Model {
   virtual arma::mat getTrainset() = 0;
   virtual arma::vec getLabels() = 0;
   virtual double cost(int lower, int upper, int k) = 0;
-
+  virtual std::set<int> getLabelSet() = 0;
+ 
  private:
   std::vector<arma::mat> params; 
   int num_examples;

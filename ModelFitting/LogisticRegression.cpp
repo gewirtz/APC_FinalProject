@@ -99,43 +99,6 @@ vec LogisticRegression::predict(vector<arma::mat> input){
   return(labels);
 }
 
-
-
-/*
-//MAP (maximum aposteriori) fit
-vec LogisticRegression::predict(vector<arma::mat> input){
-  mat test = concatenate(input);
-  vec labels(test.n_rows);
-  int fitted_val;
-  double max_prob;
-  double temp;
-  double sum;
-  vec fits; //coefficient fits for each class k, given by theta_{k}*x_i
-
-  for(int i = 0; i < test.n_rows;i++){
-    fits = fits.zeros(label_set.size());
-    max_prob = 0.0;
-    sum = 0.0;
-    for(int k = 0; k < label_set.size(); k++){
-      //fits.at(k) = (test.row(i) *  params.at(k));  //compute denominator of logistic function
-      vec v = test.row(i) *  params.at(k);
-      fits.at(k) = v[0];
-      sum += fits.at(k);
-    }
-    sum = 1.0 + exp(-sum); //logistic function
-    for(int k = 0; k < label_set.size() - 1; k++){
-      temp = exp(-fits.at(k))/sum;
-      if(temp > max_prob){
-        max_prob = temp; //choose the greatest
-        fitted_val = k; 
-      }
-    }
-    labels[i] = fitted_val; 
-  }
-  return(labels);
-}
-*/
-
 vector<vec> LogisticRegression::gradient(int lower, int upper){ //one v rest fit
   if(lower < 0 || lower >= upper || upper > num_examples){
     cerr << "Lower and upper limits " << lower << " and " << upper << " invalid" << endl;
@@ -260,6 +223,10 @@ vec LogisticRegression::getLabels(){
 
 void LogisticRegression::fit(){
   optim->fitParams(this);
+}
+
+set<int> LogisticRegression::getLabelSet(){
+  return(label_set);
 }
 
 
