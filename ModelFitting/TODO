@@ -3,6 +3,7 @@ TODO:
 1. Fix concatenation to be done once, change model.h and derived classes
 2. Add smoothing function into Ari's files
 9. Add some summary statistics to print as it runs? What is nina doing on the output end?
+5. Add Open MP/ Profile again
 8. come up with working alpha driver within time limit (shorten examples, etc)
 3. Profiling deliverables: Relative amount of time spent in each function, so explicitly know where
 	the bottlenecks are. Add parallelization and graph speed-ups using diff numbers of threads.
@@ -10,7 +11,6 @@ TODO:
 
 After presentation stuff is done:
 4. Unit Testing
-5. Add Open MP/ Profile again
 7. Fix cross validation so that it has a legit function for the regression model class
 11. Have a clear to do list of what's left
 12. write our section of report
