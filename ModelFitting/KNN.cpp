@@ -177,3 +177,7 @@ void KNN::fit(){
   optim->fitParams(this); //cross-validation for k
   
 }
+
+set<int> KNN::getLabelSet(){
+  return(label_set);
+}

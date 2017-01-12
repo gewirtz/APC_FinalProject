@@ -28,7 +28,7 @@ class LogisticRegression : public GradientModel  {
   arma::vec getLabels();
   int get_num_examples();
   double cost(int lower, int upper, int k); //cost of fitting examples lower to upper
-
+  std::set<int> getLabelSet();
 
  private:
   arma::mat concatenate(std::vector<arma::mat> input);

@@ -29,6 +29,7 @@ class LinearRegression : public GradientModel  {
   int get_num_examples();
   double cost(int lower, int upper, int k); //cost of fitting examples lower (inclusive) to upper (not inclusive)
   arma::mat getTrainset();
+  std::set<int> getLabelSet();
 
  private:
  	arma::mat concatenate(std::vector<arma::mat> input);

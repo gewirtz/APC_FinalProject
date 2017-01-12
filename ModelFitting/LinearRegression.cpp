@@ -206,4 +206,8 @@ void LinearRegression::fit(){
   optim->fitParams(this); //gradient descent
 }
 
+set<int> LinearRegression::getLabelSet(){
+  return(label_set);
+}
+
 
