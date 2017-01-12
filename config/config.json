@@ -1,7 +1,7 @@
 {
 "dir":{
-     "traning_dir":"data/mnist/training",
-     "testing_dir":"/data/mnist/testing"},
+     "traning_dir":"/data/mnist/training/",
+     "testing_dir":"/data/mnist/testing/"},
 "files":{
        "train_lbl":"train-labels.idx1-ubyte",
        "train_img":"train-images.idx3-ubyte",

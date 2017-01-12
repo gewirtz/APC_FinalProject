@@ -22,7 +22,7 @@ test_lbl = metadata["files"]["test_lbl"]
 test_img = metadata["files"]["test_img"]
 t_unit = metadata["test_unit"]
 
-cmd = './alpha_drive %s %s %s %s %s %s %s %s' % (train_dir, test_dir, train_lbl, train_img, test_lbl, test_img, t_unit, preprocess_met, model_fit_met)
+cmd = './alpha_driver "%s" "%s" "%s" "%s" "%s" "%s" %i %i %i' % (train_dir, test_dir, train_lbl, train_img, test_lbl, test_img, t_unit, preprocessing[0], model_fitting[0])
 print cmd
 #os.system(cmd)
 
