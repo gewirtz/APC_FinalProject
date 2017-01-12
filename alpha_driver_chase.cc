@@ -19,9 +19,43 @@
 using namespace arma;
 using namespace std;
 
+
+namespace{
+
+  mat concatenate(vector<arma::mat> input){
+    int ex_count = input.size();
+    if(ex_count == 0){
+      cerr << "Call concatenate on non-empty data " << endl;
+      exit(1);
+    }
+    int num_rows = input[0].n_rows;
+    int num_cols = input[0].n_cols;
+    mat data = mat(ex_count,num_rows * num_cols); 
+
+    //fill data, rows are examples cols are pixels
+    for(int i=0; i<ex_count; i++){
+      if(input[i].n_rows!=num_rows || input[i].n_cols!=num_cols ){
+        cerr << "Need all input data to have same dimensions\n" << endl;
+        exit(-1);
+      }
+      for(int j=0;j<num_rows;j++){
+        for(int k=0;k<num_cols ; k++){
+            data(i,j*num_cols+k)=input[i](j,k);
+        }
+      }
+    }
+    return(data);
+  };
+}
+
 int main(int argc, char *argv[]){
   /*
-  mat A = randu<mat>(4,5);
+  vector<arma::mat> v;
+  arma::mat A = randu<mat>(4,5);
+  v.push_back(A);
+  cout << A << endl;
+  cout << concatenate(v) << endl;
+
   vec v = randu<vec>(4);
   srand(1);
   mat B = shuffle(A);
@@ -119,6 +153,7 @@ int main(int argc, char *argv[]){
     
   }
   else if (process_flag == 1){ // gaussian
+    cout << "Gaussian smoothing" << endl;
     p_gs=process_driver_gs(train_data,tt_data,train_lbls,test_lbls);
 
     tr_lbls = p_gs->get_labels_train();
@@ -156,11 +191,13 @@ int main(int argc, char *argv[]){
   GradientDescent *gd = new GradientDescent(100, .001, 10e-4, 0);
   //LinearRegression *fit = new LinearRegression(tr_data, tr_lbls, gd);
   
-  LogisticRegression *fit = new LogisticRegression(tr_data, tr_lbls, gd);
+  mat c_train = concatenate(tr_data);
+  mat c_test = concatenate(t_data);
+  LinearRegression *fit = new LinearRegression(c_train, tr_lbls, gd,false);
 
 
   cout <<"predicting step\n" << endl;
-  arma::vec pred_lbls = fit->predict(t_data);
+  arma::vec pred_lbls = fit->predict(c_test);
   
   //determines accuracy
   int numClasses = fit->getLabelSet().size();
@@ -173,7 +210,7 @@ int main(int argc, char *argv[]){
   countByClass = countByClass.zeros(numClasses);
   bool correct;
 
-  for(int i = 0; i < pred_lbls.size(); i++){
+  for(int i = 0; i < numClasses; i++){
     correct = false;
     countByClass[test_lbls(i)] += 1.0;
     
@@ -199,9 +236,9 @@ int main(int argc, char *argv[]){
   //accuracy by class
 
   for(int i = 0; i < fit->getLabelSet().size(); i++){
-    cout << "For label "<< i << ", the class accuracy is " << class_acc[i] << endl;
-    cout << "For label " << i << ", the frequency of type 1 error is " << type1_freq[i] << endl;
-    cout << "For label " << i << ", the frequency of type 2 error is " << type2_freq[i] << endl;
+    cout << "For label "<< i << ", the class testing accuracy is " << class_acc[i] << endl;
+    cout << "For label " << i << ", the test frequency of type 1 error is " << type1_freq[i] << endl;
+    cout << "For label " << i << ", the test frequency of type 2 error is " << type2_freq[i] << endl;
     cout << endl;
   }
   cout << endl;
