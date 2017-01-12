@@ -231,7 +231,7 @@ int main(int argc, char *argv[]){
   vector<vector<double>> *costs = gd->getLastCost();
   const std::string *outfile="Cost_Func.png";
   const int *skip = 5; 
-  plot_cost(cost, skip, outfile);
+  plot_cost(costs, skip, outfile);
 
   /*TO DO: NOEMI+ANDREAS
   Hi, so i want to make the plot i sent to you on fb 
