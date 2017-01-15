@@ -2,6 +2,7 @@
 #include "../processing/mnist_load_images.h"
 #include "../processing/mnist_load_labels.h"
 #include "../processing/mnist_count_images.h"
+#include "../processing/mnist_count_images.h"
 #include "../processing/no_processing.h"
 #include "../processing/no_processing_test.h"
 #include "../processing/gaussian_smoothing.h"
@@ -24,7 +25,8 @@ using namespace std;
 namespace plt = matplotlibcpp;
 
 namespace{
-  void plot_cost(vector<vector<double>> cost, int skip, std::string outfile, std::string model_title){
+  //void plot_cost(vector<vector<double>> cost, int skip, std::string outfile, std::string model_title){
+  void plot_cost(vector<vector<double>> cost, std::string outfile, std::string model_title){
     int ns = cost.size();
     string title = "Gradient Descent for ";
     title = title.append(model_title);
@@ -34,7 +36,8 @@ namespace{
       int n=cost[s].size();
       std::vector<double> y(n);
 
-      for(int i=0; i < n; i += skip) {
+      //for(int i=0; i < n; i += skip) {
+      for(int i=0; i < n; i++) {
         y.at(i) = cost[s][i];
       } 
       plt::plot(y);
@@ -46,8 +49,8 @@ namespace{
   };
 
 
-
-  mat concatenate(vector<arma::mat> input){
+//helper function to concatenate train and test data into a form usable by model object
+  mat concatenate(vector<arma::mat> input){ 
     int ex_count = input.size();
     if(ex_count == 0){
       cerr << "Call concatenate on non-empty data " << endl;
@@ -106,40 +109,63 @@ int main(int argc, char *argv[]){
 
 
   int unitflag = 0; //change to 1 to run unit testing
-  int datatype_flag = 0;  //read last three characters, figure out of .jpg, .
-  int process_flag = -1;
-  vector<int> model_flag = vector<int>(5);
+  int datatype_flag = 0;  //TO DO: from passed path, read last three characters, figure out if .jpg, .ppm, or mnist
+
+
+
+  /*TO DO: code how we are going to read in data into train_data/labels, test_data/labels, 
+  code datatype_flag to figure out how, for passed file, we are reading it in  
+  
+  here is code from demo_driver for generalization: 
+
+  train_data = mnist_load_images(train_directory, train_img, unitflag);
+  train_lbls = mnist_load_labels(train_directory, train_lbl);
+  tt_data = mnist_load_images(test_directory, test_img, unitflag);
+  test_lbls = mnist_load_labels(test_directory, test_lbl);
+
+
+  */
+
+
 
 
   //read in preprocessing option 
-  while(process_flag != 0 || process_flag != 1 || process_flag != 2 || process_flag != 3){
-    cout << endl << "What kind of preprocessing methods should be used?" << endl;
-    cout << "Please enter: "  << endl << "0 for just standardization" << endl;
-    cout << "1 for Gaussian Smoothing" << endl;
-    cout << "2 for Histogram " << endl;
-    cout << "3 for both Gaussian Smoothing and Histogram" << endl;
-    cin >> process_flag;
-    if(process_flag != 0 || process_flag != 1 || process_flag != 2 || process_flag != 3){
-      cout << "Please enter a valid selection" << endl;  
+  vector<int> process_flag = vector<int>(3);
+  vector<string> process_names = vector<string>(3);
+  process_names[0] = "standardization"; 
+  process_names[1] =  "gaussian smoothing";
+  process_names[2] = "histogram"; 
+
+  for(int i = 0; i < process_flag.size();i++){
+    process_flag[i] = -1;
+    while(process_flag[i] != 0 || process_flag[i] != 1){
+      cout << "Would you like to use " << process_names[i] << " to preprocess the data?" << endl;
+      cout << "Please enter: " << endl;
+      cout << "0 if yes" << endl;
+      cout << "1 if no" << endl;
+      cin >> process_flag[i];
+      if(process_flag[i] != 0 || process_flag[i] != 1 ){
+        cout << "Please enter a valid selection" << endl;  
+      }
     }
   }
 
   //read in model selection
-  cout << endl << "What kind of models would you like to fit?" << endl;
+  cout << endl << "Model selection decision:" << endl << endl;
   vector<int> model_flag = vector<int>(5);
-  vector<string> candidate_models = vector<string>(5);
+  vector<string> model_names = vector<string>(5);
 
-  candidate_models[0] = "linear regression"; 
-  candidate_models[1] =  "regularized linear regression";
-  candidate_models[2] = "logistic regression"; 
-  candidate_models[3] =  "regularized logistic regression";
-  candidate_models[4] = "k-nearest neighbors"; 
+  model_names[0] = "linear regression"; 
+  model_names[1] =  "regularized linear regression";
+  model_names[2] = "logistic regression"; 
+  model_names[3] =  "regularized logistic regression";
+  model_names[4] = "k-nearest neighbors"; 
 
 
   for(int i = 0; i < model_flag.size();i++){
     model_flag[i] = -1;
     while(model_flag[i] != 0 || model_flag[i] != 1){
-      cout << "Would you like to fit " << candidate_models[i] << "?" << endl;
+      cout << "Would you like to fit " << model_names[i] << "?" << endl;
       cout << "Please enter: " << endl;
       cout << "0 if yes" << endl;
       cout << "1 if no" << endl;
@@ -150,27 +176,141 @@ int main(int argc, char *argv[]){
     }
   }
 
-  while(model_flag != 0 || model_flag != 1 || model_flag != 2 || model_flag != 3 || model_flag != 4 ){
-    cout << endl << "What kind of models would you like to fit?" << endl;
-    cout << "Please enter: "  << endl << "0 for linear regression" << endl;
-    cout << "1 for regularized linear regression" << endl;
-    cout << "2 for logistic regression" << endl;
-    cout << "3 for regularized logistic regression  " << endl;
-    cout << "4 for k-Nearest Neighbors" << endl;
-    cin >> model_flag;
-    if(model_flag != 0 || model_flag != 1 || model_flag != 2 || model_flag != 3 || model_flag != 4){
-      cout << "Please enter a valid selection" << endl;  
+
+  int num_iter, batchSize,num_folds, ;
+  double tol, learnRate;
+
+  //create gradient descent object
+    if(model_names[0] == 0 || model_names[1] == 0 || model_names[2] == 0 || model_names[3] == 0){
+      num_iter = -1;
+      while(num_iter <= 0){
+        cout << endl << "For how many iterations do you want to run gradient descent?" << endl;
+        cout << "For speed choose ~100, for optimal fit choose ~10,000" //MAKE SURE THIS IS CORRECT
+        cin >> num_iter;
+        if(num_iter <= 0){
+          cout << "Need positive number of iterations" << endl;
+        }
+      }
+      batchSize = -1;
+      while(batchSize < 0){
+        cout << endl << "How large do you want the batches to be in the gradient descent algorithm?" << endl;
+        cout << "Enter 0 for batch gradient descent" << endl;
+        cin >> batchSize;
+        if(batchSize < 0){
+          cout << "Need nonegative batch size" << endl;
+        }
+      }
+      GradientDescent *gd = new GradientDescent(num_iter, .001, 10e-4, batchSize);
+    }
+
+    if(model_names[1] == 0 || model_names[3] == 0 || model_names[4] == 0 ){
+      num_folds = -1;
+      while(num_folds <= 0){
+        cout << endl << "How many folds would you like to use for cross validation?"  << endl;
+        cin >> num_folds ;
+        if(num_folds  <= 0){
+          cout << "Need positive number of folds" << endl;
+        }
+      }
+      CrossValidation *cv = new CrossValidation(1.0,21,4,num_folds); //TO DO ARI: SHOULD OTHER ARGUMENTS BE USER INPUT?
+    }
+
+
+
+
+
+
+
+
+/*
+
+  int unitflag = 0; //change to 1 to run unit testing
+  int datatype_flag = 0;  //TO DO: from passed path, read last three characters, figure out if .jpg, .ppm, or mnist
+  vector<int> process_flag = vector<int>(4);
+  vector<string> process_names = vector<string>(4);
+  process_names[0] = "standardization"; 
+  process_names[1] =  "gaussian smoothing";
+  process_names[2] = "histogram"; 
+
+
+
+
+  //read in preprocessing option 
+  for(int i = 0; i < process_flag.size();i++){
+    process_flag[i] = -1;
+    while(process_flag[i] != 0 || process_flag[i] != 1){
+      cout << "Would you like to use " << process_names[i] << " to pre-process the data?" << endl;
+      cout << "Please enter: " << endl;
+      cout << "0 if yes" << endl;
+      cout << "1 if no" << endl;
+      cin >> process_flag[i];
+      if(process_flag[i] != 0 || process_flag[i] != 1 ){
+        cout << "Please enter a valid selection" << endl;  
+      }
     }
   }
 
+  //read in model selection
+  cout << endl << "What kind of models would you like to fit?" << endl;
+  vector<int> model_flag = vector<int>(5);
+  vector<string> model_names = vector<string>(5);
+
+  model_names[0] = "linear regression"; 
+  model_names[1] =  "regularized linear regression";
+  model_names[2] = "logistic regression"; 
+  model_names[3] =  "regularized logistic regression";
+  model_names[4] = "k-nearest neighbors"; 
+
+  */
 
 
-   datatype_flag = atoi( argv[9] );
+    vector<mat> train_data;
+    vector<mat> test_data;
+    vector<model*> fittedModels;
+
+  for(int i = 0; i < process_flag.size(); i++){
+    if(process_flag[i] == 1){
+      continue;
+    }
+
+    for(int j = 0; j < model_flag.size();j++){
+      if(model_flag[i] == 1){
+        continue;
+      }
+      if(j == 0){}
+      else if(j == 1){}
+      else if(j == 2){}
+      else if(j == 3){}
+      else if(j == 4){}
+    }
+  }  
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  delete cv;
+  delete gd;
 
   vector<arma::mat> train_data, tt_data, tr_data_gauss, t_data_gauss;
   arma::colvec train_lbls,test_lbls, tr_lbls, t_lbls;
@@ -202,6 +342,14 @@ int main(int argc, char *argv[]){
   mat c_tr_data_gauss= concatenate(tr_data_gauss);
   mat c_tt_data = concatenate(tt_data);
   mat c_t_data_gauss = concatenate(t_data_gauss);
+
+
+
+
+  //END OF TO DO part
+
+  int num_iter, batchSize,nFolds, ;
+  double tol, learnRate;
 
   GradientDescent *gd = new GradientDescent(100, .001, 10e-4, 0);
   CrossValidation *cv = new CrossValidation(1.0,21,4,10); 
