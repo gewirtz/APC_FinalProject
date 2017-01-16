@@ -8,8 +8,8 @@
 #include "processing/mnist_count_images.h"
 //#include "processing/ppm_load_images.h"
 //#include "processing/ppm_load_labels.h"
-//#include "processing/jpg_load_images.h"
-//#include "processing/jpg_load_labels.h"
+#include "processing/jpg_load_images.h"
+#include "processing/jpg_load_labels.h"
 #include "processing/no_processing.h"
 #include "processing/no_processing_test.h"
 #include "processing/gaussian_smoothing.h"
@@ -124,6 +124,13 @@ int main(int argc, char *argv[]){
     label_directory = "/data/cars/";
     train_lbl = "training_labels_cars";
     test_lbl = "testing_labels_cars";*/
+
+    //keep this for jpg testing
+    /*train_directory = "/data/faces/training_faces/";
+    test_directory = "/data/faces/testing_faces/";
+    label_directory = "/data/faces/";
+    train_lbl = "training_faces_labels";
+    test_lbl = "testing_faces_labels";*/
  // }
 /*
   else{
@@ -138,9 +145,9 @@ int main(int argc, char *argv[]){
     string suffix(argv[4]);
     suffix = suffix.find_last_of(3);
   // if(suffix == ".jpg" || argv[4].find_last_of(3) == ".jpeg"){
-  //     train_data = jpg_load_images(train_directory, train_img, unitflag);
+  //     train_data = jpg_load_images(train_directory);
   //     train_lbls = jpg_load_labels(train_directory, train_lbl);
-  //     tt_data = jpg_load_images(test_directory, test_img, unitflag);
+  //     tt_data = jpg_load_images(test_directory);
   //     test_lbls = jpg_load_labels(test_directory, test_lbl);
 
   //   }
