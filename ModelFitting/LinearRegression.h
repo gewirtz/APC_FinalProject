@@ -1,4 +1,4 @@
-/* Author : Chase Perlen */
+/* Author : Chase Perlen and Ariel Gewirtz */
 
 //initializes a model to choose \beta so as to fit Y = X\beta + \epsilon so as to minimize
 // ||Y - X\beta ||_2^2...decision as in multinomial probit 
@@ -20,7 +20,7 @@ class Optimizer;
 class LinearRegression : public GradientModel  {
  public:
   
-  LinearRegression(arma::mat train, arma::colvec labels, Optimizer *optim, double l2 = 0.0, bool normalize = true); 
+  LinearRegression(arma::mat train, arma::colvec labels, Optimizer *optim, double l1 = 0.0, double l2 = 0.0, bool normalize = true); 
   ~LinearRegression();
   
   arma::vec predict(arma::mat input); 
@@ -52,7 +52,9 @@ class LinearRegression : public GradientModel  {
   std::vector<bool> remove; 
   int num_regressors;
   int initial_regressors;
-  double l2; //if != 0, we have regularized regression
+  double l1; //lasso penalty, if != 0, we have regularized regression
+  double l2; //ridge penalty, if != 0, we have regularized regression
+  int sign_fct(double d);
 
  };
 

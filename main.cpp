@@ -160,7 +160,6 @@ int main(int argc, char *argv[]){
   //3}
 
 
-
 /* //////////////////////////////////// End-user selections ////////////////////////////////////////////////// */
   vector<int> process_flag = vector<int>(3);
   vector<string> process_names = vector<string>(3);
@@ -182,6 +181,7 @@ int main(int argc, char *argv[]){
     }
   }
 
+
   //read in model selection
   cout << endl << "Model selection decision:" << endl << endl;
   vector<int> model_flag = vector<int>(4);
@@ -192,6 +192,8 @@ int main(int argc, char *argv[]){
   model_names[2] = "logistic regression"; 
   model_names[3] = "k-nearest neighbors"; 
 
+  double l1 = -1;
+  double l2 = -1;
 
   for(int i = 0; i < model_flag.size();i++){
     model_flag[i] = -1;
@@ -205,12 +207,26 @@ int main(int argc, char *argv[]){
         cout << "Please enter a valid selection" << endl;  
       }
     }
+
+    if(i == 1 && model_flag[i] == 0){ //get penalty params for elastic net
+      while(l1 <= 0 && l2 <= 0 ){
+        cout << "Please enter l1 penalty (eg .4)" << endl;
+        cin >> l1;
+        cout << "Please enter l2 penalty (eg .6)" << endl;
+        cin >> l2;
+        if(l1 <= 0 && l2 <= 0 ){
+          cout << "Need positive penalty parameters" << endl;
+        }
+      }
+    }
   }
 
 
   int num_iter, batchSize, num_folds;
   double tol, learnRate;
 
+  bool del_cv = false;
+  bool del_gd = false;
   //create gradient descent object
     GradientDescent *gd; 
     if(model_flag[0] == 0 || model_flag[1] == 0 || model_flag[2] == 0){
@@ -253,6 +269,7 @@ int main(int argc, char *argv[]){
       }
 
       gd = new GradientDescent(num_iter, learnRate, tol, batchSize);
+      del_gd = true;
     }
 
 
@@ -268,6 +285,7 @@ int main(int argc, char *argv[]){
         }
       }
       cv = new CrossValidation(1.0,21,4,num_folds); 
+      del_cv = true;
     }
 
 
@@ -376,22 +394,24 @@ int main(int argc, char *argv[]){
       cout << "Fitting " << name << endl;
      
       if(i == 0){
-        linr = new LinearRegression(processed_tr_data[j],train_lbls,gd,standardize);
+        linr = new LinearRegression(processed_tr_data[j],train_lbls,gd,0.0,0.0,standardize);
         fit = linr->predict(processed_t_data[j]);
       //show gradient descent paths 
         s = "GradDesc_LinReg_";
-        plot_cost(gd->getLastCost(), s.append(used_prep[j]), name);
+        //plot_cost(gd->getLastCost(), s.append(used_prep[j]), name);
         fits.push_back(fit);
         numClasses = linr->getLabelSet().size();
+        delete linr;
       }
       else if(i == 1){
-        enet = new LinearRegression(processed_tr_data[j],train_lbls,gd,1.0,standardize); //parameter 1.0
+        enet = new LinearRegression(processed_tr_data[j],train_lbls,gd,l1,l2,standardize); 
         fit = enet->predict(processed_t_data[j]);
       //show gradient descent paths 
         s = "GradDesc_RegLinReg_";
-        plot_cost(gd->getLastCost(), s.append(used_prep[j]), name);
+        //plot_cost(gd->getLastCost(), s.append(used_prep[j]), name);
         fits.push_back(fit);
         numClasses = enet->getLabelSet().size();
+        delete enet;
       }
       else if(i == 2){
         logr = new LogisticRegression(processed_tr_data[j],train_lbls,gd,standardize);
@@ -399,15 +419,16 @@ int main(int argc, char *argv[]){
         fits.push_back(fit);
         //show gradient descent paths 
         s = "GradDesc_LogReg_";
-        cout << "About to plot" << endl;
-        plot_cost(gd->getLastCost(), s.append(used_prep[j]), name);
+        //plot_cost(gd->getLastCost(), s.append(used_prep[j]), name);
         numClasses = logr->getLabelSet().size();
+        delete logr;
       }
       else if(i == 3){
         knn = new KNN(processed_tr_data[j], train_lbls, cv,standardize);
         fit = knn->predict(processed_t_data[j]);
         fits.push_back(fit);
         numClasses = knn->getLabelSet().size();
+        delete knn;
       }
     }
   }  
@@ -478,34 +499,8 @@ int main(int argc, char *argv[]){
   cout << "We recommend proceeding with " << champ << endl<< endl; 
 
 
+//free allocated memory
 
-
-
-  //free allocated memory
-  bool del_cv = false;
-  bool del_gd = false;
-
-  for(int i = 0; i < model_flag.size();i++){
-    if(model_flag[i] == 1){
-          continue;
-    }
-    if(i == 0){
-      delete linr;
-      del_gd = true;
-    }
-    if(i == 1){
-      delete enet;
-      del_gd = true;
-    }
-    if(i == 2){
-      delete logr;
-      del_gd = true;
-    }
-    if(i == 3){
-      delete knn;
-      del_cv = true;
-    }
-  }
   if(del_cv){
     delete cv;
   }
