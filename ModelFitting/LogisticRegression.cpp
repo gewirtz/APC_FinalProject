@@ -58,9 +58,6 @@ LogisticRegression::LogisticRegression(arma::mat train, arma::colvec labels, Opt
     temp.push_back(v.zeros(x.n_cols));
   }
   this->params = temp;
-
-
-  cout << "fitting params " << endl;
   fit();  //fit beta  
 } 
 
@@ -183,7 +180,6 @@ mat LogisticRegression::getTrainset(){
 
 mat LogisticRegression::standardize(mat data){
   if(!this->trained){
-    cout << "Training standardization " << endl;
     this->trained = true; //memoize results so as to not run in predict
     this->tr_means = mean(data,0);
     this->tr_stdev = stddev(data,0,0);

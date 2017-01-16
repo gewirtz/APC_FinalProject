@@ -53,11 +53,11 @@ namespace{
       
       plt::xlabel("Iteration number");
       plt::ylabel("Cost");
-      temp = outfile.append("_forParam_");
-      //will throw null_pointer if there is already something titled outfile in directory
-      plt::save(temp.append(to_string(s))); 
       temp = title;
       plt::title(temp.append(to_string(s)));
+      temp = outfile.append("_forParam_");
+      cout << "saving" << endl;
+      plt::save(temp.append(to_string(s)));  //will segfault if there is already w/ same filename in directory
     }
   };
 

@@ -70,7 +70,6 @@ vec LinearRegression::predict(arma::mat test){
     exit(1);
   }
   if(normalize){ //set cols to mean 0 stdev 1
-    cout << "Normalizing test" << endl;
     test = standardize(test);
   }
   vec u;
