@@ -4,9 +4,7 @@
 #include "processing/mnist_count_images.h"
 #include "processing/mnist_count_images.h"
 #include "processing/ppm_load_images.h"
-#include "processing/ppm_load_labels.h"
-#include "processing/jpg_load_images.h"
-#include "processing/jpg_load_labels.h"
+//#include "processing/jpg_load_images.h"
 #include "processing/no_processing.h"
 #include "processing/no_processing_test.h"
 #include "processing/gaussian_smoothing.h"
@@ -22,14 +20,12 @@
 #include "ModelFitting/KNN.h"
 #include "ModelFitting/CrossValidation.h"
 #include "Performance/matplotlibcpp.h"
-//#include <boost/algorithm/string.hpp> //see if compules
 
 #include <cmath>
 #include <armadillo>
 #include <vector>
 #include <assert.h>
 
-//using namespace boost; //may not compile
 using namespace arma;
 using namespace std;
 namespace plt = matplotlibcpp;

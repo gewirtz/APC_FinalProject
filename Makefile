@@ -1,4 +1,6 @@
-MNIST_DEPS = processing/mnist_load_images.cc processing/mnist_load_labels.cc processing/mnist_count_images.cc processing/ppm_load_images.cc processing/ppm_load_labels.cc processing/jpg_load_images.cc processing/jpg_load_labels.cc
+MNIST_DEPS = processing/mnist_load_images.cc processing/mnist_load_labels.cc processing/mnist_count_images.cc processing/ppm_load_images.cc
+# processing/jpg_load_images.cc 
+
 
 PROCESS_DEPS = processing/no_processing.cc processing/no_processing_test.cc processing/gaussian_smoothing.cc processing/gs_processing_test.cc processing/histogram.cc processing/histogram_test.cc
 
