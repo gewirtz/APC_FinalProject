@@ -75,7 +75,7 @@ vector<arma::mat> jpg_load_images(string testing_data){
         //cout << fnames[3] << endl;
     }
     return all_images;
-
+}
 // int main(){
 
 
