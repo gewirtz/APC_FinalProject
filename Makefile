@@ -10,7 +10,7 @@ MF_DEPS = ModelFitting/GradientDescent.cpp ModelFitting/LinearRegression.cpp Mod
 driver = $(MNIST_DEPS) $(PROCESS_DEPS) $(MF_DEPS) main.cpp
 
 #ARMA_INCLUDE_FLAG = -I include
-LIB_FLAGS = -larmadillo 
+LIB_FLAGS = -larmadillo -lpython2.7
 OPT = -O2
 CXX = g++ -std=c++11
 CXXFLAGS = $(OPT) 

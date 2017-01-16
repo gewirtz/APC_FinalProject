@@ -48,13 +48,15 @@ namespace{
         y.at(i) = cost[s][i];
       } 
       plt::plot(y);
+      
+      plt::xlabel("Iteration number");
+      plt::ylabel("Cost");
+      temp = outfile.append("_forParam_");
+      //will throw null_pointer if there is already something titled outfile in directory
+      plt::save(temp.append(to_string(s))); 
+      temp = title;
+      plt::title(temp.append(to_string(s)));
     }
-    plt::xlabel("Iteration number");
-    plt::ylabel("Cost");
-    temp = outfile;
-    plt::save(temp.append(itoa(s))); //will throw null_pointer if there is already something titled outfile in directory
-    temp = title;
-    plt::title(temp.append(itoa(s))); //if there is already 
   };
 
 
@@ -100,12 +102,9 @@ int main(int argc, char *argv[]){
   int datatype_flag = 0;  //TO DO: from passed path, read last three characters, figure out if .jpg, .ppm, or mnist
 
 
-  /* ////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-  //TODO : ANDREAS - I cannot seem to get it to compile with ppm or jpg included, please fix this
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-/*
+  /* 
+ TODO : ANDREAS - I cannot seem to get it to compile with ppm or jpg included, please fix this
+*/
 
   //if (argc!=7){
     // keep this for testing
@@ -188,22 +187,23 @@ int main(int argc, char *argv[]){
       cout << "0 if yes" << endl;
       cout << "1 if no" << endl;
       cin >> model_flag[i];
-      if(model_flag != 0 || model_flag != 1 ){
+      if(model_flag[i] != 0 || model_flag[i] != 1 ){
         cout << "Please enter a valid selection" << endl;  
       }
     }
   }
 
 
-  int num_iter, batchSize,num_folds, ;
+  int num_iter, batchSize, num_folds;
   double tol, learnRate;
 
   //create gradient descent object
-    if(model_names[0] == 0 || model_names[1] == 0 || model_names[2] == 0 || model_names[3] == 0){
+    GradientDescent *gd; 
+    if(model_flag[0] == 0 || model_flag[1] == 0 || model_flag[2] == 0 || model_flag[3] == 0){
       num_iter = -1;
       while(num_iter <= 0){
         cout << endl << "For how many iterations do you want to run gradient descent?" << endl;
-        cout << "For speed choose ~100, for optimal fit choose ~10,000" //MAKE SURE THIS IS CORRECT
+        cout << "For speed choose ~100, for optimal fit choose ~10,000" << endl; //MAKE SURE THIS IS CORRECT
         cin >> num_iter;
         if(num_iter <= 0){
           cout << "Need positive number of iterations" << endl;
@@ -238,10 +238,13 @@ int main(int argc, char *argv[]){
         }
       }
 
-      GradientDescent *gd = new GradientDescent(num_iter, learnRate, tol, batchSize);
+      gd = new GradientDescent(num_iter, learnRate, tol, batchSize);
     }
 
-    if(model_names[1] == 0 || model_names[3] == 0 || model_names[4] == 0 ){
+
+//create cross_validation object
+    CrossValidation *cv;
+    if(model_flag[1] == 0 || model_flag[3] == 0 || model_flag[4] == 0 ){
       num_folds = -1;
       while(num_folds <= 0){
         cout << endl << "How many folds would you like to use for cross validation?"  << endl;
@@ -250,12 +253,11 @@ int main(int argc, char *argv[]){
           cout << "Need positive number of folds" << endl;
         }
       }
-      CrossValidation *cv = new CrossValidation(1.0,21,4,num_folds); //TO DO ARI: SHOULD OTHER ARGUMENTS BE USER INPUT?
+      cv = new CrossValidation(1.0,21,4,num_folds); //TO DO ARI: SHOULD OTHER ARGUMENTS BE USER INPUT?
     }
 
 
 /* //////////////////////////////////// Preprocessing Data ////////////////////////////////////////////////// */
-  vector<model*> fittedModels;
   vector<mat> processed_tr_data;
   vector<mat> processed_t_data;
 
@@ -264,7 +266,7 @@ int main(int argc, char *argv[]){
   vector<mat> p_test;
 
   cout << "Preprocessing data" << endl << endl;
-  vector<strings> used_prep;  
+  vector<string> used_prep;  
 
 
   for(int i = 0; i < process_flag.size(); i++){
@@ -273,7 +275,7 @@ int main(int argc, char *argv[]){
     }
     //user wants to include preprocessing i
     cout << "Implementing " << process_names[i] << endl;
-    used_prep.append(process_names[i]);
+    used_prep.push_back(process_names[i]);
 
     if(i == 0){ //no process
       No_processing *p_np;
@@ -310,8 +312,14 @@ int main(int argc, char *argv[]){
   cout << endl << "Model fitting" << endl;
   vector<vec> fits;
   vector<string> fit_names;
-  vector fit;
+  vec fit;
   string name;
+  string s; 
+
+  LinearRegression *linr;
+  LogisticRegression *logr;
+  KNN *knn;
+  int numClasses;
 
   for(int i = 0; i < model_flag.size();i++){
       if(model_flag[i] == 1){
@@ -327,30 +335,34 @@ int main(int argc, char *argv[]){
       cout << "Fitting " << name << endl;
      
       if(i == 0){
-        LinearRegression *linr = new LinearRegression(p_train[j],tr_labels,gd);
+        linr = new LinearRegression(p_train[j],train_lbls,gd);
         fit = linr->predict(processed_t_data[j]);
       //show gradient descent paths 
-        plot_cost(gd->getLastCost(), "GradDesc_LinReg_".append(used_prep[j]), name);
-
+        s = "GradDesc_LinReg_";
+        plot_cost(gd->getLastCost(), s.append(used_prep[j]), name);
         fits.push_back(fit);
+        numClasses = linr->getLabelSet().size();
       }
       else if(i == 1){
         //TO DO IMPLEMENT REGULARIZED LINEAR REGRESSION
       }
       else if(i == 2){
-        LogisticRegression *logr = new LogisticRegression(p_train[j],tr_labels,gd);
+        logr = new LogisticRegression(p_train[j],train_lbls,gd);
         fit = logr->predict(processed_t_data[j]);
         fits.push_back(fit);
         //show gradient descent paths 
-        plot_cost(gd->getLastCost(), "GradDesc_LogReg_".append(used_prep[j]), name);
+        s = "GradDesc_LogReg_";
+        plot_cost(gd->getLastCost(), s.append(used_prep[j]), name);
+        numClasses = logr->getLabelSet().size();
       }
       else if(i == 3){
         //TO DO IMPLEMENT REGULARIZED LOGISTIC REGRESSION
       }
       else if(i == 4){
-        KNN *knn = new KNN(p_train[j], tr_lbls, cv);
+        knn = new KNN(p_train[j], train_lbls, cv);
         fit = knn->predict(processed_t_data[j]);
         fits.push_back(fit);
+        numClasses = knn->getLabelSet().size();
       }
     }
   }  
@@ -358,7 +370,7 @@ int main(int argc, char *argv[]){
 /* ///////////////////////////////////////// Diagnostics /////////////////////////////////////////////////////// */
 
 
-  int numClasses = linr->getLabelSet().size();
+
   vec pred_lbls;
 
   double num_correct;
@@ -421,10 +433,43 @@ int main(int argc, char *argv[]){
   cout << "We recommend proceeding with " << champ << endl<< endl; 
 
 
-  delete cv;
-  delete gd;
-  delete linr;
-  delete logr;
-  delete knn;
+
+
+
+  //free allocated memory
+  bool del_cv = false;
+  bool del_gd = false;
+
+  for(int i = 0; i < model_flag.size();i++){
+    if(model_flag[i] == 1){
+          continue;
+    }
+    if(i == 0){
+      delete(linr);
+      del_gd = true;
+    }
+    if(i == 1){
+      //IMPLEMENT reg linr
+    }
+    if(i == 2){
+      //IMPLEMENT gd
+    }
+    if(i == 3){
+      delete(logr);
+      del_gd = true;
+    }
+    if(i == 4){
+      delete(knn);
+      del_cv = true;
+    }
+  }
+  if(del_cv){
+    delete(cv);
+  }
+  if(del_gd){
+    delete(gd);
+  }
+
+
   return(0);
 }
