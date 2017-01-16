@@ -8,37 +8,37 @@ make
 vim config/config.json
 
 #  2.1 Set your training and testsign directories in:
-#     "traning_dir" and "testing_dir"
-#
+     "traning_dir" and "testing_dir"
+
 #  2.2 Set your image file and label files:
-#     "train_img" and "train_lbl" for training and 
-#     "test_img" and "test_lbl" for testing
-#
+     "train_img" and "train_lbl" for training and 
+     "test_img" and "test_lbl" for testing
+
 # 3. Execute
-# There is two ways you can execute the file. The first is through a python driver, which will read input data directories from confi.json:
+ There is two ways you can execute the file. The first is through a python driver, which will read input data directories from confi.json:
 python ./driver.py
 
-# Alternatively, you can execute and pass input file folders by hand using:
+Alternatively, you can execute and pass input file folders by hand using:
 ./main train_dir test_dir train_lbl train_img test_lbl test_img
 
 # 4. Model Options
-# The user will be able to set additional configurations parameters through i/o communication with the user via terminal:
+The user will be able to set additional configurations parameters through i/o communication with the user via terminal:
 
 #  4.1 Set processing modules in "processing" with the following options":
-#      processing: 0 for no processing
-#      processing: 1 for histogramming
-#      processing: 2 for gaussian smoothing
-#
+      processing: 0 for no processing
+      processing: 1 for histogramming
+      processing: 2 for gaussian smoothing
+
 #  4.2 Set model fitting modlues in "model_fitting" with the following options:
-#      model_fitting: 0 for Linear Regression
-#      model_fitting: 1 for Regularized Regression
-#      model_fitting: 2 for Logistic Regression
-#      model_fitting: 3 for kNN
+      model_fitting: 0 for Linear Regression
+      model_fitting: 1 for Regularized Regression
+      model_fitting: 2 for Logistic Regression
+      model_fitting: 3 for kNN
 
 
 # 5. Data Processing:
 
-data_process__base.h:
+data_process_base.h:
 Virtual class for all derived data processing types. 
 Variables: train data and labels, test data and labels, flag for train having been processed, flag for test having been processed
 Functions: accesssors and modifiers for about variables (not including flags)
