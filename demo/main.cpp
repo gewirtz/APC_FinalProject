@@ -128,8 +128,7 @@ int main(int argc, char *argv[]){
 
 
 
-
-  //read in preprocessing option 
+/* //////////////////////////////////// End-user selections ////////////////////////////////////////////////// */
   vector<int> process_flag = vector<int>(3);
   vector<string> process_names = vector<string>(3);
   process_names[0] = "standardization"; 
@@ -200,7 +199,27 @@ int main(int argc, char *argv[]){
           cout << "Need nonegative batch size" << endl;
         }
       }
-      GradientDescent *gd = new GradientDescent(num_iter, .001, 10e-4, batchSize);
+      
+      tol = -1;
+      while(tol <= 0){
+        cout << endl << "What is the threshold for convergence of gradient descent? (eg 10e-3)" << endl;
+        cin >> tol;
+        if(tol <= 0){
+          cout << "Need positive tolerence" << endl;
+        }
+      }
+      
+
+      learnRate = -1;
+      while(learnRate <= 0){
+        cout << endl << "What do you want the initial learning rate for gradient descent? (eg 10e-2)"  << endl;
+        cin >> learnRate;
+        if(learnRate <= 0){
+          cout << "Need positive learning rate" << endl;
+        }
+      }
+
+      GradientDescent *gd = new GradientDescent(num_iter, learnRate, tol, batchSize);
     }
 
     if(model_names[1] == 0 || model_names[3] == 0 || model_names[4] == 0 ){
@@ -216,44 +235,109 @@ int main(int argc, char *argv[]){
     }
 
 
+/* //////////////////////////////////// Preprocessing Data ////////////////////////////////////////////////// */
+  vector<model*> fittedModels;
+  vector<mat> processed_tr_data;
+  vector<mat> processed_t_data;
 
 
+  vector<mat> p_train; 
+  vector<mat> p_test;
+
+  cout << "Preprocessing data" << endl << endl;
+  vector<strings> used_prep;  
 
 
+  for(int i = 0; i < process_flag.size(); i++){
+    if(process_flag[i] == 1){
+      continue;
+    }
+    //user wants to include preprocessing i
+    cout << "Implementing " << process_names[i] << endl;
+    used_prep.append(process_names[i]);
 
+    if(i == 0){ //no process
+      No_processing *p_np;
+      p_np = process_driver(train_data,tt_data,train_lbls,test_lbls);
+      p_train = p_np->get_data_train() ;
+      p_test = p_np->get_data_test(); 
+      processed_tr_data.push_back(concatenate(p_train));
+      processed_t_data.push_back(concatenate(p_test));
+    }
 
-/*
+    else if(i == 1){ //gaussian smoothing
+      Gaussian_smoothing *p_gs;
+      p_gs = process_driver_gs(train_data,tt_data,train_lbls,test_lbls);
+      p_train = p_gs->get_data_train();
+      p_test = p_gs->get_data_test();
+      processed_tr_data.push_back(concatenate(p_train));
+      processed_t_data.push_back(concatenate(p_test));
+    }
 
-  int unitflag = 0; //change to 1 to run unit testing
-  int datatype_flag = 0;  //TO DO: from passed path, read last three characters, figure out if .jpg, .ppm, or mnist
-  vector<int> process_flag = vector<int>(4);
-  vector<string> process_names = vector<string>(4);
-  process_names[0] = "standardization"; 
-  process_names[1] =  "gaussian smoothing";
-  process_names[2] = "histogram"; 
-
-
-
-
-  //read in preprocessing option 
-  for(int i = 0; i < process_flag.size();i++){
-    process_flag[i] = -1;
-    while(process_flag[i] != 0 || process_flag[i] != 1){
-      cout << "Would you like to use " << process_names[i] << " to pre-process the data?" << endl;
-      cout << "Please enter: " << endl;
-      cout << "0 if yes" << endl;
-      cout << "1 if no" << endl;
-      cin >> process_flag[i];
-      if(process_flag[i] != 0 || process_flag[i] != 1 ){
-        cout << "Please enter a valid selection" << endl;  
-      }
+    else if(i == 2){ 
+      Histogram *p_hist;
+      p_hist = process_driver_hist(train_data,tt_data,train_lbls,test_lbls);
+      p_train = p_hist->get_data_train();
+      p_test = p_hist->get_data_test();
+      processed_tr_data.push_back(concatenate(p_train));
+      processed_t_data.push_back(concatenate(p_test));
     }
   }
 
-  //read in model selection
-  cout << endl << "What kind of models would you like to fit?" << endl;
-  vector<int> model_flag = vector<int>(5);
-  vector<string> model_names = vector<string>(5);
+
+
+/* /////////////////////////MODEL FITTING /////////////////////////////////////// */
+
+  cout << endl << "Model fitting" << endl;
+  vector<vec> fits;
+  vector<string> fit_names;
+  vector fit;
+
+  vec v;
+  v = fit_knn0->predict(c_tt_data);
+  fits.push_back(v);
+  v = fit_knn1->predict(c_t_data_gauss);
+  fits.push_back(v);
+  v = fit_lr0->predict(c_tt_data);
+  fits.push_back(v);
+  v = fit_lr1->predict(c_t_data_gauss);
+  fits.push_back(v); 
+
+
+
+
+  for(int i = 0; i < model_flag.size();i++){
+      if(model_flag[i] == 1){
+        continue;
+      }
+   for(int j = 0; j < processed_tr_data.size(); j++){
+      cout << "Fitting " << model_names[i] << " to " << used_prep[j] << endl;
+      if(i == 0){
+        LinearRegression *linr = new LinearRegression(p_train[j],tr_labels,gd);
+        fit = linr->predict(processed_t_data[j]);
+        fits.push_back(fit);
+      }
+      else if(i == 1){
+        //TO DO IMPLEMENT REGULARIZED LINEAR REGRESSION
+      }
+      else if(i == 2){
+        LogisticRegression *logr = new LogisticRegression(p_train[j],tr_labels,gd);
+        fit = logr->predict(processed_t_data[j]);
+        fits.push_back(fit);
+      }
+      else if(i == 3){
+        //TO DO IMPLEMENT REGULARIZED LOGISTIC REGRESSION
+      }
+      else if(i == 4){
+        KNN *knn = new KNN(p_train[j], tr_lbls, cv);
+        fit = knn->predict(processed_t_data[j]);
+        fits.push_back(fit);
+      }
+    }
+  }  
+
+/* 
+
 
   model_names[0] = "linear regression"; 
   model_names[1] =  "regularized linear regression";
@@ -262,31 +346,6 @@ int main(int argc, char *argv[]){
   model_names[4] = "k-nearest neighbors"; 
 
   */
-
-
-    vector<mat> train_data;
-    vector<mat> test_data;
-    vector<model*> fittedModels;
-
-  for(int i = 0; i < process_flag.size(); i++){
-    if(process_flag[i] == 1){
-      continue;
-    }
-
-    for(int j = 0; j < model_flag.size();j++){
-      if(model_flag[i] == 1){
-        continue;
-      }
-      if(j == 0){}
-      else if(j == 1){}
-      else if(j == 2){}
-      else if(j == 3){}
-      else if(j == 4){}
-    }
-  }  
-
-
-
 
 
 
@@ -311,57 +370,12 @@ int main(int argc, char *argv[]){
 
   delete cv;
   delete gd;
-
-  vector<arma::mat> train_data, tt_data, tr_data_gauss, t_data_gauss;
-  arma::colvec train_lbls,test_lbls, tr_lbls, t_lbls;
-
-  train_data = mnist_load_images(train_directory, train_img, unitflag);
-  train_lbls = mnist_load_labels(train_directory, train_lbl);
-  tt_data = mnist_load_images(test_directory, test_img, unitflag);
-  test_lbls = mnist_load_labels(test_directory, test_lbl);
-
-  Gaussian_smoothing *p_gs;
-  assert(p_gs != NULL);
- 
-  p_gs = process_driver_gs(train_data,tt_data,train_lbls,test_lbls);
-
-  tr_lbls = p_gs->get_labels_train();
-  t_lbls  = p_gs->get_labels_test();
-  tr_data_gauss = p_gs->get_data_train();
-  t_data_gauss = p_gs->get_data_test();
-
-  vector<vector<arma::mat>> processed_data_train(2), 
-                            processed_data_test(2);
-
-  processed_data_train[0] = train_data;
-  processed_data_train[1] = tr_data_gauss;
-  processed_data_test[0]  = tt_data;
-  processed_data_test[1]  = t_data_gauss;
-  
-  mat c_train_data = concatenate(train_data);
-  mat c_tr_data_gauss= concatenate(tr_data_gauss);
-  mat c_tt_data = concatenate(tt_data);
-  mat c_t_data_gauss = concatenate(t_data_gauss);
+  delete linr;
+  delete logr;
+  delete knn;
 
 
 
-
-  //END OF TO DO part
-
-  int num_iter, batchSize,nFolds, ;
-  double tol, learnRate;
-
-  GradientDescent *gd = new GradientDescent(100, .001, 10e-4, 0);
-  CrossValidation *cv = new CrossValidation(1.0,21,4,10); 
-
-  cout << "Fitting KNN without preprocessing" << endl;
-  KNN *fit_knn0 = new KNN(c_train_data, tr_lbls, cv);
-  cout << "Fitting KNN with Gaussian Smoothing" << endl;
-  KNN *fit_knn1 = new KNN(c_tr_data_gauss, tr_lbls, cv);
-  cout << "Fitting Logisitic Regession without preprocessing" << endl;
-  LogisticRegression *fit_lr0 = new LogisticRegression(c_train_data, tr_lbls, gd);
-      cout << "Fitting Logistic Regression with Gaussian Smoothing" << endl;
-  LogisticRegression *fit_lr1 = new LogisticRegression(c_tr_data_gauss, tr_lbls, gd);
 
 
   cout <<"predicting step\n" << endl;
