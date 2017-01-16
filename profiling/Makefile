@@ -12,7 +12,7 @@ OPT = -O2
 CXX = g++ -std=c++11
 CXXFLAGS = $(OPT) 
 
-all: main
+all: main_for_profiling
 
 main : $(driver) 
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIB_FLAGS)
