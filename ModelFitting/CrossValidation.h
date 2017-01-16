@@ -1,3 +1,5 @@
+/* author: Ariel Gewirtz */
+
 #ifndef CROSSVALIDATION_H_
 #define CROSSVALIDATION_H_
 

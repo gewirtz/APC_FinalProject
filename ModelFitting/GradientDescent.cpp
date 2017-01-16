@@ -131,9 +131,9 @@ void GradientDescent::batchGradientDescent(GradientModel *m){
 					last_cost[j] = min(temp_cost,last_cost[j]);
 				}
 
-				if(j == 0){
+				/*if(j == 0){
 					cout << "Alpha is " << alphas[j] << endl;
-				}
+				}*/
 			}
 			pos += length;
 		}
@@ -192,9 +192,9 @@ void GradientDescent::mixedBatchGradientDescent(GradientModel *m){ //fits via mi
 				m->set_Params(j, m->get_Params()[j] - alpha*grad[j]/normalizer[j]);
 				temp_cost = m->cost(pos,upper,j);
 				cost[j].push_back(temp_cost);
-				if(j == 0){
+				/*if(j == 0){
 					cout << "The cost is " << temp_cost << endl;
-				}
+				}*/
 				if(update > tol){
 					finished = false;
 				}

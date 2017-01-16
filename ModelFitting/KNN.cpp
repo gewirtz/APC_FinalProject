@@ -1,3 +1,5 @@
+/* author: Ariel Gewirtz */
+
 #include "KNN.h"
 #include "Optimizer.h"
 #include <cfloat>
@@ -73,9 +75,6 @@ arma::vec KNN::predict(mat testset){
   mat dists(x.n_rows,testset.n_rows);
   rowvec rw, rw2;
   for(int i=0;i<x.n_rows;i++){
-    if(i%1000==0){
-      cout << "calculating distance for example " << i << " of " << testset.n_rows -1 << endl;
-    }
     rw = x.row(i);
     for(int j=0;j<testset.n_rows;j++){
       rw2 = testset.row(j);

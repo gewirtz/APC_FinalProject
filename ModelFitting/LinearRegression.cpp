@@ -2,7 +2,7 @@
 
 // initializes a model to choose \beta so as to fit Y = X\beta + \epsilon so as to minimize
 // ||Y - X\beta ||_2^2
-// regularized model minimizes ||Y - X\beta ||_2^2 + \sum_{i=1}^nrows l2*|| X_i||_2^2
+// regularized model minimizes ||Y - X\beta ||_2^2 + \sum_{i=1}^nrows l1*||X_i||_2 + l2*|| X_i||_2^2
 
 
 #include "LinearRegression.h"
@@ -14,11 +14,12 @@
 using namespace std;
 using namespace arma;
 
-LinearRegression::LinearRegression(arma::mat train, arma::colvec labels, Optimizer *optim, double l2, bool normalize){
+LinearRegression::LinearRegression(arma::mat train, arma::colvec labels, Optimizer *optim, double l1, double l2, bool normalize){
   this->initial_regressors = train.n_cols;
   this->normalize = normalize;
   this->trained = false;
-  this->l2 = l2;
+  this->l1 = l1;  //lasso penalty
+  this->l2 = l2;  //ridge penalty
   //mat tempmat;
   //tempmat = this->x.rows(0,10000);
   //this->x = tempmat;
@@ -59,7 +60,7 @@ LinearRegression::LinearRegression(arma::mat train, arma::colvec labels, Optimiz
   vec v;
   temp.push_back(v.zeros(x.n_cols));
   this->params = temp;
-  cout << "fitting params " << endl;
+  //cout << "fitting params " << endl;
   fit();  //fit beta  
 } 
 
@@ -97,7 +98,11 @@ vec LinearRegression::predict(arma::mat test){
   return(labels);
 }
 
-vec LinearRegression::get_exactParams(){ 
+vec LinearRegression::get_exactParams(){
+  if(l1 != 0.0){
+    cerr << "Exact Params do not exist for regression with l1 penalty" << endl;
+    exit(1);
+  } 
   mat id(x.n_cols,x.n_cols,fill::eye);
   return(pinv(x.t() * x + l2 * id) * x.t() * y);
 }
@@ -120,7 +125,7 @@ vector<vec> LinearRegression::gradient(int lower, int upper){
     resid = predictions - y;
     for(int i = lower; i < upper;i++){
       for(int j = 0; j < x.n_cols;j++){
-        grad(j) += resid(i) * x(i,j) + 2.0*l2*x(i,j);
+        grad(j) += resid(i) * x(i,j) + l1* sign_fct(x(i,j))+ l2*x(i,j);
       }
     }
     v.push_back(1.0/(upper - lower)*grad);
@@ -156,7 +161,7 @@ double LinearRegression::cost(int lower, int upper, int k){
   vec fits = this->y - x*(params[0]);
   double cost = 0.0;
   for(int i = 0; i < x.n_rows; i++){
-    cost += pow(fits[i],2) + l2*pow(norm(x.row(i),2),2); //l2 is regularization term
+    cost += pow(fits[i],2) + l1* norm(x.row(i),1)+ l2*pow(norm(x.row(i),2),2); //l2 is regularization term
   }
   return(1.0/(2*(upper - lower)) * cost);
 }
@@ -208,6 +213,16 @@ void LinearRegression::fit(){
 
 set<int> LinearRegression::getLabelSet(){
   return(label_set);
+}
+
+int LinearRegression::sign_fct(double d){
+  if(d > 0.001){
+    return(1);
+  }
+  if(d < 0.001){
+    return(-1);
+  }
+  return(0);
 }
 
 
