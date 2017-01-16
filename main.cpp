@@ -3,8 +3,10 @@
 #include "processing/mnist_load_labels.h"
 #include "processing/mnist_count_images.h"
 #include "processing/mnist_count_images.h"
-#include "processing/ppm_load_images.h"
+//#include "processing/ppm_load_images.h"
+//#include "processing/ppm_load_labels.h"
 //#include "processing/jpg_load_images.h"
+//#include "processing/jpg_load_labels.h"
 #include "processing/no_processing.h"
 #include "processing/no_processing_test.h"
 #include "processing/gaussian_smoothing.h"
@@ -32,7 +34,7 @@ namespace plt = matplotlibcpp;
 
 namespace{
   //void plot_cost(vector<vector<double>> cost, int skip, std::string outfile, std::string model_title){
-  void plot_cost(vector<vector<double>> cost, std::string outfile, std::string model_title){
+ void plot_cost(vector<vector<double>> cost, std::string outfile, std::string model_title){
     int ns = cost.size();
     string title = "Gradient Descent for ";
     title.append(model_title);
@@ -102,11 +104,9 @@ int main(int argc, char *argv[]){
   int datatype_flag = 0;  //TO DO: from passed path, read last three characters, figure out if .jpg, .ppm, or mnist
 
 
-  /* 
- TODO : ANDREAS - I cannot seem to get it to compile with ppm or jpg included, please fix this
-*/
 
-  //if (argc!=7){
+
+  if (argc!=7){
     // keep this for testing
     train_directory = "data/mnist/training/";
     test_directory = "data/mnist/testing/";
@@ -114,7 +114,14 @@ int main(int argc, char *argv[]){
     train_img = "train-images.idx3-ubyte";
     test_lbl = "t10k-labels.idx1-ubyte";
     test_img = "t10k-images.idx3-ubyte";
-  /*}
+  }
+/* 
+
+TODO : ANDREAS - 
+
+I cannot seem to get it to compile with jpg or ppm included, please fix so after uncommented the
+else statement compiles
+
   else{
 
     train_directory = argv[1];
@@ -124,7 +131,7 @@ int main(int argc, char *argv[]){
     test_lbl = argv[5];
     test_img = argv[6];
     string suffix = argv[4].find_last_of(3);
-    if(suffix == ".jpg" || argv[4].find_last_of(3) == ".jpeg"){
+  if(suffix == ".jpg" || argv[4].find_last_of(3) == ".jpeg"){
       train_data = jpg_load_images(train_directory, train_img, unitflag);
       train_lbls = jpg_load_labels(train_directory, train_lbl);
       tt_data = jpg_load_images(test_directory, test_img, unitflag);
@@ -138,14 +145,17 @@ int main(int argc, char *argv[]){
       test_lbls = ppm_load_labels(test_directory, test_lbl);
     }
 
-    else{
+    else{*/
       train_data = mnist_load_images(train_directory, train_img, unitflag);
       train_lbls = mnist_load_labels(train_directory, train_lbl);
       tt_data = mnist_load_images(test_directory, test_img, unitflag);
       test_lbls = mnist_load_labels(test_directory, test_lbl);
+      /*
     }
   }
 */
+
+
 /* //////////////////////////////////// End-user selections ////////////////////////////////////////////////// */
   vector<int> process_flag = vector<int>(3);
   vector<string> process_names = vector<string>(3);
@@ -155,13 +165,13 @@ int main(int argc, char *argv[]){
 
   for(int i = 0; i < process_flag.size();i++){
     process_flag[i] = -1;
-    while(process_flag[i] != 0 || process_flag[i] != 1){
+    while(process_flag[i] != 0 && process_flag[i] != 1){
       cout << "Would you like to use " << process_names[i] << " to preprocess the data?" << endl;
       cout << "Please enter: " << endl;
       cout << "0 if yes" << endl;
       cout << "1 if no" << endl;
       cin >> process_flag[i];
-      if(process_flag[i] != 0 || process_flag[i] != 1 ){
+      if(process_flag[i] != 0 && process_flag[i] != 1 ){
         cout << "Please enter a valid selection" << endl;  
       }
     }
@@ -181,13 +191,13 @@ int main(int argc, char *argv[]){
 
   for(int i = 0; i < model_flag.size();i++){
     model_flag[i] = -1;
-    while(model_flag[i] != 0 || model_flag[i] != 1){
+    while(model_flag[i] != 0 && model_flag[i] != 1){
       cout << "Would you like to fit " << model_names[i] << "?" << endl;
       cout << "Please enter: " << endl;
       cout << "0 if yes" << endl;
       cout << "1 if no" << endl;
       cin >> model_flag[i];
-      if(model_flag[i] != 0 || model_flag[i] != 1 ){
+      if(model_flag[i] != 0 && model_flag[i] != 1 ){
         cout << "Please enter a valid selection" << endl;  
       }
     }
@@ -247,7 +257,7 @@ int main(int argc, char *argv[]){
     if(model_flag[1] == 0 || model_flag[3] == 0 || model_flag[4] == 0 ){
       num_folds = -1;
       while(num_folds <= 0){
-        cout << endl << "How many folds would you like to use for cross validation?"  << endl;
+        cout << endl << "How many folds would you like to use for cross validation? (eg 4)"  << endl;
         cin >> num_folds ;
         if(num_folds  <= 0){
           cout << "Need positive number of folds" << endl;
@@ -335,7 +345,7 @@ int main(int argc, char *argv[]){
       cout << "Fitting " << name << endl;
      
       if(i == 0){
-        linr = new LinearRegression(p_train[j],train_lbls,gd);
+        linr = new LinearRegression(processed_tr_data[j],train_lbls,gd);
         fit = linr->predict(processed_t_data[j]);
       //show gradient descent paths 
         s = "GradDesc_LinReg_";
@@ -347,7 +357,7 @@ int main(int argc, char *argv[]){
         //TO DO IMPLEMENT REGULARIZED LINEAR REGRESSION
       }
       else if(i == 2){
-        logr = new LogisticRegression(p_train[j],train_lbls,gd);
+        logr = new LogisticRegression(processed_tr_data[j],train_lbls,gd);
         fit = logr->predict(processed_t_data[j]);
         fits.push_back(fit);
         //show gradient descent paths 
@@ -359,7 +369,7 @@ int main(int argc, char *argv[]){
         //TO DO IMPLEMENT REGULARIZED LOGISTIC REGRESSION
       }
       else if(i == 4){
-        knn = new KNN(p_train[j], train_lbls, cv);
+        knn = new KNN(processed_tr_data[j], train_lbls, cv);
         fit = knn->predict(processed_t_data[j]);
         fits.push_back(fit);
         numClasses = knn->getLabelSet().size();

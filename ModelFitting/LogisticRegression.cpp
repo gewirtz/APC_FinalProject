@@ -168,12 +168,12 @@ int LogisticRegression::get_num_examples(){
 }
 
 double LogisticRegression::cost(int lower, int upper, int k){
-  vec resid = this->y - 1.0/(1.0+exp(-x*params[k]));
+  vec hyp = 1.0/(1.0+exp(-x*params[k])); //logistic hypothesis function
   double cost = 0.0;
   for(int i = lower; i < upper; i++){
-    cost += pow(resid[i],2);
+    cost += -y[i] *hyp[i] - (1-y[i])*log(1-hyp[i]);
   }
-  return(1.0/(2*(upper - lower)) * cost);
+  return(1.0/((upper - lower)) * cost);
 }
 
 mat LogisticRegression::getTrainset(){
