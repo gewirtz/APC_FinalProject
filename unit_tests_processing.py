@@ -41,6 +41,8 @@ class TestProcess(unittest.TestCase):
                     'dummy', 'dummy','dummy','dummy',
                     "0","0","1"]
 
+        rc, ans, err = run(inp_args_args)
+        print ans
         
 
     def testBadArgs(self):
