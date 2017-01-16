@@ -3,6 +3,10 @@
 #include "../processing/mnist_load_labels.h"
 #include "../processing/mnist_count_images.h"
 #include "../processing/mnist_count_images.h"
+#include "../processing/ppm_load_images.h"
+#include "../processing/ppm_load_labels.h"
+#include "../processing/jpg_load_images.h"
+#include "../processing/jpg_load_labels.h"
 #include "../processing/no_processing.h"
 #include "../processing/no_processing_test.h"
 #include "../processing/gaussian_smoothing.h"
@@ -32,8 +36,9 @@ namespace{
   void plot_cost(vector<vector<double>> cost, std::string outfile, std::string model_title){
     int ns = cost.size();
     string title = "Gradient Descent for ";
-    title = title.append(model_title);
-    title = title.append( " parameter ");
+    title.append(model_title);
+    title.append( " parameter ");
+    string temp;
 
     for(int s=0; s<ns; s++ ){
       int n=cost[s].size();
@@ -47,8 +52,10 @@ namespace{
     }
     plt::xlabel("Iteration number");
     plt::ylabel("Cost");
-    plt::save(outfile);    
-    plt::title(title.append(itoa(s)));
+    temp = outfile;
+    plt::save(temp.append(itoa(s))); //will throw null_pointer if there is already something titled outfile in directory
+    temp = title;
+    plt::title(temp.append(itoa(s))); //if there is already 
   };
 
 
@@ -133,25 +140,6 @@ int main(int argc, char *argv[]){
       test_lbls = mnist_load_labels(test_directory, test_lbl);
     }
   }
-
-
-
-
-
-  /*TO DO: code how we are going to read in data into train_data/labels, test_data/labels, 
-  code datatype_flag to figure out how, for passed file, we are reading it in  
-  
-  here is code from demo_driver for generalization: 
-
-  train_data = mnist_load_images(train_directory, train_img, unitflag);
-  train_lbls = mnist_load_labels(train_directory, train_lbl);
-  tt_data = mnist_load_images(test_directory, test_img, unitflag);
-  test_lbls = mnist_load_labels(test_directory, test_lbl);
-
-
-  */
-
-
 
 /* //////////////////////////////////// End-user selections ////////////////////////////////////////////////// */
   vector<int> process_flag = vector<int>(3);
@@ -335,6 +323,9 @@ int main(int argc, char *argv[]){
       if(i == 0){
         LinearRegression *linr = new LinearRegression(p_train[j],tr_labels,gd);
         fit = linr->predict(processed_t_data[j]);
+      //show gradient descent paths 
+        plot_cost(gd->getLastCost(), "GradDesc_LinReg_".append(used_prep[j]), name);
+
         fits.push_back(fit);
       }
       else if(i == 1){
@@ -344,6 +335,8 @@ int main(int argc, char *argv[]){
         LogisticRegression *logr = new LogisticRegression(p_train[j],tr_labels,gd);
         fit = logr->predict(processed_t_data[j]);
         fits.push_back(fit);
+        //show gradient descent paths 
+        plot_cost(gd->getLastCost(), "GradDesc_LogReg_".append(used_prep[j]), name);
       }
       else if(i == 3){
         //TO DO IMPLEMENT REGULARIZED LOGISTIC REGRESSION
@@ -357,6 +350,7 @@ int main(int argc, char *argv[]){
   }  
 
 /* ///////////////////////////////////////// Diagnostics /////////////////////////////////////////////////////// */
+
 
   int numClasses = linr->getLabelSet().size();
   vec pred_lbls;
