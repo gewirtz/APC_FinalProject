@@ -1,3 +1,5 @@
+/* Author: Ariel Gewirtz */
+
 #ifndef KNN_H_
 #define KNN_H_
 

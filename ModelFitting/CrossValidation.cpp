@@ -1,3 +1,5 @@
+/*Author: Ariel Gewirtz */
+
 #include "CrossValidation.h"
 #include <math.h>
 #include "KNN.h"
@@ -28,9 +30,6 @@ mat CrossValidation::calculate_dists(mat train){
 	double val;
 	rowvec rw, rw2;
   	for(int i=0;i<train.n_rows;i++){
-  		if(i%1000 == 0){
-  			cout << "calculating distance for example " << i << " of " << train.n_rows -1 << endl;
-  		}
   		rw = train.row(i);
     	for(int j=0;j<i;j++){
     		rw2 = train.row(j);
@@ -66,7 +65,6 @@ void CrossValidation::fitParams(KNN *m){
   	mat dists_to_pass, dists_to_pass_p1, dists_to_pass_p2;
   	//loop through possible values of parameters
 	for(int i=0; i<num_steps; i++){ 
-		cout <<"step " << i+1 << " of " << num_steps << endl;
 		cur_param=param_range_start+(i*(int)delta);
 		if(cur_param>param_range_end || cur_param<param_range_start){
 			cerr << "Current parameter is outside the specified range" << endl;
@@ -75,7 +73,6 @@ void CrossValidation::fitParams(KNN *m){
 		param_error=0.0;
 		//loop through using each fold as test set
 		for(int j=0; j<nfolds; j++){
-			cout << "fold " << j << endl;
 			need_to_join = 1;
 			//if the test set is the first fold or last fold, don't need to concatenate mats
 			if(j==0 || j==nfolds-1){
@@ -142,9 +139,6 @@ void CrossValidation::fitParams(KNN *m){
 	}
 	//find which parameter had the smallest error (number of wrong results)
 	int best_index = overall_errors.index_min();
-	for(int e=0;e<overall_errors.n_elem;e++){
-		cout << "The overall error for k=" << param_range_start+(e*(int)delta) << " is " << overall_errors(e) << endl;
-	}
 	vec param(1);
 	param(0) = param_range_start+(best_index*(int)delta);
 	m->set_Params(0,param);
