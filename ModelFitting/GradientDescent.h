@@ -1,3 +1,5 @@
+/* Author : Chase Perlen */
+
 #ifndef GRADIENTDESCENT_H_
 #define GRADIENTDESCENT_H_
 

@@ -1,3 +1,5 @@
+/* Author : Chase Perlen and Ariel Gewirtz */
+
 #ifndef OPTIMIZER_H_
 #define OPTIMIZER_H_
 

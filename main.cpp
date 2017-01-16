@@ -1,3 +1,6 @@
+/* Author : Chase Perlen */
+
+
 #include <stdio.h>
 #include "processing/mnist_load_images.h"
 #include "processing/mnist_load_labels.h"
@@ -108,26 +111,20 @@ int main(int argc, char *argv[]){
 
   if (argc!=7){
     // keep this for mnist testing
-    //train_directory = "data/mnist/training/";
-    //test_directory = "data/mnist/testing/";
-    //train_lbl = "train-labels.idx1-ubyte";
-    //train_img = "train-images.idx3-ubyte";
-    //test_lbl = "t10k-labels.idx1-ubyte";
-    //test_img = "t10k-images.idx3-ubyte";
+    train_directory = "data/mnist/training/";
+    test_directory = "data/mnist/testing/";
+    train_lbl = "train-labels.idx1-ubyte";
+    train_img = "train-images.idx3-ubyte";
+    test_lbl = "t10k-labels.idx1-ubyte";
+    test_img = "t10k-images.idx3-ubyte";
 
     // keep this for ppm testing
-    train_directory = "/data/cars/training_cars/";
+    /*train_directory = "/data/cars/training_cars/";
     test_directory = "/data/cars/testing_cars/";
     label_directory = "/data/cars/";
     train_lbl = "training_labels_cars";
-    test_lbl = "testing_labels_cars";
+    test_lbl = "testing_labels_cars";*/
   }
-
-
-// TODO : ANDREAS - 
-
-// I cannot seem to get it to compile with jpg or ppm included, please fix so after uncommented the
-// else statement compiles
 
   else{
 
@@ -138,7 +135,8 @@ int main(int argc, char *argv[]){
     test_lbl = argv[5];
     test_img = argv[6];
     //Insert filetype extension here
-    string suffix = ".ppm"; //argv[4].find_last_of(3);
+    string suffix(argv[4]);
+    suffix = suffix.find_last_of(3);
   // if(suffix == ".jpg" || argv[4].find_last_of(3) == ".jpeg"){
   //     train_data = jpg_load_images(train_directory, train_img, unitflag);
   //     train_lbls = jpg_load_labels(train_directory, train_lbl);
@@ -186,14 +184,13 @@ int main(int argc, char *argv[]){
 
   //read in model selection
   cout << endl << "Model selection decision:" << endl << endl;
-  vector<int> model_flag = vector<int>(5);
-  vector<string> model_names = vector<string>(5);
+  vector<int> model_flag = vector<int>(4);
+  vector<string> model_names = vector<string>(4);
 
   model_names[0] = "linear regression"; 
   model_names[1] =  "regularized linear regression";
   model_names[2] = "logistic regression"; 
-  model_names[3] =  "regularized logistic regression";
-  model_names[4] = "k-nearest neighbors"; 
+  model_names[3] = "k-nearest neighbors"; 
 
 
   for(int i = 0; i < model_flag.size();i++){
@@ -216,7 +213,7 @@ int main(int argc, char *argv[]){
 
   //create gradient descent object
     GradientDescent *gd; 
-    if(model_flag[0] == 0 || model_flag[1] == 0 || model_flag[2] == 0 || model_flag[3] == 0){
+    if(model_flag[0] == 0 || model_flag[1] == 0 || model_flag[2] == 0){
       num_iter = -1;
       while(num_iter <= 0){
         cout << endl << "For how many iterations do you want to run gradient descent?" << endl;
@@ -261,7 +258,7 @@ int main(int argc, char *argv[]){
 
 //create cross_validation object
     CrossValidation *cv;
-    if(model_flag[1] == 0 || model_flag[3] == 0 || model_flag[4] == 0 ){
+    if(model_flag[3] == 0){
       num_folds = -1;
       while(num_folds <= 0){
         cout << endl << "How many folds would you like to use for cross validation? (eg 4)"  << endl;
@@ -270,7 +267,7 @@ int main(int argc, char *argv[]){
           cout << "Need positive number of folds" << endl;
         }
       }
-      cv = new CrossValidation(1.0,21,4,num_folds); //TO DO ARI: SHOULD OTHER ARGUMENTS BE USER INPUT?
+      cv = new CrossValidation(1.0,21,4,num_folds); 
     }
 
 
@@ -317,17 +314,28 @@ int main(int argc, char *argv[]){
       p_hist = process_driver_hist(train_data,tt_data,train_lbls,test_lbls);
       vector<mat> p_train_temp = p_hist->get_data_train();
       vector<mat> p_test_temp = p_hist->get_data_test();
+
      //For histogram implementation change hist matrix to vector of row vectors 
+
+      //mat temp(1,p_train_temp[0].n_cols);
+      
       for(int i=0;i<p_train_temp[0].n_rows;i++){
-        p_train[i]=p_train_temp[0].row(i);
+        /*
+        temp.row(0) = p_train_temp[0].row(i);
+        p_train.push_back(temp);*/
+        p_train.push_back(p_train_temp[0].row(i));
       }
+
       for(int i=0;i<p_test_temp[0].n_rows;i++){
-        p_test[i]=p_test_temp[0].row(i);
+       /* temp.row(0) = p_test_temp[0].row(i);
+        p_test.push_back(temp);*/
+        p_test.push_back(p_test_temp[0].row(i));
       }
       processed_tr_data.push_back(concatenate(p_train));
       processed_t_data.push_back(concatenate(p_test));
     }
   }
+
 
 
 
@@ -341,8 +349,10 @@ int main(int argc, char *argv[]){
   string s; 
 
   LinearRegression *linr;
+  LinearRegression *enet; //elastic net
   LogisticRegression *logr;
   KNN *knn;
+
   int numClasses;
 
   for(int i = 0; i < model_flag.size();i++){
@@ -355,11 +365,16 @@ int main(int argc, char *argv[]){
       name = name.append(used_prep[j]);
       name = name.append(" data");
       fit_names.push_back(name);
+      bool standardize = true;
+
+      if(used_prep[j] == "histogram"){
+        standardize = false; //do not standardize histogram, 1 x 256 data will be identically 0
+      }
 
       cout << "Fitting " << name << endl;
      
       if(i == 0){
-        linr = new LinearRegression(processed_tr_data[j],train_lbls,gd);
+        linr = new LinearRegression(processed_tr_data[j],train_lbls,gd,standardize);
         fit = linr->predict(processed_t_data[j]);
       //show gradient descent paths 
         s = "GradDesc_LinReg_";
@@ -368,10 +383,16 @@ int main(int argc, char *argv[]){
         numClasses = linr->getLabelSet().size();
       }
       else if(i == 1){
-        //TO DO IMPLEMENT REGULARIZED LINEAR REGRESSION
+        enet = new LinearRegression(processed_tr_data[j],train_lbls,gd,1.0,standardize); //parameter 1.0
+        fit = enet->predict(processed_t_data[j]);
+      //show gradient descent paths 
+        s = "GradDesc_RegLinReg_";
+        plot_cost(gd->getLastCost(), s.append(used_prep[j]), name);
+        fits.push_back(fit);
+        numClasses = enet->getLabelSet().size();
       }
       else if(i == 2){
-        logr = new LogisticRegression(processed_tr_data[j],train_lbls,gd);
+        logr = new LogisticRegression(processed_tr_data[j],train_lbls,gd,standardize);
         fit = logr->predict(processed_t_data[j]);
         fits.push_back(fit);
         //show gradient descent paths 
@@ -381,10 +402,7 @@ int main(int argc, char *argv[]){
         numClasses = logr->getLabelSet().size();
       }
       else if(i == 3){
-        //TO DO IMPLEMENT REGULARIZED LOGISTIC REGRESSION
-      }
-      else if(i == 4){
-        knn = new KNN(processed_tr_data[j], train_lbls, cv);
+        knn = new KNN(processed_tr_data[j], train_lbls, cv,standardize);
         fit = knn->predict(processed_t_data[j]);
         fits.push_back(fit);
         numClasses = knn->getLabelSet().size();
@@ -470,29 +488,27 @@ int main(int argc, char *argv[]){
           continue;
     }
     if(i == 0){
-      delete(linr);
+      delete linr;
       del_gd = true;
     }
     if(i == 1){
-      //IMPLEMENT reg linr
-    }
-    if(i == 2){
-      //IMPLEMENT gd
-    }
-    if(i == 3){
-      delete(logr);
+      delete enet;
       del_gd = true;
     }
-    if(i == 4){
-      delete(knn);
+    if(i == 2){
+      delete logr;
+      del_gd = true;
+    }
+    if(i == 3){
+      delete knn;
       del_cv = true;
     }
   }
   if(del_cv){
-    delete(cv);
+    delete cv;
   }
   if(del_gd){
-    delete(gd);
+    delete gd ;
   }
 
 

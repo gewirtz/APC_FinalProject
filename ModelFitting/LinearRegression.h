@@ -1,3 +1,11 @@
+/* Author : Chase Perlen */
+
+//initializes a model to choose \beta so as to fit Y = X\beta + \epsilon so as to minimize
+// ||Y - X\beta ||_2^2...decision as in multinomial probit 
+// regularized model minimizes ||Y - X\beta ||_2^2 + \sum_{i=1}^nrows l2*|| X_i||_2^2
+
+
+
 #ifndef LINEARREGRESSION_H_
 #define LINEARREGRESSION_H_
 
@@ -6,16 +14,13 @@
 #include <vector>
 #include <set>
 
-//initializes a model to choose \beta so as to fit Y = X\beta + \epsilon so as to minimize
-// ||Y - X\beta ||_2^2...decision as in multinomial probit 
-
-//TODO in future versions - add regularization
 
 class Optimizer;
 
 class LinearRegression : public GradientModel  {
  public:
-  LinearRegression(arma::mat train, arma::colvec labels, Optimizer *optim, bool normalize = true); 
+  
+  LinearRegression(arma::mat train, arma::colvec labels, Optimizer *optim, double l2 = 0.0, bool normalize = true); 
   ~LinearRegression();
   
   arma::vec predict(arma::mat input); 
@@ -47,6 +52,7 @@ class LinearRegression : public GradientModel  {
   std::vector<bool> remove; 
   int num_regressors;
   int initial_regressors;
+  double l2; //if != 0, we have regularized regression
 
  };
 

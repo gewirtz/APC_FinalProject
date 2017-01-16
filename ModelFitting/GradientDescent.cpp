@@ -1,3 +1,5 @@
+/* Author : Chase Perlen */
+
 #include "GradientDescent.h"
 #include <math.h>
 #include "GradientModel.h"

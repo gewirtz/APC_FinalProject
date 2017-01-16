@@ -1,3 +1,9 @@
+/* Author : Chase Perlen */
+
+// initializes a model to classify via the probability model 
+// P(Y=j|X) = \frac{\exp(\theta_j*X_i)}/{1+\sum_k\exp(\theta_k*X_i)} 
+//fits via MAP ie argmax_j P(Y=j|X)
+
 #ifndef LOGISTICREGRESSION_H_
 #define LOGISTICREGRESSION_H_
 
@@ -7,8 +13,6 @@
 #include <set>
 
 
-// initializes a model to classify via the probability model 
-// P(Y=j|X) = \frac{\exp(\theta_j*X_i)}/{1+\sum_k\exp(\theta_k*X_i)} 
 
 class Optimizer;
 

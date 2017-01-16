@@ -1,3 +1,5 @@
+/* Author : Chase Perlen and Ariel Gewirtz */
+
 #ifndef GRADIENTMODEL_H_
 #define GRADIENTMODEL_H_
 

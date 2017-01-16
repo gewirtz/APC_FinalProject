@@ -1,3 +1,5 @@
+/* Author : Chase Perlen and Ariel Gewirtz */
+
 #ifndef MODEL_H_
 #define MODEL_H_
 
