@@ -104,33 +104,33 @@ static PPMImage *readPPM(const char *filename){
 //     return false;
 // }
 
-void writePPM(const char *filename, PPMImage *img)
-{
-    FILE *fp;
-    //open file for output
-    fp = fopen(filename, "wb");
-    if (!fp) {
-         fprintf(stderr, "Unable to open file '%s'\n", filename);
-         exit(1);
-    }
+// void writePPM(const char *filename, PPMImage *img)
+// {
+//     FILE *fp;
+//     //open file for output
+//     fp = fopen(filename, "wb");
+//     if (!fp) {
+//          fprintf(stderr, "Unable to open file '%s'\n", filename);
+//          exit(1);
+//     }
 
-    //write the header file
-    //image format
-    fprintf(fp, "P6\n");
+//     //write the header file
+//     //image format
+//     fprintf(fp, "P6\n");
 
-    //comments
-    //fprintf(fp, "# Created by %s\n",CREATOR);
+//     //comments
+//     //fprintf(fp, "# Created by %s\n",CREATOR);
 
-    //image size
-    fprintf(fp, "%d %d\n",img->x,img->y);
+//     //image size
+//     fprintf(fp, "%d %d\n",img->x,img->y);
 
-    // rgb component depth
-    fprintf(fp, "%d\n",RGB_COMPONENT_COLOR);
+//     // rgb component depth
+//     fprintf(fp, "%d\n",RGB_COMPONENT_COLOR);
 
-    // pixel data
-    fwrite(img->data, 3 * img->x, img->y, fp);
-    fclose(fp);
-}
+//     // pixel data
+//     fwrite(img->data, 3 * img->x, img->y, fp);
+//     fclose(fp);
+// }
 
 void grayscalePPM(PPMImage *img){
     int i;
@@ -175,23 +175,23 @@ arma::mat convertToArma(PPMImage *img){
 }
 
 
-int fileCount(const char* direc){
-    DIR *dir;
-    struct dirent *ent;
-    if ((dir = opendir(direc)) !=NULL){
-        int i=0;
-        int n_elem;
-        //vec(string) names;
-        while ((ent = readdir(dir)) !=NULL){
-            //names[i]=ent->d_name;
-            //printf("%s\n",ent->d_name);
-            i++;
-        }
-        n_elem = i-2;
-        closedir(dir);
-        return n_elem;
-    }
-}
+// int fileCount(const char* direc){
+//     DIR *dir;
+//     struct dirent *ent;
+//     if ((dir = opendir(direc)) !=NULL){
+//         int i=0;
+//         int n_elem;
+//         //vec(string) names;
+//         while ((ent = readdir(dir)) !=NULL){
+//             //names[i]=ent->d_name;
+//             //printf("%s\n",ent->d_name);
+//             i++;
+//         }
+//         n_elem = i-2;
+//         closedir(dir);
+//         return n_elem;
+//     }
+// }
 
 vector<string> fileNames(const char* direc){
     DIR *dir;
