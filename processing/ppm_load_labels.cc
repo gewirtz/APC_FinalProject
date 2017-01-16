@@ -6,7 +6,7 @@
 #include "reverse.h"
 
 using namespace std;
-using namespace arma;
+using namespace arma; 
 
 arma::colvec ppm_load_labels(string directory, string filename){
 

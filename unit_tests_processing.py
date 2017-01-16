@@ -22,7 +22,7 @@ class TestProcess(unittest.TestCase):
         rc, ans, err = run(inp_args)
         parsed_output = ans.split("\n")
         
-        train_data_size = extractInteger(parsed_output[0])
+        train_data_size = extractInteger(parsed_output[0]) 
         train_lbl_size = extractInteger(parsed_output[1])
         test_data_size = extractInteger(parsed_output[2])
         test_lbl_size = extractInteger(parsed_output[3])
