@@ -308,8 +308,15 @@ else statement compiles
     else if(i == 2){ 
       Histogram *p_hist;
       p_hist = process_driver_hist(train_data,tt_data,train_lbls,test_lbls);
-      p_train = p_hist->get_data_train();
-      p_test = p_hist->get_data_test();
+      vector<mat> p_train_temp = p_hist->get_data_train();
+      vector<mat> p_test_temp = p_hist->get_data_test();
+     //For histogram implementation change hist matrix to vector of row vectors 
+      for(int i=0;i<p_train_temp[0].n_rows;i++){
+        p_train[i]=p_train_temp[0].row(i);
+      }
+      for(int i=0;i<p_test_temp[0].n_rows;i++){
+        p_test[i]=p_test_temp[0].row(i);
+      }
       processed_tr_data.push_back(concatenate(p_train));
       processed_t_data.push_back(concatenate(p_test));
     }
@@ -362,6 +369,7 @@ else statement compiles
         fits.push_back(fit);
         //show gradient descent paths 
         s = "GradDesc_LogReg_";
+        cout << "About to plot" << endl;
         plot_cost(gd->getLastCost(), s.append(used_prep[j]), name);
         numClasses = logr->getLabelSet().size();
       }
