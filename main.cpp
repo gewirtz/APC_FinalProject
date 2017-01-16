@@ -3,8 +3,8 @@
 #include "processing/mnist_load_labels.h"
 #include "processing/mnist_count_images.h"
 #include "processing/mnist_count_images.h"
-//#include "processing/ppm_load_images.h"
-//#include "processing/ppm_load_labels.h"
+#include "processing/ppm_load_images.h"
+#include "processing/ppm_load_labels.h"
 //#include "processing/jpg_load_images.h"
 //#include "processing/jpg_load_labels.h"
 #include "processing/no_processing.h"
@@ -94,7 +94,7 @@ namespace{
 
 int main(int argc, char *argv[]){
 
-  string train_directory, test_directory;
+  string train_directory, test_directory, label_directory;
   string train_img, test_img;
   string train_lbl, test_lbl;
   vector<arma::mat>  tt_data, train_data;
@@ -107,20 +107,27 @@ int main(int argc, char *argv[]){
 
 
   if (argc!=7){
-    // keep this for testing
-    train_directory = "data/mnist/training/";
-    test_directory = "data/mnist/testing/";
-    train_lbl = "train-labels.idx1-ubyte";
-    train_img = "train-images.idx3-ubyte";
-    test_lbl = "t10k-labels.idx1-ubyte";
-    test_img = "t10k-images.idx3-ubyte";
+    // keep this for mnist testing
+    //train_directory = "data/mnist/training/";
+    //test_directory = "data/mnist/testing/";
+    //train_lbl = "train-labels.idx1-ubyte";
+    //train_img = "train-images.idx3-ubyte";
+    //test_lbl = "t10k-labels.idx1-ubyte";
+    //test_img = "t10k-images.idx3-ubyte";
+
+    // keep this for ppm testing
+    train_directory = "/data/cars/training_cars/";
+    test_directory = "/data/cars/testing_cars/";
+    label_directory = "/data/cars/";
+    train_lbl = "training_labels_cars";
+    test_lbl = "testing_labels_cars";
   }
-/* 
 
-TODO : ANDREAS - 
 
-I cannot seem to get it to compile with jpg or ppm included, please fix so after uncommented the
-else statement compiles
+// TODO : ANDREAS - 
+
+// I cannot seem to get it to compile with jpg or ppm included, please fix so after uncommented the
+// else statement compiles
 
   else{
 
@@ -130,30 +137,30 @@ else statement compiles
     train_img = argv[4];
     test_lbl = argv[5];
     test_img = argv[6];
-    string suffix = argv[4].find_last_of(3);
-  if(suffix == ".jpg" || argv[4].find_last_of(3) == ".jpeg"){
-      train_data = jpg_load_images(train_directory, train_img, unitflag);
-      train_lbls = jpg_load_labels(train_directory, train_lbl);
-      tt_data = jpg_load_images(test_directory, test_img, unitflag);
-      test_lbls = jpg_load_labels(test_directory, test_lbl);
+    //Insert filetype extension here
+    string suffix = ".ppm"; //argv[4].find_last_of(3);
+  // if(suffix == ".jpg" || argv[4].find_last_of(3) == ".jpeg"){
+  //     train_data = jpg_load_images(train_directory, train_img, unitflag);
+  //     train_lbls = jpg_load_labels(train_directory, train_lbl);
+  //     tt_data = jpg_load_images(test_directory, test_img, unitflag);
+  //     test_lbls = jpg_load_labels(test_directory, test_lbl);
 
-    }
-    else if( suffix == ".ppm"){
-      train_data = ppm_load_images(train_directory, train_img, unitflag);
-      train_lbls = ppm_load_labels(train_directory, train_lbl);
-      tt_data = ppm_load_images(test_directory, test_img, unitflag);
-      test_lbls = ppm_load_labels(test_directory, test_lbl);
+  //   }
+    if( suffix == ".ppm"){
+      train_data = ppm_load_images(train_directory);
+      train_lbls = ppm_load_labels(label_directory, train_lbl);
+      tt_data = ppm_load_images(test_directory);
+      test_lbls = ppm_load_labels(label_directory, test_lbl);
     }
 
-    else{*/
+    else{
       train_data = mnist_load_images(train_directory, train_img, unitflag);
       train_lbls = mnist_load_labels(train_directory, train_lbl);
       tt_data = mnist_load_images(test_directory, test_img, unitflag);
       test_lbls = mnist_load_labels(test_directory, test_lbl);
-      /*
     }
   }
-*/
+
 
 
 /* //////////////////////////////////// End-user selections ////////////////////////////////////////////////// */
