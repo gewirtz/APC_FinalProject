@@ -10,15 +10,6 @@ using namespace std;
 using namespace arma;
 using namespace cimg_library;
 
-typedef struct {
-     unsigned char red,green,blue;
-} JPGPixel;
-
-typedef struct {
-     int x, y;
-     JPGPixel *data;
-} JPGImage;
-
 arma::mat readJPG(const char *img){
 
     CImg<unsigned char> src(img);
@@ -38,7 +29,7 @@ arma::mat readJPG(const char *img){
 
 }
 
-vector<string> fileNames(const char* direc){
+vector<string> fileNamesJPG(const char* direc){
     DIR *dir;
     struct dirent *ent;
     if ((dir = opendir(direc)) !=NULL){
@@ -60,7 +51,7 @@ vector<string> fileNames(const char* direc){
 vector<arma::mat> jpg_load_images(string testing_data){
     //string testing_data = "/home/andreas/APC524/Project/data/faces/testing_faces/";
     vector<string> fnames;
-    fnames = fileNames(testing_data.c_str());
+    fnames = fileNamesJPG(testing_data.c_str());
 
     vector<arma::mat> all_images;
 
@@ -76,8 +67,3 @@ vector<arma::mat> jpg_load_images(string testing_data){
     }
     return all_images;
 }
-// int main(){
-
-
-
-// }

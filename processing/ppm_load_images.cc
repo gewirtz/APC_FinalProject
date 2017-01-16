@@ -96,13 +96,13 @@ static PPMImage *readPPM(const char *filename){
     return img;
 }
 
-bool fileExists(const string& filename){
-    struct stat buf;
-    if (stat(filename.c_str(), &buf) != -1){
-        return true;
-    }
-    return false;
-}
+// bool fileExistsPPM(const string& filename){
+//     struct stat buf;
+//     if (stat(filename.c_str(), &buf) != -1){
+//         return true;
+//     }
+//     return false;
+// }
 
 void writePPM(const char *filename, PPMImage *img)
 {
