@@ -391,7 +391,7 @@ int main(int argc, char *argv[]){
         standardize = false; //do not standardize histogram, 1 x 256 data will be identically 0
       }
 
-      cout << "Fitting " << name << endl;
+      cout << endl << "Fitting " << name << endl;
      
       if(i == 0){
         linr = new LinearRegression(processed_tr_data[j],train_lbls,gd,0.0,0.0,standardize);
