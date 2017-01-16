@@ -15,11 +15,14 @@
 #include "../ModelFitting/KNN.h"
 #include "../ModelFitting/CrossValidation.h"
 #include "../Performance/matplotlibcpp.h"
+//#include <boost/algorithm/string.hpp> //see if compules
 
 #include <cmath>
 #include <armadillo>
 #include <vector>
 #include <assert.h>
+
+//using namespace boost; //may not compile
 using namespace arma;
 using namespace std;
 namespace plt = matplotlibcpp;
@@ -84,9 +87,12 @@ int main(int argc, char *argv[]){
   string train_directory, test_directory;
   string train_img, test_img;
   string train_lbl, test_lbl;
+  vector<arma::mat>  tt_data, train_data;
+  arma::colvec train_lbls, test_lbls;
 
+  int unitflag = 0; //change to 1 to run unit testing
+  int datatype_flag = 0;  //TO DO: from passed path, read last three characters, figure out if .jpg, .ppm, or mnist
 
-  //TO DO: SYNCHRONIZE WITH IMPORT CLASS
 
   if (argc!=7){
     // keep this for testing
@@ -105,11 +111,30 @@ int main(int argc, char *argv[]){
     train_img = argv[4];
     test_lbl = argv[5];
     test_img = argv[6];
+    string suffix = argv[4].find_last_of(3);
+    if(suffix == ".jpg" || argv[4].find_last_of(3) == ".jpeg"){
+      train_data = jpg_load_images(train_directory, train_img, unitflag);
+      train_lbls = jpg_load_labels(train_directory, train_lbl);
+      tt_data = jpg_load_images(test_directory, test_img, unitflag);
+      test_lbls = jpg_load_labels(test_directory, test_lbl);
+
+    }
+    else if( suffix == ".ppm"){
+      train_data = ppm_load_images(train_directory, train_img, unitflag);
+      train_lbls = ppm_load_labels(train_directory, train_lbl);
+      tt_data = ppm_load_images(test_directory, test_img, unitflag);
+      test_lbls = ppm_load_labels(test_directory, test_lbl);
+    }
+
+    else{
+      train_data = mnist_load_images(train_directory, train_img, unitflag);
+      train_lbls = mnist_load_labels(train_directory, train_lbl);
+      tt_data = mnist_load_images(test_directory, test_img, unitflag);
+      test_lbls = mnist_load_labels(test_directory, test_lbl);
+    }
   }
 
 
-  int unitflag = 0; //change to 1 to run unit testing
-  int datatype_flag = 0;  //TO DO: from passed path, read last three characters, figure out if .jpg, .ppm, or mnist
 
 
 
