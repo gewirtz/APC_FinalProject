@@ -11,7 +11,7 @@ class GradientDescent;
 class GradientModel : public Model {
  public:
   virtual ~GradientModel() {}
-  virtual arma::vec predict(std::vector<arma::mat> input) = 0;
+  virtual arma::vec predict(arma::mat input) = 0;
 
   //computes gradient using the examples lower to upper
   virtual std::vector<arma::vec> gradient(int lower,int upper) = 0; 
@@ -21,7 +21,8 @@ class GradientModel : public Model {
   virtual arma::mat getTrainset() = 0;
   virtual arma::vec getLabels() = 0;
   virtual double cost(int lower, int upper, int k) = 0;
-
+  virtual std::set<int> getLabelSet() = 0;
+ 
  private:
   std::vector<arma::mat> params; 
   int num_examples;

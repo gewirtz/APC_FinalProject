@@ -12,23 +12,33 @@ using namespace std;
 using namespace arma;
 
 
-LogisticRegression::LogisticRegression(vector<arma::mat> train, arma::colvec labels, Optimizer *optim, bool normalize){
-  this->num_rows = train[0].n_rows;
-  this->num_cols = train[0].n_cols;
+LogisticRegression::LogisticRegression(arma::mat train, arma::colvec labels, Optimizer *optim, bool normalize){
+  this->initial_regressors = train.n_cols;
   this->normalize = normalize;
   this->trained = false;
+
+  //mat tempmat;
+  //tempmat = this->x.rows(0,10000);
+  //this->x = tempmat;
+  //vec tempvec;
+  //tempvec = this->y.subvec(0,10000);
+  //this->y = tempvec; 
+  if(normalize){ //set cols to mean 0 stdev 1
+    train = standardize(train);
+    if(train.n_cols == 0){
+      cerr << "Cannot have all constant regressors" << endl;
+      exit(1); 
+    }
+  }
+
+  vec u;
+  u = u.ones(train.n_rows);
+  train = join_rows(u,train);
   srand(524); //shuffle the elements
-  this->x = shuffle(concatenate(train));  //rows contain the ith example, columns contain all instances of a feature
+  this->x = shuffle(train);  //rows contain the ith example, columns contain all instances of a feature
   srand(524); //preserve same shuffling
   this->y = shuffle(labels); //y_i = label of ith training example
   this->optim = optim;
-
-  mat tempmat;
-  tempmat = this->x.rows(0,10000);
-  this->x = tempmat;
-  vec tempvec;
-  tempvec = this->y.subvec(0,10000);
-  this->y = tempvec;
 
   this->num_examples = x.n_rows;
   if(num_examples <= 0){
@@ -40,7 +50,8 @@ LogisticRegression::LogisticRegression(vector<arma::mat> train, arma::colvec lab
   for(int i = 0; i < y.size(); i++){
     this->label_set.insert(y(i));
   }
-  
+
+  set_ovr_labels();
   vector<vec> temp; 
   vec v;
   for(int i = 0; i < label_set.size();i++){
@@ -50,10 +61,8 @@ LogisticRegression::LogisticRegression(vector<arma::mat> train, arma::colvec lab
 
 
   cout << "fitting params " << endl;
-  set_ovr_labels();
   fit();  //fit beta  
-  this->trained = true;
-}  
+} 
 
 LogisticRegression::~LogisticRegression() {}
 
@@ -74,8 +83,17 @@ void LogisticRegression::set_ovr_labels(){ //memoization
   }
 }
 
-vec LogisticRegression::predict(vector<arma::mat> input){
-  mat test = concatenate(input);
+vec LogisticRegression::predict(arma::mat test){
+  if(test.n_cols != this->initial_regressors){
+    cout << "Error: train and test must have same number of regressors" << endl;;
+    exit(1);
+  }
+  if(normalize){ //set cols to mean 0 stdev 1
+    test = standardize(test);
+  }
+  vec u;
+  test = join_rows(u.ones(test.n_rows),test);
+
   vec labels(test.n_rows);
   int fitted_val = -1;
   vector<double> label_likelihood(label_set.size());
@@ -99,44 +117,8 @@ vec LogisticRegression::predict(vector<arma::mat> input){
   return(labels);
 }
 
-
-
-/*
-//MAP (maximum aposteriori) fit
-vec LogisticRegression::predict(vector<arma::mat> input){
-  mat test = concatenate(input);
-  vec labels(test.n_rows);
-  int fitted_val;
-  double max_prob;
-  double temp;
-  double sum;
-  vec fits; //coefficient fits for each class k, given by theta_{k}*x_i
-
-  for(int i = 0; i < test.n_rows;i++){
-    fits = fits.zeros(label_set.size());
-    max_prob = 0.0;
-    sum = 0.0;
-    for(int k = 0; k < label_set.size(); k++){
-      //fits.at(k) = (test.row(i) *  params.at(k));  //compute denominator of logistic function
-      vec v = test.row(i) *  params.at(k);
-      fits.at(k) = v[0];
-      sum += fits.at(k);
-    }
-    sum = 1.0 + exp(-sum); //logistic function
-    for(int k = 0; k < label_set.size() - 1; k++){
-      temp = exp(-fits.at(k))/sum;
-      if(temp > max_prob){
-        max_prob = temp; //choose the greatest
-        fitted_val = k; 
-      }
-    }
-    labels[i] = fitted_val; 
-  }
-  return(labels);
-}
-*/
-
 vector<vec> LogisticRegression::gradient(int lower, int upper){ //one v rest fit
+   //cout << "Gradient" << endl;
   if(lower < 0 || lower >= upper || upper > num_examples){
     cerr << "Lower and upper limits " << lower << " and " << upper << " invalid" << endl;
     cerr << "Need val between 0 and " << num_examples << endl;
@@ -151,7 +133,15 @@ vector<vec> LogisticRegression::gradient(int lower, int upper){ //one v rest fit
     probs = 1.0/(1.0+exp(-x*params[k])); 
     
     for(int i = 0; i < x.n_cols; i++){ //i=1...nparams
+      //cout << i << endl;
       for(int j = lower; j < upper; j++){ // j=1...examples
+        /*cout << j << endl;
+        cout << "ovr" << endl;
+        cout << ovr_labels[k][j] << endl;
+        cout << "probs" << endl;
+        cout << probs(j) << endl; 
+        cout<<"x" << endl;
+        cout << x(j,i) << endl;*/
         grad(i) += (ovr_labels[k][j] - probs(j)) * x(j,i);
       }
     }
@@ -190,40 +180,18 @@ mat LogisticRegression::getTrainset(){
   return(x);
 }
 
-mat LogisticRegression::concatenate(vector<arma::mat> input){
-  int ex_count = input.size();
-  mat data = mat(ex_count,num_rows * num_cols + 1); //includes constant column
-  for(int i=0; i<ex_count; i++){
-    if(input[i].n_rows!=num_rows || input[i].n_cols!=num_cols ){
-      cerr << "Need all input data to have same dimensions\n" << endl;
-      exit(-1);
-    }
-
-
-    data(i,0) = 1.0; //regress on constant
-  
-    for(int j=0;j<num_rows;j++){
-      for(int k=0;k<num_cols ; k++){
-          data(i,j*num_cols+k+1)=input[i](j,k);
-      }
-    }
-  }
-  if(normalize){
-    return(standardize(data));
-  }
-  return(data);
-}
 
 mat LogisticRegression::standardize(mat data){
   if(!this->trained){
+    cout << "Training standardization " << endl;
+    this->trained = true; //memoize results so as to not run in predict
     this->tr_means = mean(data,0);
     this->tr_stdev = stddev(data,0,0);
     this->remove = vector<bool>(data.n_cols);
-    remove[0] = false;
-    int count = 1;
-    for(int j = 1; j < data.n_cols; j++){
-      if(tr_stdev[j]> 0.001){
-          remove[j] = false;
+    int count = 0;
+    for(int j = 0; j < data.n_cols; j++){
+      if(tr_stdev[j]> 0.001){ 
+          remove[j] = false; //remove constant rows
           count += 1;
         }
         else{ //prevent nans
@@ -233,13 +201,14 @@ mat LogisticRegression::standardize(mat data){
     this->num_regressors = count;
   }
 
+  //standardization
+
   mat new_data(data.n_rows, this->num_regressors);
   int pos;
   int j;
   for(int i = 0; i < new_data.n_rows;i++){
-    new_data(i,0) = 1.0;
-    pos = 1;
-    j = 1;
+    pos = 0;
+    j = 0;
     while(j < new_data.n_cols){
       if(remove[pos]){
         pos += 1;
@@ -254,12 +223,17 @@ mat LogisticRegression::standardize(mat data){
   return(new_data);
 }
 
+
 vec LogisticRegression::getLabels(){
   return(y);
 }
 
 void LogisticRegression::fit(){
   optim->fitParams(this);
+}
+
+set<int> LogisticRegression::getLabelSet(){
+  return(label_set);
 }
 
 

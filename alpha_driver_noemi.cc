@@ -9,55 +9,21 @@
 #include "processing/histogram.h"
 #include "processing/histogram_test.h"
 #include "processing/data_process_base.h"
-//#include "ModelFitting/GradientDescent.h"
-//#include "ModelFitting/LinearRegression.h"
+#include "ModelFitting/GradientDescent.h"
+#include "ModelFitting/LinearRegression.h"
 #include "ModelFitting/Performance.h"
-#//include "ModelFitting/LogisticRegression.h"
-#include "ModelFitting/CrossValidation.h"
-#include "ModelFitting/KNN.h"
+#include "ModelFitting/LogisticRegression.h"
+#include "Performance/plot_cost.cpp"
+#include "Performance/matplotlibcpp.h"
 #include <armadillo>
 #include <vector>
 #include <assert.h>
 using namespace arma;
 using namespace std;
 
-
-namespace{
-
-  mat concatenate(vector<arma::mat> input){
-    int ex_count = input.size();
-    if(ex_count == 0){
-      cerr << "Call concatenate on non-empty data " << endl;
-      exit(1);
-    }
-    int num_rows = input[0].n_rows;
-    int num_cols = input[0].n_cols;
-    mat data = mat(ex_count,num_rows * num_cols); 
-
-    //fill data, rows are examples cols are pixels
-    for(int i=0; i<ex_count; i++){
-      if(input[i].n_rows!=num_rows || input[i].n_cols!=num_cols ){
-        cerr << "Need all input data to have same dimensions\n" << endl;
-        exit(-1);
-      }
-      for(int j=0;j<num_rows;j++){
-        for(int k=0;k<num_cols ; k++){
-            data(i,j*num_cols+k)=input[i](j,k);
-        }
-      }
-    }
-    return(data);
-  };
-}
-
 int main(int argc, char *argv[]){
   /*
-  vector<arma::mat> v;
-  arma::mat A = randu<mat>(4,5);
-  v.push_back(A);
-  cout << A << endl;
-  cout << concatenate(v) << endl;
-
+  mat A = randu<mat>(4,5);
   vec v = randu<vec>(4);
   srand(1);
   mat B = shuffle(A);
@@ -155,7 +121,6 @@ int main(int argc, char *argv[]){
     
   }
   else if (process_flag == 1){ // gaussian
-    cout << "Gaussian smoothing" << endl;
     p_gs=process_driver_gs(train_data,tt_data,train_lbls,test_lbls);
 
     tr_lbls = p_gs->get_labels_train();
@@ -190,30 +155,15 @@ int main(int argc, char *argv[]){
 
   // step 3: Model the data
   //cout << "step 3\n" << endl;
-  //GradientDescent *gd = new GradientDescent(100, .001, 10e-4, 0);
+  GradientDescent *gd = new GradientDescent(100, .001, 10e-4, 0);
   //LinearRegression *fit = new LinearRegression(tr_data, tr_lbls, gd);
   
-  mat c_train = concatenate(tr_data);
-  mat c_test = concatenate(t_data);
-  CrossValidation *cv = new CrossValidation(1.0,21,4,10);
-  KNN *fit = new KNN(c_train, tr_lbls, cv);
+  LogisticRegression *fit = new LogisticRegression(tr_data, tr_lbls, gd);
 
 
-  arma::vec pred_lbls = fit->predict(c_test);
+  cout <<"predicting step\n" << endl;
+  arma::vec pred_lbls = fit->predict(t_data);
   
-
-  double correc = 0.0;
-  for(int i = 0; i < pred_lbls.size(); i++){
-    if(pred_lbls(i) == test_lbls[i]){
-      correc += 1.0;
-    }
-  }
-  double stat3 = (correc / pred_lbls.n_elem)*100;
-
-  cout << "KNN Percent Correct: " << endl;
-  cout << stat3 << endl;
-/*
-
   //determines accuracy
   int numClasses = fit->getLabelSet().size();
 
@@ -225,7 +175,7 @@ int main(int argc, char *argv[]){
   countByClass = countByClass.zeros(numClasses);
   bool correct;
 
-  for(int i = 0; i < numClasses; i++){
+  for(int i = 0; i < pred_lbls.size(); i++){
     correct = false;
     countByClass[test_lbls(i)] += 1.0;
     
@@ -251,15 +201,15 @@ int main(int argc, char *argv[]){
   //accuracy by class
 
   for(int i = 0; i < fit->getLabelSet().size(); i++){
-    cout << "For label "<< i << ", the class testing accuracy is " << class_acc[i] << endl;
-    cout << "For label " << i << ", the test frequency of type 1 error is " << type1_freq[i] << endl;
-    cout << "For label " << i << ", the test frequency of type 2 error is " << type2_freq[i] << endl;
+    cout << "For label "<< i << ", the class accuracy is " << class_acc[i] << endl;
+    cout << "For label " << i << ", the frequency of type 1 error is " << type1_freq[i] << endl;
+    cout << "For label " << i << ", the frequency of type 2 error is " << type2_freq[i] << endl;
     cout << endl;
   }
   cout << endl;
   cout << endl;
   cout << "The overall testing accuracy is " <<  total_acc << endl;
-*/
+
   //TYPE 1 errors
 
   //Type 2 errors
@@ -278,7 +228,10 @@ int main(int argc, char *argv[]){
   //cout << "Gradient Differences " << endl;
   //cout << fit->get_exactParams() - fit->get_Params()[0] << endl;
 
-  //vector<vector<double>> costs = gd->getLastCost();
+  vector<vector<double>> *costs = gd->getLastCost();
+  const std::string *outfile="Cost_Func.png";
+  const int *skip = 5; 
+  plot_cost(costs, skip, outfile);
 
   /*TO DO: NOEMI+ANDREAS
   Hi, so i want to make the plot i sent to you on fb 
@@ -296,7 +249,7 @@ int main(int argc, char *argv[]){
   preferrably have the line graphs for =0,1,...,costs.size()-1 all on the same graph 
   but getting one per file is fine if not
 
-  have the system output it and save it to a .png 
+  have the system output it and save it to a .png :
 
   i dont know anything about plotting in c++, you guys are much more
   experienced with it i would assume.

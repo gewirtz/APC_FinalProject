@@ -14,10 +14,10 @@ class Optimizer;
 
 class LogisticRegression : public GradientModel  {
  public:
-  LogisticRegression(std::vector<arma::mat> train, arma::colvec labels, Optimizer *optim, bool normalize = true); 
+  LogisticRegression(arma::mat train, arma::colvec labels, Optimizer *optim, bool normalize = true); 
   ~LogisticRegression();
 
-  arma::vec predict(std::vector<arma::mat> input); 
+  arma::vec predict(arma::mat test); 
 
   //gradient computed using examples lower to upper
   std::vector<arma::vec> gradient(int lower, int upper); 
@@ -28,10 +28,9 @@ class LogisticRegression : public GradientModel  {
   arma::vec getLabels();
   int get_num_examples();
   double cost(int lower, int upper, int k); //cost of fitting examples lower to upper
-
+  std::set<int> getLabelSet();
 
  private:
-  arma::mat concatenate(std::vector<arma::mat> input);
   arma::mat standardize(arma::mat data);
  
   void fit();   //trains the model (ie updates \beta) for given data x,y 
@@ -49,9 +48,8 @@ class LogisticRegression : public GradientModel  {
   arma::rowvec tr_means;
   arma::rowvec tr_stdev;
   std::vector<bool> remove; 
-  int num_rows;
-  int num_cols;
   int num_regressors;
+  int initial_regressors;
 
  };
 

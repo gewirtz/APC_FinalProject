@@ -1,7 +1,8 @@
 #include "CrossValidation.h"
 #include <math.h>
 #include "KNN.h"
-#include <armadillo>
+#include "GradientModel.h"
+
 
 using namespace std;
 using namespace arma;
@@ -20,18 +21,20 @@ CrossValidation::CrossValidation(double range_start, double range_end, double de
 CrossValidation::~CrossValidation(){}
 
 void CrossValidation::fitParams(Model *m){}
-
+void CrossValidation::fitParams(GradientModel *m){}
 
 mat CrossValidation::calculate_dists(mat train){
 	mat dists(train.n_rows,train.n_rows);
 	double val;
+	rowvec rw, rw2;
   	for(int i=0;i<train.n_rows;i++){
-
   		if(i%1000 == 0){
   			cout << "calculating distance for example " << i << " of " << train.n_rows -1 << endl;
   		}
+  		rw = train.row(i);
     	for(int j=0;j<i;j++){
-    		val = norm(train.row(i)-train.row(j),2);
+    		rw2 = train.row(j);
+    		val = norm(rw-rw2,2);
       		dists(i,j) = val;
       		dists(j,i) = val;
     	}
@@ -88,14 +91,14 @@ void CrossValidation::fitParams(KNN *m){
 			test_start_row = j*items_per_fold;
 			test_set = train.rows(test_start_row,test_end_row);
 			test_label_set = labels.subvec(test_start_row,test_end_row);
-			dists_to_pass = dists.rows(test_start_row,test_end_row);
+			dists_to_pass = dists.cols(test_start_row,test_end_row);
+			
 			//now potentially join two submatrices to get the train_set
 			if(need_to_join==1){
-				cout <<"about to join things" << endl;
-				train1_start = (j-1)*items_per_fold;
+				train1_start = 0;
 				train1_end = test_start_row -1;
 				train2_start = test_end_row+1;
-				train2_end = (j+1)*items_per_fold;
+				train2_end = num_train-1;
 				train_p1 = train.rows(train1_start,train1_end);
 				train_p2 = train.rows(train2_start, train2_end);
 				train_label_p1 = labels.subvec(train1_start,train1_end);
@@ -110,34 +113,38 @@ void CrossValidation::fitParams(KNN *m){
 						train_label_set(p) = train_label_p2(p-train_label_p1.n_elem);
 					}
 				}
-				dists_to_pass_p1 = dists.cols(train1_start,train1_end);
-				dists_to_pass_p2 = dists.cols(train2_start,train2_end);
-				dists_to_pass = join_rows(dists_to_pass_p1,dists_to_pass_p2);
+
+				dists_to_pass_p1 = dists_to_pass.rows(train1_start,train1_end);
+				dists_to_pass_p2 = dists_to_pass.rows(train2_start,train2_end);
+				dists_to_pass = join_cols(dists_to_pass_p1,dists_to_pass_p2);
 			}
 			else{
 				if(j==0){
 					train_set = train.rows(test_end_row+1,num_train-1);
 					train_label_set = labels.subvec(test_end_row+1,num_train-1);
-					dists_to_pass_p1 = dists_to_pass.cols(test_end_row+1,num_train-1);
+					dists_to_pass_p1 = dists_to_pass.rows(test_end_row+1,num_train-1);
 					dists_to_pass = dists_to_pass_p1;
 				}
 				else{
 					train_set = train.rows(0,test_start_row-1);
 					train_label_set = labels.subvec(0,test_start_row-1);
-					dists_to_pass_p1 = dists_to_pass.cols(0,test_start_row-1);
+					dists_to_pass_p1 = dists_to_pass.rows(0,test_start_row-1);
 					dists_to_pass = dists_to_pass_p1;
 				}
 			}
 			label_results = m->predict_on_subset(test_set,train_set,cur_param,train_label_set,dists_to_pass);
 			//now find how many results were wrong (label_comparison element==0) and add to param_error
 			label_comparison = test_label_set==label_results;
-			param_error += accu(label_comparison);
+			param_error += test_label_set.n_elem - accu(label_comparison);
 
 		}
 		overall_errors(i) = param_error;
 	}
 	//find which parameter had the smallest error (number of wrong results)
 	int best_index = overall_errors.index_min();
+	for(int e=0;e<overall_errors.n_elem;e++){
+		cout << "The overall error for k=" << param_range_start+(e*(int)delta) << " is " << overall_errors(e) << endl;
+	}
 	vec param(1);
 	param(0) = param_range_start+(best_index*(int)delta);
 	m->set_Params(0,param);

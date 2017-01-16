@@ -130,6 +130,7 @@ int Gaussian_smoothing :: process(){
 	  currImg(i-bord,j-bord)=a0*conv_h0[j-bord]+a1*conv_h1[j-bord]+a2*conv_h2[j-bord]+a3*conv_h3[j-bord]+a4*conv_h4[j-bord];
       }
   }
+      use_data[k]=currImg;
   }
   if(flag==0){
       data_train=use_data;

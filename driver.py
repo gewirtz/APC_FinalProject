@@ -7,7 +7,6 @@ import simplejson
 
 home_path=os.getcwd()
 config_file = '%s/config/config.json' % home_path
-print config_file
 
 #Read the metadata
 metadata = simplejson.load(open(config_file))
@@ -20,16 +19,11 @@ train_lbl = metadata["files"]["train_lbl"]
 train_img = metadata["files"]["train_img"]
 test_lbl = metadata["files"]["test_lbl"]
 test_img = metadata["files"]["test_img"]
+t_unit = metadata["test_unit"]
 
-
-for i in range(len(preprocessing)):
-	preprocess_met = preprocessing[i]
-	model_fit_met = model_fitting[i]
-        cmd = './alpha_drive %s %s %s %s %s %s %s %s' % (train_dir, test_dir, train_lbl, train_img, test_lbl, test_img, preprocess_met, model_fit_met)
-	print cmd
-	#os.system(cmd)
+cmd = './alpha_driver "%s" "%s" "%s" "%s" "%s" "%s" %i %i %i' % (train_dir, test_dir, train_lbl, train_img, test_lbl, test_img, t_unit, preprocessing[0], model_fitting[0])
+print cmd
+os.system(cmd)
 
 
 
-# Graphical Pos-Processing
-# to be implemented
