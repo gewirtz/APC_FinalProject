@@ -1,24 +1,27 @@
 #include <stdio.h>
-#include "../processing/mnist_load_images.h"
-#include "../processing/mnist_load_labels.h"
-#include "../processing/mnist_count_images.h"
-#include "../processing/mnist_count_images.h"
-#include "../processing/ppm_load_images.h"
-#include "../processing/ppm_load_labels.h"
-#include "../processing/jpg_load_images.h"
-#include "../processing/jpg_load_labels.h"
-#include "../processing/no_processing.h"
-#include "../processing/no_processing_test.h"
-#include "../processing/gaussian_smoothing.h"
-#include "../processing/gs_processing_test.h"
-#include "../processing/data_process_base.h"
-#include "../ModelFitting/GradientDescent.h"
-#include "../ModelFitting/LinearRegression.h"
-#include "../ModelFitting/Performance.h"
-#include "../ModelFitting/LogisticRegression.h"
-#include "../ModelFitting/KNN.h"
-#include "../ModelFitting/CrossValidation.h"
-#include "../Performance/matplotlibcpp.h"
+#include "processing/mnist_load_images.h"
+#include "processing/mnist_load_labels.h"
+#include "processing/mnist_count_images.h"
+#include "processing/mnist_count_images.h"
+#include "processing/ppm_load_images.h"
+#include "processing/ppm_load_labels.h"
+#include "processing/jpg_load_images.h"
+#include "processing/jpg_load_labels.h"
+#include "processing/no_processing.h"
+#include "processing/no_processing_test.h"
+#include "processing/gaussian_smoothing.h"
+#include "processing/gs_processing_test.h"
+#include "processing/histogram.h"
+#include "processing/histogram_test.h"
+
+#include "processing/data_process_base.h"
+#include "ModelFitting/GradientDescent.h"
+#include "ModelFitting/LinearRegression.h"
+#include "ModelFitting/Performance.h"
+#include "ModelFitting/LogisticRegression.h"
+#include "ModelFitting/KNN.h"
+#include "ModelFitting/CrossValidation.h"
+#include "Performance/matplotlibcpp.h"
 //#include <boost/algorithm/string.hpp> //see if compules
 
 #include <cmath>
@@ -101,7 +104,14 @@ int main(int argc, char *argv[]){
   int datatype_flag = 0;  //TO DO: from passed path, read last three characters, figure out if .jpg, .ppm, or mnist
 
 
-  if (argc!=7){
+  /* ////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+  //TODO : ANDREAS - I cannot seem to get it to compile with ppm or jpg included, please fix this
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+/*
+
+  //if (argc!=7){
     // keep this for testing
     train_directory = "data/mnist/training/";
     test_directory = "data/mnist/testing/";
@@ -109,7 +119,7 @@ int main(int argc, char *argv[]){
     train_img = "train-images.idx3-ubyte";
     test_lbl = "t10k-labels.idx1-ubyte";
     test_img = "t10k-images.idx3-ubyte";
-  }
+  /*}
   else{
 
     train_directory = argv[1];
@@ -140,7 +150,7 @@ int main(int argc, char *argv[]){
       test_lbls = mnist_load_labels(test_directory, test_lbl);
     }
   }
-
+*/
 /* //////////////////////////////////// End-user selections ////////////////////////////////////////////////// */
   vector<int> process_flag = vector<int>(3);
   vector<string> process_names = vector<string>(3);

@@ -17,27 +17,32 @@ LogisticRegression::LogisticRegression(arma::mat train, arma::colvec labels, Opt
   this->normalize = normalize;
   this->trained = false;
 
-  //mat tempmat;
-  //tempmat = this->x.rows(0,10000);
-  //this->x = tempmat;
-  //vec tempvec;
-  //tempvec = this->y.subvec(0,10000);
-  //this->y = tempvec; 
-  if(normalize){ //set cols to mean 0 stdev 1
-    train = standardize(train);
-    if(train.n_cols == 0){
-      cerr << "Cannot have all constant regressors" << endl;
-      exit(1); 
-    }
-  }
 
-  vec u;
-  u = u.ones(train.n_rows);
-  train = join_rows(u,train);
   srand(524); //shuffle the elements
   this->x = shuffle(train);  //rows contain the ith example, columns contain all instances of a feature
   srand(524); //preserve same shuffling
   this->y = shuffle(labels); //y_i = label of ith training example
+  
+  //reduce number of inputs
+  mat tempmat;
+  tempmat = this->x.rows(0,5000);
+  this->x = tempmat;
+  vec tempvec;
+  tempvec = this->y.subvec(0,5000);
+  this->y = tempvec; 
+
+  if(normalize){ //set cols to mean 0 stdev 1
+    this->x = standardize(this->x);
+    if(this->x.n_cols == 0){
+      cerr << "Cannot have all constant regressors" << endl;
+      exit(1); 
+    }
+  }
+  vec u;
+  u = u.ones(this->x.n_rows);
+  this->x = join_rows(u,this->x);
+
+
   this->optim = optim;
 
   this->num_examples = x.n_rows;
@@ -168,12 +173,12 @@ int LogisticRegression::get_num_examples(){
 }
 
 double LogisticRegression::cost(int lower, int upper, int k){
-  vec resid = this->y - 1.0/(1.0+exp(-x*params[k]));
-  double cost = 0.0;
+  vec hypothesis = 1.0/(1.0+exp(-x*params[k]));
+  double cost =  0.0; 
   for(int i = lower; i < upper; i++){
-    cost += pow(resid[i],2);
+    cost += -y[i] * log(hypotehsis[i]) - (1-y[i]) * log(hypothesis[i]);
   }
-  return(1.0/(2*(upper - lower)) * cost);
+  return(1.0/((upper - lower)) * cost);
 }
 
 mat LogisticRegression::getTrainset(){

@@ -12,13 +12,7 @@ KNN::KNN(arma::mat train, arma::colvec labels, Optimizer *optim, bool normalize)
   this->initial_regressors = train.n_cols;
   this->normalize = normalize;
   this->trained = false;
-  if(normalize){ //set cols to mean 0 stdev 1
-    train = standardize(train);
-    if(train.n_cols == 0){
-      cerr << "Cannot have all constant regressors" << endl;
-      exit(1); 
-    }
-  }
+
 
   srand(1); //shuffle the elements
   this->x = shuffle(train);  //rows contain the ith example, columns contain all instances of a feature
@@ -34,6 +28,13 @@ KNN::KNN(arma::mat train, arma::colvec labels, Optimizer *optim, bool normalize)
   tempvec = this->y.subvec(0,5000);
   this->y = tempvec;
   this->num_examples = this->x.n_rows;
+  if(normalize){ //set cols to mean 0 stdev 1
+    this->x = standardize(this->x);
+    if(this->x.n_cols == 0){
+      cerr << "Cannot have all constant regressors" << endl;
+      exit(1); 
+    }
+  }
   if(num_examples <= 0){
     cerr << "Need an input\n" << endl;
     exit(-1);
@@ -62,19 +63,19 @@ arma::vec KNN::predict(mat testset){
     cout << "Error: train and test must have same number of features" << endl;;
     exit(1);
   }
+  testset = testset.rows(0,3000);
   if(normalize){ //set cols to mean 0 stdev 1
     mat temp = standardize(testset);
     testset = temp;
   }
-  mat temp = testset.rows(0,4000);
-  testset = temp;
+
   int k_to_use = params[0](0);
   //create the distance matrix
   mat dists(x.n_rows,testset.n_rows);
   rowvec rw, rw2;
   for(int i=0;i<x.n_rows;i++){
     if(i%1000==0){
-      cout << "calculating distance for example " << i << " of " << testset.n_rows -1 << endl;
+      cout << "calculating distance for example " << i << " of " << x.n_rows -1 << endl;
     }
     rw = x.row(i);
     for(int j=0;j<testset.n_rows;j++){
