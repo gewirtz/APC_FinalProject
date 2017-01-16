@@ -119,7 +119,7 @@ Functions: Constructor: takes in param_range_start, param_range_end, delta, and 
 
 #7 Unit Testing
 
-The unit testing was designed to be run with alpha\_driver which is the "developer oriented" version of the main driver. The main driver is more user friendly - oriented to those who do not need an "under the hood" look.  The structure of the final routine was changed from alpha driver such that the unit testing procedure in python will not work.  Further work would be to adapt the Python script to allow for the current C++ main structure.
+The unit testing was designed to be run with alpha\_driver which is the "developer oriented" version of the main driver. The main driver is more user friendly - oriented to those who do not need an "under the hood" look.  The structure of the final routine was changed from alpha driver such that the unit testing procedure in python will not work at the moment.  Further work would be to adapt the Python script to allow for the current C++ main structure.
 
 
 
