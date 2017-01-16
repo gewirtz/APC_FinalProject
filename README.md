@@ -117,6 +117,10 @@ Functions: Constructor: takes in param_range_start, param_range_end, delta, and 
 			the best value for the hyperparameter in question. For KNN, it calls the function calculate_dists. fitParams then calls a setter from the model to store the best hyperparameter as a member variable for the specific model.
 			calculate_dists: takes in a matrix of training data and returns a matrix of distances from each example to every other example. This is specifically used for KNN.
 
+#7 Unit Testing
+
+The unit testing was designed to be run with alpha\_driver which is the "developer oriented" version of the main driver. The main driver is more user friendly - oriented to those who do not need an "under the hood" look.  The structure of the final routine was changed from alpha driver such that the unit testing procedure in python will not work.  Further work would be to adapt the Python script to allow for the current C++ main structure.
+
 
 
 
