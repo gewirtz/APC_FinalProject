@@ -5,5 +5,5 @@
 #include <string> 
 
 arma::colvec ppm_load_labels(std::string directory, std::string filename);
-
+//int ppm_load_labels(std::string directory, std::string filename);
 #endif
