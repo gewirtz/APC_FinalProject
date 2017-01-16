@@ -17,11 +17,11 @@ vim config/config.json
 # 3. Execute
  There is two ways you can execute the file. The first is through a python driver, which will read input data directories from confi.json:
  
-python ./driver.py
+	python ./driver.py
 
 Alternatively, you can execute and pass input file folders by hand using:
 
-./main train_dir test_dir train_lbl train_img test_lbl test_img
+	./main train_dir test_dir train_lbl train_img test_lbl test_img
 
 # 4. Model Options
 The user will be able to set additional configurations parameters through i/o communication with the user via terminal:
