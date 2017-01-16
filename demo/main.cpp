@@ -292,26 +292,21 @@ int main(int argc, char *argv[]){
   vector<vec> fits;
   vector<string> fit_names;
   vector fit;
-
-  vec v;
-  v = fit_knn0->predict(c_tt_data);
-  fits.push_back(v);
-  v = fit_knn1->predict(c_t_data_gauss);
-  fits.push_back(v);
-  v = fit_lr0->predict(c_tt_data);
-  fits.push_back(v);
-  v = fit_lr1->predict(c_t_data_gauss);
-  fits.push_back(v); 
-
-
-
+  string name;
 
   for(int i = 0; i < model_flag.size();i++){
       if(model_flag[i] == 1){
         continue;
       }
    for(int j = 0; j < processed_tr_data.size(); j++){
-      cout << "Fitting " << model_names[i] << " to " << used_prep[j] << endl;
+      name = model_names[i];
+      name = name.append(" on ");
+      name = name.append(used_prep[j]);
+      name = name.append(" data");
+      fit_names.push_back(name);
+
+      cout << "Fitting " << name << endl;
+     
       if(i == 0){
         LinearRegression *linr = new LinearRegression(p_train[j],tr_labels,gd);
         fit = linr->predict(processed_t_data[j]);
@@ -336,60 +331,73 @@ int main(int argc, char *argv[]){
     }
   }  
 
-/* 
+/* ///////////////////////////////////////// Diagnostics /////////////////////////////////////////////////////// */
+
+  int numClasses = linr->getLabelSet().size();
+  vec pred_lbls;
+
+  double num_correct;
+  vec type1, type2, accByClass, countByClass;
+  double max_acc = -1.0;
+  string champ = "";
+
+  for(int i = 0; i < fits.size();i++){
+    pred_lbls = fits[i];
+    name = fit_names[i];
+
+    num_correct = 0.0;
+    type1 = type1.zeros(numClasses); //saying it is class i but it isnt ie s
+    type2 = type2.zeros(numClasses);  //predicting it is not class i but it is 
+    accByClass = accByClass.zeros(numClasses);
+    countByClass = countByClass.zeros(numClasses);
+    bool correct;
+
+    for(int i = 0; i < pred_lbls.size(); i++){
+      correct = false;
+      countByClass[test_lbls(i)] += 1.0;
+      
+      if(pred_lbls(i) == test_lbls[i]){
+        num_correct += 1.0;
+        correct = true;
+      }
+
+      if(correct){
+        accByClass[test_lbls(i)] += 1.0;
+      }
+      else{
+        type2[test_lbls(i)] += 1.0;
+        type1[pred_lbls(i)] += 1.0;
+      }
+    }
 
 
-  model_names[0] = "linear regression"; 
-  model_names[1] =  "regularized linear regression";
-  model_names[2] = "logistic regression"; 
-  model_names[3] =  "regularized logistic regression";
-  model_names[4] = "k-nearest neighbors"; 
+    double total_acc = num_correct / pred_lbls.size();
+    vec type1_freq = type1 / (pred_lbls.size() - countByClass);
+    vec class_acc = accByClass / countByClass; 
+    vec type2_freq = type2/countByClass;   
+    //accuracy by class
 
-  */
+    cout << endl << "Results for " << name << ": " << endl;
+    cout << endl; 
+    for(int i = 0; i < numClasses; i++){
+      cout << "For label "<< i << ", the class testing accuracy is " << class_acc[i] << endl;
+      cout << "For label " << i << ", the test frequency of type 1 error is " << type1_freq[i] << endl;
+      cout << "For label " << i << ", the test frequency of type 2 error is " << type2_freq[i] << endl<<endl;
+    }
+    cout << endl<< endl;
+    cout << "The overall testing accuracy for " << name << " is " <<  total_acc << endl;
+    if(total_acc > max_acc){
+      max_acc = total_acc;
+      champ = name;
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  }
+  cout << endl << endl;
+  cout << "We recommend proceeding with " << champ << endl<< endl; 
 
 
 
-
-  delete cv;
-  delete gd;
-  delete linr;
-  delete logr;
-  delete knn;
-
-
-
-
-
-  cout <<"predicting step\n" << endl;
-  vector<vec> fits;
-  vec v;
-  v = fit_knn0->predict(c_tt_data);
-  fits.push_back(v);
-  v = fit_knn1->predict(c_t_data_gauss);
-  fits.push_back(v);
-  v = fit_lr0->predict(c_tt_data);
-  fits.push_back(v);
-  v = fit_lr1->predict(c_t_data_gauss);
-  fits.push_back(v); 
-  //determines accuracy
+  /*//////////////////////////////// determines accuracy ////////////////////// */
 
   int numClasses = fit_knn0->getLabelSet().size();
   vec pred_lbls;
@@ -464,4 +472,10 @@ int main(int argc, char *argv[]){
   }
   cout << endl << endl;
   cout << "We recommend proceeding with " << champ << endl<< endl; 
+  delete cv;
+  delete gd;
+  delete linr;
+  delete logr;
+  delete knn;
+  return(0);
 }
