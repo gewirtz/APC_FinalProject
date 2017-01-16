@@ -77,15 +77,15 @@ void GradientDescent::batchGradientDescent(GradientModel *m){
 	double thresh = .1;
 
 	for(int i = 0; i < iterations; i++){
-		/*if(i > iterations/3.0 || i > 100){
+		if(i > 100){
 			thresh = 10e-3;
 		}
-		if(i > iterations/2.0 || i > 500){
+		if(i > 500){
 			thresh = 10e-5;
 		}
-		if(i > 3.0*iterations/4.0 || i > 1000){
+		if(i > 1000){
 			thresh = 10e-9;
-		}*/
+		}
 		
 
 		pos = 0;
@@ -108,14 +108,14 @@ void GradientDescent::batchGradientDescent(GradientModel *m){
 				temp_cost = m->cost(pos,upper,j);
 				cost[j].push_back(temp_cost);
 				
-				if(j == 0){
+				/*if(j == 0){
 					cout << "Iteration " << i << " Parameter " << j << " Position " << pos << endl;
 					cout << "The update norm is " << update  << endl; 
 					cout << "The maximum gradient element is " << grad[j].max() << endl;
 					cout << "The minimum gradient element is " << grad[j].min() << endl;
 					cout << "The cost is " << temp_cost << endl;
 					cout << "The last cost was " << last_cost[j] << endl;
-				}
+				}*/
 
 				if(temp_cost - thresh> last_cost[j]){ //bold driver method for updating params
 					m->set_Params(j, m->get_Params()[j] + alphas[j]*grad[j]); //undo weight change
@@ -177,18 +177,18 @@ void GradientDescent::mixedBatchGradientDescent(GradientModel *m){ //fits via mi
 			
 			for(int j = 0; j < num_params; j++){
 				update = norm(grad[j],2);
-				if(j == 0){
+				/*if(j == 0){
 					cout << "Iteration " << i << " Parameter " << j << " Position " << pos << endl;
 					cout << "The update norm is " << update  << endl; 
 					cout << "The maximum gradient element is " << grad[j].max() << endl;
 					cout << "The minimum gradient element is " << grad[j].min() << endl;
-				}
+				}*/
 				if(update > normalizer[j]){
 					normalizer[j] = update;
 				}
-				if(j == 0){
+				/*if(j == 0){
 					cout << "The normalizer is " << normalizer[j] << endl;
-				}
+				}*/
 				m->set_Params(j, m->get_Params()[j] - alpha*grad[j]/normalizer[j]);
 				temp_cost = m->cost(pos,upper,j);
 				cost[j].push_back(temp_cost);

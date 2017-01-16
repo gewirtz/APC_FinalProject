@@ -6,8 +6,8 @@
 #include "processing/mnist_load_labels.h"
 #include "processing/mnist_count_images.h"
 #include "processing/mnist_count_images.h"
-#include "processing/ppm_load_images.h"
-#include "processing/ppm_load_labels.h"
+//#include "processing/ppm_load_images.h"
+//#include "processing/ppm_load_labels.h"
 //#include "processing/jpg_load_images.h"
 //#include "processing/jpg_load_labels.h"
 #include "processing/no_processing.h"
@@ -109,7 +109,7 @@ int main(int argc, char *argv[]){
 
 
 
-  if (argc!=7){
+  //if (argc!=7){
     // keep this for mnist testing
     train_directory = "data/mnist/training/";
     test_directory = "data/mnist/testing/";
@@ -124,8 +124,8 @@ int main(int argc, char *argv[]){
     label_directory = "/data/cars/";
     train_lbl = "training_labels_cars";
     test_lbl = "testing_labels_cars";*/
-  }
-
+ // }
+/*
   else{
 
     train_directory = argv[1];
@@ -151,13 +151,13 @@ int main(int argc, char *argv[]){
       test_lbls = ppm_load_labels(label_directory, test_lbl);
     }
 
-    else{
+    else{*/ 
       train_data = mnist_load_images(train_directory, train_img, unitflag);
       train_lbls = mnist_load_labels(train_directory, train_lbl);
       tt_data = mnist_load_images(test_directory, test_img, unitflag);
       test_lbls = mnist_load_labels(test_directory, test_lbl);
-    }
-  }
+ //   }
+  //3}
 
 
 
@@ -276,21 +276,23 @@ int main(int argc, char *argv[]){
   vector<mat> processed_t_data;
 
 
-  vector<mat> p_train; 
-  vector<mat> p_test;
-
   cout << "Preprocessing data" << endl << endl;
   vector<string> used_prep;  
 
 
   for(int i = 0; i < process_flag.size(); i++){
+
     if(process_flag[i] == 1){
       continue;
     }
+    
+    vector<mat> p_train; 
+    vector<mat> p_test;
     //user wants to include preprocessing i
+
     cout << "Implementing " << process_names[i] << endl;
     used_prep.push_back(process_names[i]);
-
+    
     if(i == 0){ //no process
       No_processing *p_np;
       p_np = process_driver(train_data,tt_data,train_lbls,test_lbls);
