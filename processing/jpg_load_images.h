@@ -4,7 +4,7 @@
 #include <armadillo>
 #include <vector>
 #include <string>
-
+ 
 std::vector<arma::mat> jpg_load_images(std::string testing_data){
 //arma::mat ppm_load_images(std::string directory, std::string filename);
 //arma::mat convertToArma(CImg img);

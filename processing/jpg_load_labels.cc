@@ -5,7 +5,7 @@
 #include "jpg_load_labels.h"
 
 using namespace std;
-using namespace arma; 
+using namespace arma;  
 
 arma::colvec jpg_load_labels(string directory, string filename){
 //int ppm_load_labels(string directory, string filename){
