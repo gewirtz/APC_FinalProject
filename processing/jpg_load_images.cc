@@ -19,54 +19,6 @@ typedef struct {
      JPGPixel *data;
 } JPGImage;
 
-// CImg<float> image;
-// string filePath = "/home/andreas/APC524/Project/data/faces/training_faces/";
-// image.load(filePath.c_str());
-
-// arma::mat convertToArma(CImg<unsigned char> img){
-
-//     //vector<arma::mat> all_images;
-
-//     //for(int i=0;i<img->x*img->y;i++){
-
-//     // create vector of doubles
-//     arma::mat cur_img(img.height(),img.width());
-
-//     for(int row = 0; row < img.width(); row++){
-//       for(int col = 0; col < img.height(); col++){
-
-//         // adds pixel array - only does 'red' pixel since greyscale
-//         cur_img(row,col) = (double) img.data(row,col);
-
-//       } // end col
-//     } // end row
-
-
-
-//     //puts current image at the end of the list
-//     //all_images.push_back(cur_img);
-
-//     //} // end num_img
-//     return cur_img;
-// }
-
-// void grayscaleJPG(CImg<unsigned char> img){
-//     int i;
-//     if(img){
-
-//          for(i=0;i<img->x*img->y;i++){
-
-//             //double gray = 0.2126 * img->data[i].red + 0.7152 * img->data[i].green + 0.0722 * img->data[i].blue;
-//             //double gray = (img->data[i].red+img->data[i].green+img->data[i].blue)/3;
-//             double gray = 0.2989*img->data[i].red+0.5870*img->data[i].green+0.1140*img->data[i].blue;
-
-//             img->data[i].red = gray;
-//             img->data[i].green = gray;
-//             img->data[i].blue = gray;           
-//          }
-//     }
-// }
-
 arma::mat readJPG(const char *img){
 
     CImg<unsigned char> src(img);
